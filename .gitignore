@@ -1,2 +1,5 @@
 /*.apk
 *.sw?
+/notxw_*/bin/
+/notxw_*/gen/
+/notxw_*/local.properties
