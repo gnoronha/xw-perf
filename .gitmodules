@@ -1,0 +1,3 @@
+[submodule "polymer"]
+	path = polymer
+	url = git+ssh://git.internal.collabora.co.uk/git/int0059-crosswalk-perf/polymer-lib.git
