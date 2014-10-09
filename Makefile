@@ -1,5 +1,7 @@
 all:
 
+-include android-paths.mk
+
 XW_APPS = \
 	xwperf_paper_elements \
 	$(NULL)
