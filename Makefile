@@ -7,6 +7,7 @@ XW_APPS = \
 	$(NULL)
 JAVA_APPS = \
 	notxw_hello_world \
+	notxw_list \
 	$(NULL)
 
 XW_APKS = $(patsubst %,%_x86.apk,$(XW_APPS))
