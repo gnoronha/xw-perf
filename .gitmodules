@@ -1,3 +1,6 @@
 [submodule "polymer"]
 	path = polymer
 	url = git+ssh://git.internal.collabora.co.uk/git/int0059-crosswalk-perf/polymer-lib.git
+[submodule "app-widgets"]
+	path = app-widgets
+	url = https://github.com/abarth/app-widgets
