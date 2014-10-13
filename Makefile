@@ -3,6 +3,7 @@ all:
 -include android-paths.mk
 
 XW_APPS = \
+	xwperf_app_widgets \
 	xwperf_paper_elements \
 	$(NULL)
 JAVA_APPS = \
