@@ -1,0 +1,1 @@
+../app-widgets/dynamics.js
