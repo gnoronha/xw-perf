@@ -1,0 +1,191 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE file.
+-->
+<html>
+  <head>
+    <title>app-widgets</title>
+    <meta charset="utf-8" />
+    <script src="bower_components/platform/platform.js"></script>
+    <meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="import" href="app-widgets.html" />
+    <link rel="import" href="bower_components/font-roboto/roboto.html" />
+    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html" />
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html" />
+    <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html" />
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html" />
+    <link rel="import" href="bower_components/core-icons/core-icons.html" />
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
+    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
+    <script src="data.js"></script>
+    <link rel="stylesheet" href="app.css" />
+
+    <style type="text/css">
+      section { height: 100%; }
+    </style>
+  </head>
+  <body class="polymer-ui-body-text" fullbleed>
+    <polymer-element name="my-app">
+      <template>
+        <core-drawer-panel id="my-drawer-panel">
+          <div drawer id="my-drawer">
+            <ul>
+              <li>hello</li>
+              <li>menu</li>
+              <li>goes</li>
+              <li>here</li>
+            </ul>
+          </div>
+          <div main id="my-main" layout vertical>
+            <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
+                id="my-header-panel" flex>
+              <core-toolbar id="my-toolbar" vertical>
+                <div horizontal layout id="my-toolbar-top" flex>
+                  <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"></paper-icon-button>
+                  <div flex>Sociable - permanent beta</div>
+                  <paper-icon-button icon="search"></paper-icon-button>
+                  <paper-icon-button icon="more-vert"></paper-icon-button>
+                </div>
+
+                <div class="bottom fit" horizontal layout id="my-tab-box">
+                  <paper-tabs selected="0" flex id="my-tabs">
+                    <paper-tab>tweets</paper-tab>
+                    <paper-tab>woofs</paper-tab>
+                    <paper-tab>misc</paper-tab>
+                    <paper-tab>other</paper-tab>
+                  </paper-tabs>
+                </div>
+              </core-toolbar>
+
+              <core-animated-pages transitions="slide-from-right" id="my-pages"
+                selected="0">
+
+                <section style="background: cyan;">
+                  <app-list id="my-messages">
+                    <app-dismissable-list class="padding-wrapper" on-dismiss-items="{{ dismissItem }}">
+                      <template repeat>
+                        <app-dismissable-item class="item conversation" id="{{ id }}">
+                          <div class="avatar" style="background-color: {{ avatarColor }}">{{ avatarLetter }}</div>
+                          <div class="summary">
+                            <div class="topline">
+                              <div class="participants">{{ participants }}</div>
+                              <div class="time">{{ time }}</div>
+                            </div>
+                            <div class="bottomline">
+                              <div class="preview"><span class="subject">{{ subject }}</span> &mdash;
+                                <span class="snippet">{{ snippet }}</span></div>
+                              <div class="trinkets">&#x2606;</div>
+                            </div>
+                          </div>
+                        </app-dismissable-item>
+                      </template>
+                    </app-dismissable-list>
+                  </app-list>
+                </section>
+
+                <section>
+                  <div style="background: red;">
+                    <ul>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                    </ul>
+                  </div>
+                </section>
+
+                <section>
+                  <div style="background: green;">
+                    <ul>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                    </ul>
+                  </div>
+                </section>
+
+                <section>
+                  <div style="background: blue;">
+                    <ul>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                      <li>here is a thing</li>
+                    </ul>
+                  </div>
+                </section>
+
+              </core-animated-pages>
+            </core-header-panel>
+          </div>
+        </core-drawer-panel>
+      </template>
+      <script>
+        Polymer({
+          toggleMenu: function() {
+            this.$['my-drawer'].toggle();
+          },
+          dismissItem: function(event) {
+            var dataProvider = event.target.parentElement.data;
+            dataProvider.deleteItemByIds(event.detail.items.map(function(item) {
+              return item.id;
+            }));
+          },
+          ready: function() {
+            var myTabs = this.$['my-tabs'];
+            var myPages = this.$['my-pages'];
+            myTabs.addEventListener('core-select', function() {
+              myPages.selected = myTabs.selected;
+            });
+          },
+        });
+      </script>
+    </polymer-element>
+    <my-app>
+    </my-app>
+  </body>
+</html>
+<!-- vim:set sw=2 sts=2 et: -->

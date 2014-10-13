@@ -5,6 +5,7 @@ all:
 XW_APPS = \
 	xwperf_app_widgets \
 	xwperf_paper_elements \
+	xwperf_social \
 	$(NULL)
 JAVA_APPS = \
 	notxw_hello_world \
