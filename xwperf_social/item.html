@@ -1,0 +1,88 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE.txt file.
+-->
+<polymer-element name="my-item" horizontal center layout
+    attributes="who when html">
+  <template>
+    <style>
+      .avatar {
+        display: flex;
+        flex-shrink: 0;
+        color: white;
+        align-items: center;
+        justify-content: center;
+        font-size: 40px;
+        width: 50px;
+        height: 50px;
+        margin: 10px;
+        background-color: lightblue;
+      }
+      .summary {
+        flex: 1;
+        flex-shrink: 0;
+        display: flex;
+        flex-direction: column;
+        padding: 10px 10px 10px 0px;
+      }
+      .topline {
+        display: flex;
+        flex-shrink: 0;
+      }
+      .who {
+        flex: 1;
+        flex-shrink: 0;
+        font-weight: bold;
+      }
+      .when {
+        flex-shrink: 0;
+        font-size: 12px;
+        color: #444;
+      }
+      .bottomline {
+        flex-shrink: 0;
+        display: flex;
+      }
+      .text {
+        flex: 1;
+        flex-shrink: 0;
+        font-size: 12px;
+        height: 2em;
+        text-overflow: ellipsis;
+      }
+      :host {
+        height: 80px;
+        overflow: hidden;
+      }
+    </style>
+    <div class="avatar" style="background-color: #800;">
+      X
+    </div>
+    <div class="summary">
+      <div class="topline">
+        <div class="who">{{ who }}</div>
+        <div class="when">{{ when }}</div>
+      </div>
+      <div class="bottomline">
+        <div class="text" id="text">
+          <content></content>
+        </div>
+      </div>
+    </div>
+  </template>
+  <script>
+    Polymer({
+      html: '',
+      htmlChanged: function(oldValue, newValue) {
+        if (oldValue !== newValue) {
+          this.$.text.innerHTML = newValue;
+        }
+      },
+    });
+  </script>
+</polymer-element>
+<!-- vim:set sw=2 sts=2 et: -->
