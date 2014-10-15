@@ -9,26 +9,4 @@ body {
   margin: 0px;
 }
 
-#my-drawer {
-  background: #0f0;
-  height: 100%;
-}
-
-#my-main {
-  background: #ff0;
-  height: 100%;
-}
-
-#my-toolbar, #my-toolbar-top {
-  background: green;
-}
-
-#my-content {
-  background: white;
-}
-
-* {
-  outline: 1px grey dotted;
-}
-
 /* vim:set sw=2 sts=2 et: */
