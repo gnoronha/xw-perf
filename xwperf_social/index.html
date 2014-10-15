@@ -70,7 +70,7 @@ license that can be found in the LICENSE.txt file.
               <core-animated-pages transitions="slide-from-right" id="my-pages"
                 selected="0">
 
-                <section layout style="height: 100%; background-color: #000;">
+                <section layout flex id="my-list-section">
                   <core-list data="{{data}}" height="80" id="my-list" flex>
                     <template>
                       <my-item who="{{ model.who }}" when="{{ model.when }}"
@@ -162,6 +162,8 @@ license that can be found in the LICENSE.txt file.
           ready: function() {
             var myTabs = this.$['my-tabs'];
             var myPages = this.$['my-pages'];
+            var myList = this.$['my-list'];
+            myList.scrollTarget = this.$['my-header-panel'];
             myTabs.addEventListener('core-select', function() {
               myPages.selected = myTabs.selected;
             });
