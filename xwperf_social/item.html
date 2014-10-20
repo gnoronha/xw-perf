@@ -6,8 +6,7 @@ Copyright 2014 Intel Corporation
 Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE.txt file.
 -->
-<polymer-element name="my-item" horizontal center layout
-    attributes="who when html">
+<polymer-element name="my-item" horizontal center layout attributes="model">
   <template>
     <style>
       .avatar {
@@ -36,7 +35,12 @@ license that can be found in the LICENSE.txt file.
       .who {
         flex: 1;
         flex-shrink: 0;
+      }
+      .who > .name {
         font-weight: bold;
+      }
+      .who > .login {
+        color: rgba(0, 0, 0, 0.54);
       }
       .when {
         flex-shrink: 0;
@@ -59,13 +63,16 @@ license that can be found in the LICENSE.txt file.
         overflow: hidden;
       }
     </style>
-    <div class="avatar" style="background-color: #800;">
-      X
+    <div class="avatar" style="{{ model.avatarColors | styleObject }}">
+      {{ model.avatarLetter }}
     </div>
     <div class="summary">
       <div class="topline">
-        <div class="who">{{ who }}</div>
-        <div class="when">{{ when }}</div>
+        <div class="who">
+          <span class="name">{{ model.who }}</span>
+          <span class="login">{{ model.login }}</span>
+        </div>
+        <div class="when">{{ model.when | formatTime }}</div>
       </div>
       <div class="bottomline">
         <div class="text" id="text">
@@ -76,11 +83,17 @@ license that can be found in the LICENSE.txt file.
   </template>
   <script>
     Polymer({
-      html: '',
-      htmlChanged: function(oldValue, newValue) {
-        if (oldValue !== newValue) {
-          this.$.text.innerHTML = newValue;
+      model: {},
+      modelChanged: function(oldValue, newValue) {
+        if (oldValue.html !== newValue.html) {
+          this.$.text.innerHTML = newValue.html;
         }
+      },
+      created: function() {
+        this.modelChanged({}, this.model);
+      },
+      formatTime: function(value) {
+        return new Date(value).toLocaleTimeString();
       },
     });
   </script>

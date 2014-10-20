@@ -1,0 +1,156 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE.txt file.
+-->
+<polymer-element name="my-feed">
+  <template>
+  </template>
+  <script>
+    (function(exports) {
+    'use strict';
+
+    function repeat(s, n) {
+      return Array(n + 1).join(s);
+    }
+
+    function getRandomItem(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
+
+    function generateFakeListData(numberOfItems) {
+      // popular names in England, from
+      // https://en.wikipedia.org/wiki/List_of_most_popular_given_names
+      var possibleParticipants = [
+        'Amelia',
+        'Olivia',
+        'Emily',
+        'Jessica',
+        'Ava',
+        'Isla',
+        'Poppy',
+        'Isabella',
+        'Sophie',
+        'Mia',
+        'Oliver',
+        'Jack',
+        'Harry',
+        'Jacob',
+        'Charlie',
+        'Thomas',
+        'Oscar',
+        'William',
+        'James',
+        'George',
+      ];
+      var emoticons = [
+        '^_^',
+        'o_O',
+        '\\o/',
+        '/o\\',
+        ':)',
+        ':(',
+        ':)',
+        ':(',
+        ':/',
+        ':D',
+        '&lt;3',
+      ];
+      // The "700" colours from
+      // http://www.google.com/design/spec/style/color.html
+      // each followed by a suitable text colour
+      var possibleAvatarColors = [
+        { 'background-color': '#d01716', color: 'white'},
+        { 'background-color': '#c2185b', color: 'white'},
+        { 'background-color': '#7b1fa2', color: 'white'},
+        { 'background-color': '#512da8', color: 'white'},
+        { 'background-color': '#303f9f', color: 'white'},
+        { 'background-color': '#455ede', color: 'white'},
+        { 'background-color': '#0288d1', color: 'white'},
+        { 'background-color': '#0097a7', color: 'white'},
+        { 'background-color': '#00796b', color: 'white'},
+        { 'background-color': '#0a7e07', color: 'white'},
+        { 'background-color': '#689f38', color: 'black'},
+        { 'background-color': '#afb42b', color: 'black'},
+        { 'background-color': '#fbc02d', color: 'black'},
+        { 'background-color': '#ffa000', color: 'black'},
+        { 'background-color': '#f57c00', color: 'black'},
+        { 'background-color': '#e64a19', color: 'white'},
+        { 'background-color': '#5d4037', color: 'white'},
+        { 'background-color': '#616161', color: 'white'},
+        { 'background-color': '#455a64', color: 'white'},
+      ];
+
+      function generateFakeItem() {
+        // Used to generate gibberish. Deliberately omit the vowels
+        // to minimize the chance that we generate something offensive.
+        var possibleLetters = 'qwrtyzxcvbnmsdfghjkl';
+        var s = '';
+        var nWords = Math.floor(Math.random() * 10) + 3;
+        var i;
+
+        for (i = 0; i < nWords; i++) {
+          if (Math.random() < 0.1) {
+            s = s + ' <a href="about:blank">@';
+            s = s + getRandomItem(possibleParticipants).toLowerCase();
+            s = s + '</a>';
+          }
+          else if (Math.random() < 0.05) {
+            s = s + ' ' + getRandomItem(emoticons);
+          }
+          else {
+            var nLetters = Math.floor(Math.random() * 10) + 1;
+            var j;
+            s = s + ' ';
+            for (j = 0; j < nLetters; j++) {
+              s = s + getRandomItem(possibleLetters);
+            }
+          }
+        }
+
+        nWords = Math.floor(Math.random() * 3);
+
+        for (i = 0; i < nWords; i++) {
+          var nLetters = Math.floor(Math.random() * 10) + 3;
+          var j;
+          s = s + ' <a href="about:blank">#';
+          for (j = 0; j < nLetters; j++) {
+            s = s + getRandomItem(possibleLetters);
+          }
+          s = s + '</a>';
+        }
+
+        // starts with a space
+        return s.substring(1);
+      }
+
+      var data = [];
+
+      for (var i = 0; i < numberOfItems; ++i) {
+        data[i] = {
+          id: i,
+          avatarColors: getRandomItem(possibleAvatarColors),
+          who: getRandomItem(possibleParticipants),
+          // one tweet per 42 seconds
+          when: new Date(Date.now() - (i * 42000)),
+          html: generateFakeItem(),
+        };
+        data[i].login = '@' + data[i].who.toLowerCase();
+        data[i].avatarLetter = data[i].who[0].toUpperCase();
+      }
+      return data;
+    }
+
+    Polymer({
+      created: function () {
+        this.data = generateFakeListData(100);
+      },
+    });
+
+    })(window);
+  </script>
+</polymer-element>
+<!-- vim:set sw=2 sts=2 et: -->

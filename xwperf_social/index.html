@@ -25,7 +25,7 @@ license that can be found in the LICENSE.txt file.
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
     <link rel="import" href="item.html" />
-    <script src="data.js"></script>
+    <link rel="import" href="feed.html" />
     <link rel="stylesheet" href="app.css" />
   </head>
   <body class="polymer-ui-body-text" fullbleed>
@@ -37,6 +37,8 @@ license that can be found in the LICENSE.txt file.
             padding: 0px;
           }
         </style>
+        <my-feed id="myFeed">
+        </my-feed>
         <core-drawer-panel id="my-drawer-panel">
           <div drawer id="my-drawer">
             <ul>
@@ -73,8 +75,7 @@ license that can be found in the LICENSE.txt file.
                 <section layout flex id="my-list-section">
                   <core-list data="{{data}}" height="80" id="my-list" flex>
                     <template>
-                      <my-item who="{{ model.who }}" when="{{ model.when }}"
-                        html="{{ model.html }}">
+                      <my-item model="{{ model }}">
                       </my-item>
                     </template>
                   </core-list>
@@ -167,19 +168,7 @@ license that can be found in the LICENSE.txt file.
             myTabs.addEventListener('core-select', function() {
               myPages.selected = myTabs.selected;
             });
-            this.data = [];
-            for (i = 0; i < 100; i++) {
-              this.data.push({
-                who: 'Alice [' + i + ']',
-                when: "12:30",
-                html: 'Yesterday I went to the pub with <a href="about:blank">@bob</a>. Bad idea. <a href="about:blank">#neverdrinkingagain</a>',
-              });
-              this.data.push({
-                who: 'Bob [' + i + ']',
-                when: '12:00',
-                html: 'Lorem ipsum',
-              });
-            }
+            this.data = this.$.myFeed.data;
           },
         });
       </script>
