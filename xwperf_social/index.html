@@ -20,8 +20,10 @@ license that can be found in the LICENSE.txt file.
     <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html" />
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html" />
     <link rel="import" href="bower_components/core-icons/core-icons.html" />
+    <link rel="import" href="bower_components/core-item/core-item.html" />
     <link rel="import" href="bower_components/core-list/core-list.html" />
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html" />
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
     <link rel="import" href="item.html" />
@@ -31,22 +33,68 @@ license that can be found in the LICENSE.txt file.
   <body class="polymer-ui-body-text" fullbleed>
     <polymer-element name="my-app">
       <template>
+        <style type="text/css">
+          /*
+          * {
+            outline: 1px dotted #f0f;
+          }
+          */
+          #my-toolbar {
+            padding: 0px;
+          }
+          #my-toolbar-top {
+            height: 100%;
+            width: 100%;
+            padding: 0 8px;
+          }
+          #my-toolbar, #my-toolbar-top, #my-tab-box {
+            background-color: #607d8b;
+            color: white;
+          }
+          #my-tab-box paper-tab #ink {
+            color: #ffcc80;
+          }
+          #my-tab-box #selectionBar {
+            background-color: #ffcc80;
+          }
+          #my-drawer {
+            background-color: #cfd8dc;
+          }
+          #my-drawer {
+            padding: 0 0.5em;
+          }
+          #my-settings > * {
+            outline: #0f0 1px dotted;
+            min-height: 64px;
+            padding-left: 20px;
+          }
+        </style>
         <my-feed id="myFeed">
         </my-feed>
         <core-drawer-panel id="my-drawer-panel">
           <div drawer id="my-drawer">
-            <ul>
-              <li>hello</li>
-              <li>menu</li>
-              <li>goes</li>
-              <li>here</li>
-            </ul>
+            <core-item>
+              Options
+            </core-item>
+            <core-item>
+              Settings
+            </core-item>
+            <core-item>
+              Preferences
+            </core-item>
+            <core-item>
+              Misc
+            </core-item>
+            <core-item>
+              Other
+            </core-item>
           </div>
           <div main id="my-main" layout vertical>
             <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
                 id="my-header-panel" flex>
               <core-toolbar id="my-toolbar" vertical>
-                <div horizontal layout id="my-toolbar-top" flex>
+                <div horizontal layout id="my-toolbar-top" flex class="fit"
+                    center>
                   <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"></paper-icon-button>
                   <div flex>Sociable - permanent beta</div>
                   <paper-icon-button icon="search"></paper-icon-button>
@@ -55,10 +103,9 @@ license that can be found in the LICENSE.txt file.
 
                 <div class="bottom fit" horizontal layout id="my-tab-box">
                   <paper-tabs selected="0" flex id="my-tabs">
-                    <paper-tab>tweets</paper-tab>
-                    <paper-tab>woofs</paper-tab>
-                    <paper-tab>misc</paper-tab>
-                    <paper-tab>other</paper-tab>
+                    <paper-tab>RECENT</paper-tab>
+                    <paper-tab>COMPOSE</paper-tab>
+                    <paper-tab>SETTINGS</paper-tab>
                   </paper-tabs>
                 </div>
               </core-toolbar>
@@ -76,71 +123,32 @@ license that can be found in the LICENSE.txt file.
                 </section>
 
                 <section>
-                  <div style="background: red;">
-                    <ul>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                    </ul>
-                  </div>
+                  your ad here
                 </section>
 
                 <section>
-                  <div style="background: green;">
-                    <ul>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                    </ul>
-                  </div>
-                </section>
+                  <div id="my-settings" fill layout vertical>
+                    <div>
+                      <h3>Notifications</h3>
+                    </div>
 
-                <section>
-                  <div style="background: blue;">
-                    <ul>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                      <li>here is a thing</li>
-                    </ul>
+                    <div horizontal center>
+                      <paper-checkbox id="notify-name"
+                        label="Notify me when my @name is mentioned">
+                      </paper-checkbox>
+                    </div>
+
+                    <div horizontal center>
+                      <paper-checkbox id="notify-friends"
+                        label="Notify me when my friends say something">
+                      </paper-checkbox>
+                    </div>
+
+                    <div horizontal center>
+                      <paper-checkbox id="notify-tos"
+                        label="Notify me if the terms of service change">
+                      </paper-checkbox>
+                    </div>
                   </div>
                 </section>
 
@@ -152,7 +160,7 @@ license that can be found in the LICENSE.txt file.
       <script>
         Polymer({
           toggleMenu: function() {
-            this.$['my-drawer'].toggle();
+            this.$['my-drawer-panel'].toggle();
           },
           ready: function() {
             var myTabs = this.$['my-tabs'];
