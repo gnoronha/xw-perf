@@ -1,19 +1,36 @@
 package com.collabora.xwperf.social.java;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
 
+	String[] items = { "abba", "bebba", "cucca", "toffo" };
+	
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        ListView list = (ListView)findViewById(R.id.list);
+        
+        SpecialAdapter adapter = new SpecialAdapter(this, items);
+        list.setAdapter(adapter);
     }
 
+    static class ViewHolder {
+    	TextView text;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -33,4 +50,49 @@ public class MainActivity extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private class SpecialAdapter extends BaseAdapter {
+    	private LayoutInflater mInflater;
+    	private String[] data;
+    	
+    	public SpecialAdapter(Context context, String[] items) {
+    		mInflater = LayoutInflater.from(context);
+    		this.data = items;
+    	}
+    	
+    	@Override
+    	public int getCount() {
+    		return data.length;
+    	}
+    	
+    	@Override
+    	public Object getItem(int position) {
+    		return position;
+    	}
+    	
+    	@Override
+    	public long getItemId(int position) {
+    		return position;
+    	}
+    	
+    	@Override
+    	public View getView(int position, View convertView, ViewGroup parent) {
+    		ViewHolder holder;
+    		
+    		if (convertView == null) {
+    			convertView = mInflater.inflate(R.layout.row, null);
+    			
+    			holder = new ViewHolder();
+    			holder.text = (TextView)convertView.findViewById(R.id.headline);
+    			convertView.setTag(holder);
+    		} else {
+    			holder = (ViewHolder)convertView.getTag();
+    		}
+    		
+    		holder.text.setText(data[position]);
+    		
+    		return convertView;
+    	}
+    }
+
 }
