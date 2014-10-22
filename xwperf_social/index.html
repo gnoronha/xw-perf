@@ -24,7 +24,12 @@ license that can be found in the LICENSE.txt file.
     <link rel="import" href="bower_components/core-list/core-list.html" />
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
     <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html" />
+    <link rel="import" href="bower_components/paper-button/paper-button.html" />
+    <link rel="import" href="bower_components/paper-dialog/paper-dialog.html" />
+    <link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html" />
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
+    <link rel="import" href="bower_components/paper-radio-button/paper-radio-button.html" />
+    <link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html" />
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
     <link rel="import" href="item.html" />
     <link rel="import" href="feed.html" />
@@ -64,9 +69,18 @@ license that can be found in the LICENSE.txt file.
             padding: 0 0.5em;
           }
           #my-settings > * {
-            outline: #0f0 1px dotted;
             min-height: 64px;
             padding-left: 20px;
+          }
+          #my-settings > paper-item > paper-button > * {
+            text-transform: none;
+            text-align: left;
+          }
+          #my-settings > paper-item > paper-button > .secondary {
+            color: #f0f; /* FIXME: find correct part of style guide */
+          }
+          paper-dialog > paper-radio-group > paper-radio-button {
+            display: block;
           }
         </style>
         <my-feed id="myFeed">
@@ -132,23 +146,55 @@ license that can be found in the LICENSE.txt file.
                       <h3>Notifications</h3>
                     </div>
 
-                    <div horizontal center>
+                    <paper-item horizontal center layout>
                       <paper-checkbox id="notify-name"
                         label="Notify me when my @name is mentioned">
                       </paper-checkbox>
-                    </div>
+                    </paper-item>
 
-                    <div horizontal center>
+                    <paper-item horizontal center layout>
                       <paper-checkbox id="notify-friends"
                         label="Notify me when my friends say something">
                       </paper-checkbox>
-                    </div>
+                    </paper-item>
 
-                    <div horizontal center>
+                    <paper-item horizontal center layout>
                       <paper-checkbox id="notify-tos"
                         label="Notify me if the terms of service change">
                       </paper-checkbox>
+                    </paper-item>
+
+                    <div>
+                      <h3>Privacy</h3>
                     </div>
+
+                    <paper-dialog heading="Show location to"
+                        transition="paper-dialog-transition-bottom"
+                        id="show-location-dialog">
+
+                      <paper-radio-group selected="everybody" vertical>
+                        <paper-radio-button name="everybody" label="Everybody">
+                        </paper-radio-button>
+                        <paper-radio-button name="foaf"
+                          label="Friends of friends">
+                        </paper-radio-button>
+                        <paper-radio-button name="friends" label="Friends">
+                        </paper-radio-button>
+                        <paper-radio-button name="nobody" label="Nobody">
+                        </paper-radio-button>
+                      </paper-radio-group>
+
+                      <paper-button dismissive>
+                        Cancel
+                      </paper-button>
+                    </paper-dialog>
+
+                    <paper-item horizontal center layout>
+                      <paper-button id="show-location-button" flex>
+                        <div>Show location to</div>
+                        <div class="secondary">Everybody</div>
+                      </paper-button>
+                    </paper-item>
                   </div>
                 </section>
 
@@ -171,6 +217,10 @@ license that can be found in the LICENSE.txt file.
               myPages.selected = myTabs.selected;
             });
             this.data = this.$.myFeed.data;
+            var showLocationDialog = this.$['show-location-dialog'];
+            this.$['show-location-button'].addEventListener('click', function() {
+              showLocationDialog.toggle();
+            });
           },
         });
       </script>
