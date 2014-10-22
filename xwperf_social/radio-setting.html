@@ -1,0 +1,72 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE.txt file.
+-->
+<link rel="import" href="bower_components/paper-button/paper-button.html" />
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html" />
+<link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html" />
+<link rel="import" href="bower_components/paper-item/paper-item.html" />
+<link rel="import" href="bower_components/paper-radio-button/paper-radio-button.html" />
+<link rel="import" href="bower_components/paper-radio-group/paper-radio-group.html" />
+<polymer-element name="my-radio-setting" attributes="label value">
+  <template>
+    <style>
+      paper-radio-button {
+        display: block;
+      }
+      #label {
+        width: 100%;
+      }
+      #valueCaption {
+        color: rgba(0, 0, 0, 0.54);
+        width: 100%;
+      }
+    </style>
+
+    <paper-dialog heading="{{ label }}"
+        transition="paper-dialog-transition-bottom"
+        id="dialog">
+
+      <paper-radio-group selected="everybody" vertical id="radioGroup">
+
+        <paper-radio-button name="everybody" label="Everybody">
+        </paper-radio-button>
+        <paper-radio-button name="foaf"
+          label="Friends of friends">
+        </paper-radio-button>
+        <paper-radio-button name="friends" label="Friends">
+        </paper-radio-button>
+        <paper-radio-button name="nobody" label="Nobody">
+        </paper-radio-button>
+
+      </paper-radio-group>
+
+      <paper-button dismissive>
+        Cancel
+      </paper-button>
+    </paper-dialog>
+
+    <paper-item vertical layout id="item">
+      <div id="label">{{ label }}</div>
+      <div id="valueCaption"></div>
+    </paper-item>
+  </template>
+  <script>
+    Polymer({
+      ready: function() {
+        this.$.dialog.closeSelector = "paper-radio-button, [dismissive]";
+        this.$.radioGroup.addEventListener('core-select', (function(ev) {
+          this.$.valueCaption.innerText = ev.detail.item.label;
+        }).bind(this));
+        this.addEventListener('click', (function() {
+          this.$.dialog.opened = true;
+        }).bind(this));
+      },
+    });
+</script>
+</polymer-element>
+<!-- vim:set sw=2 sts=2 et: -->
