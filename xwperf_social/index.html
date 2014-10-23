@@ -33,7 +33,7 @@ license that can be found in the LICENSE.txt file.
     <link rel="import" href="my-settings-tab.html" />
     <link rel="stylesheet" href="app.css" />
   </head>
-  <body class="polymer-ui-body-text" fullbleed>
+  <body class="polymer-ui-body-text" fullbleed layout vertical>
     <polymer-element name="my-app">
       <template>
         <style type="text/css">
@@ -148,8 +148,65 @@ license that can be found in the LICENSE.txt file.
         });
       </script>
     </polymer-element>
-    <my-app>
+    <my-app flex relative>
     </my-app>
+    <div style="height: 64px; background: grey;">
+      <div id="perf-fps"></div>
+      <div id="perf-timings"></div>
+    </div>
+    <script>
+      (function(){
+        'use strict';
+        var MAX_BUCKET = 30;
+        var FPS_PER_BUCKET = 1;
+        var MS_PER_BUCKET = 1;
+        var t = -1;
+        var fpsBuckets = {};
+        var timeBuckets = {};
+        var frames = 0;
+        function frame(now) {
+          frames++;
+          if (t < 0) {
+            t = now;
+          }
+          else {
+            var dt = now - t;
+            t = now;
+
+            // bucket = 2ms periods per frame
+            var roundedTime = Math.round(dt / MS_PER_BUCKET) * MS_PER_BUCKET;
+            if (!timeBuckets[roundedTime])
+              timeBuckets[roundedTime] = 0;
+            timeBuckets[roundedTime] += 1;
+
+            // don't divide by zero
+            if (dt == 0)
+              dt = 0.001;
+
+            // bucket = frames per 333ms, i.e. each bucket is 3fps wide
+            var roundedFps = Math.round(1000 / (FPS_PER_BUCKET * dt)) * FPS_PER_BUCKET;
+            if (!fpsBuckets[roundedFps])
+              fpsBuckets[roundedFps] = 0;
+            fpsBuckets[roundedFps] += 1;
+          }
+          requestAnimationFrame(frame);
+
+          if (frames % 100 == 0) {
+            var s = 'fps:';
+            for (var i in fpsBuckets) {
+              s += ' ' + fpsBuckets[i] + '×' + i + 'fps;';
+            }
+            document.getElementById('perf-fps').innerText = s;
+            s = 'times:';
+            for (var i in timeBuckets) {
+              s += ' ' + timeBuckets[i] + '×' + i + 'ms;';
+            }
+            document.getElementById('perf-timings').innerText = s;
+          }
+        }
+        requestAnimationFrame(frame);
+      })();
+    </script>
   </body>
 </html>
 <!-- vim:set sw=2 sts=2 et: -->
