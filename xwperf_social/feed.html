@@ -83,6 +83,16 @@ license that can be found in the LICENSE.txt file.
         { 'background-color': '#616161', color: 'white'},
         { 'background-color': '#455a64', color: 'white'},
       ];
+      var people = [];
+
+      var j = 0;
+      for (var i = 0; i < possibleParticipants.length; i++) {
+        people[i] = {
+          name: possibleParticipants[i],
+          login: '@' + possibleParticipants[i].toLowerCase(),
+          avatarColor: getRandomItem(possibleAvatarColors),
+        };
+      }
 
       function generateFakeItem() {
         // Used to generate gibberish. Deliberately omit the vowels
@@ -130,16 +140,17 @@ license that can be found in the LICENSE.txt file.
       var data = [];
 
       for (var i = 0; i < numberOfItems; ++i) {
+        var who = getRandomItem(people);
         data[i] = {
           id: i,
-          avatarColors: getRandomItem(possibleAvatarColors),
-          who: getRandomItem(possibleParticipants),
+          avatarColors: who.avatarColor,
+          avatarLetter: who.name[0].toUpperCase(),
+          who: who.name,
+          login: who.login,
           // one tweet per 42 seconds
           when: new Date(Date.now() - (i * 42000)),
           html: generateFakeItem(),
         };
-        data[i].login = '@' + data[i].who.toLowerCase();
-        data[i].avatarLetter = data[i].who[0].toUpperCase();
       }
       return data;
     }
