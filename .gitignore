@@ -4,3 +4,9 @@
 /notxw_*/bin/
 /notxw_*/gen/
 /notxw_*/local.properties
+/notxw_*/.classpath
+/notxw_*/.project
+/notxw_*/.settings
+/notxw_*/lint.xml
+/java_*/bin/
+/java_*/gen/
