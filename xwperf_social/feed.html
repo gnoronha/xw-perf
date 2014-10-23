@@ -59,6 +59,20 @@ license that can be found in the LICENSE.txt file.
         ':D',
         '&lt;3',
       ];
+      var possibleAvatars = [
+        'bench.jpg',
+        'cactus.jpg',
+        'helicopter.jpg',
+        'hot-chocolate.jpg',
+        'leucadendron-plumosum.jpg',
+        'lighthouse.jpg',
+        'pencils.jpg',
+        'ram.jpg',
+        'roses.jpg',
+        'ship.jpg',
+        'strawberries.jpg',
+        'usb.jpg',
+      ];
       // The "700" colours from
       // http://www.google.com/design/spec/style/color.html
       // each followed by a suitable text colour
@@ -92,6 +106,10 @@ license that can be found in the LICENSE.txt file.
           login: '@' + possibleParticipants[i].toLowerCase(),
           avatarColor: getRandomItem(possibleAvatarColors),
         };
+        if (Math.random() < 0.5) {
+          people[i].avatar = possibleAvatars[j];
+          j = (j + 1) % possibleAvatars.length;
+        }
       }
 
       function generateFakeItem() {
@@ -145,6 +163,7 @@ license that can be found in the LICENSE.txt file.
           id: i,
           avatarColors: who.avatarColor,
           avatarLetter: who.name[0].toUpperCase(),
+          avatar: who.avatar,
           who: who.name,
           login: who.login,
           // one tweet per 42 seconds
@@ -152,6 +171,12 @@ license that can be found in the LICENSE.txt file.
           html: generateFakeItem(),
         };
       }
+
+      // fake a round-trip
+      var timeBefore = +(new Date());
+      data = JSON.parse(JSON.stringify(data));
+      var dt = +(new Date()) - timeBefore;
+      console.log('serialized and parsed ' + numberOfItems + ' JSON records in ' + dt + ' ms');
       return data;
     }
 
