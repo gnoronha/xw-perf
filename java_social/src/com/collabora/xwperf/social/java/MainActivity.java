@@ -1,6 +1,7 @@
 package com.collabora.xwperf.social.java;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import android.app.Activity;
 import android.content.Context;
@@ -89,7 +90,7 @@ public class MainActivity extends Activity {
 			String name;
 
 			if (convertView == null) {
-				convertView = mInflater.inflate(R.layout.row, null);
+				convertView = mInflater.inflate(R.layout.row, parent, false);
 
 				holder = new ViewHolder();
 				holder.text = (TextView)convertView.findViewById(R.id.headline);
@@ -101,7 +102,7 @@ public class MainActivity extends Activity {
 
 			name = data.get(position);
 			holder.text.setText(name);
-			holder.avatar.setText(name.substring(0, 1).toUpperCase());
+			holder.avatar.setText(name.substring(0, 1).toUpperCase(Locale.getDefault()));
 
 			return convertView;
 		}
