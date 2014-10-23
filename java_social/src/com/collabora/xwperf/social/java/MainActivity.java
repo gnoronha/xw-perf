@@ -172,6 +172,15 @@ public class MainActivity extends Activity {
 			return position;
 		}
 
+		private int contrastBW(int c) {
+			int v = (Color.red(c) + Color.green(c) + Color.blue(c)) / 3;
+
+			if (v < 127)
+				return Color.WHITE;
+			else
+				return Color.BLACK;
+		}
+
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
@@ -193,6 +202,8 @@ public class MainActivity extends Activity {
 			holder.text.setText(t.who);
 			holder.avatar.setText(t.who.substring(0, 1).toUpperCase(
 					Locale.getDefault()));
+			holder.avatar.setBackgroundColor(t.avatar_color);
+			holder.avatar.setTextColor(contrastBW(t.avatar_color));
 
 			return convertView;
 		}
