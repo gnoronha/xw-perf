@@ -36,6 +36,7 @@ public class MainActivity extends Activity {
 	}
 
 	static class ViewHolder {
+		TextView avatar;
 		TextView text;
 	}
 
@@ -85,18 +86,22 @@ public class MainActivity extends Activity {
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
+			String name;
 
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.row, null);
 
 				holder = new ViewHolder();
 				holder.text = (TextView)convertView.findViewById(R.id.headline);
+				holder.avatar = (TextView)convertView.findViewById(R.id.avatar);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder)convertView.getTag();
 			}
 
-			holder.text.setText(data.get(position));
+			name = data.get(position);
+			holder.text.setText(name);
+			holder.avatar.setText(name.substring(0, 1).toUpperCase());
 
 			return convertView;
 		}
