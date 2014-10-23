@@ -15,7 +15,7 @@ license that can be found in the LICENSE.txt file.
 <polymer-element name="my-radio-setting" attributes="label value">
   <template>
     <style>
-      paper-radio-button {
+      ::content paper-radio-button {
         display: block;
       }
       #label {
@@ -31,18 +31,9 @@ license that can be found in the LICENSE.txt file.
         transition="paper-dialog-transition-bottom"
         id="dialog">
 
-      <paper-radio-group selected="everybody" vertical id="radioGroup">
+        <paper-radio-group selected="{{ value }}" vertical id="radioGroup">
 
-        <paper-radio-button name="everybody" label="Everybody">
-        </paper-radio-button>
-        <paper-radio-button name="foaf"
-          label="Friends of friends">
-        </paper-radio-button>
-        <paper-radio-button name="friends" label="Friends">
-        </paper-radio-button>
-        <paper-radio-button name="nobody" label="Nobody">
-        </paper-radio-button>
-
+        <content></content>
       </paper-radio-group>
 
       <paper-button dismissive>

@@ -1,0 +1,71 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE.txt file.
+-->
+<link rel="import" href="boolean-setting.html" />
+<link rel="import" href="radio-setting.html" />
+<link rel="import" href="toggle-setting.html" />
+
+<polymer-element name="my-settings-tab" layout>
+  <template>
+    <style>
+      :host {
+        width: 100%;
+        height: 100%;
+      }
+      h3 {
+        font-size: 100%;
+        line-height: 100%;
+        font-weight: bold;
+        padding-left: 48px;
+        padding-top: 16px;
+        margin: 0px;
+      }
+    </style>
+
+    <div>
+      <h3>Notifications</h3>
+    </div>
+
+    <my-boolean-setting id="notify-name"
+      label="Notify when mentioned by @name">
+    </my-boolean-setting>
+
+    <my-boolean-setting id="notify-friends"
+      label="Notify when friends say something">
+    </my-boolean-setting>
+
+    <my-boolean-setting id="notify-tos"
+      label="Notify when terms of service change">
+    </my-boolean-setting>
+
+    <div>
+      <h3>Privacy</h3>
+    </div>
+
+    <my-toggle-setting label="Encrypt messages">
+    </my-toggle-setting>
+
+    <my-radio-setting label="Show location to"
+        value="everybody" id="show-location">
+      <paper-radio-button name="everybody" label="Everybody">
+      </paper-radio-button>
+      <paper-radio-button name="foaf"
+        label="Friends of friends">
+      </paper-radio-button>
+      <paper-radio-button name="friends" label="Friends">
+      </paper-radio-button>
+      <paper-radio-button name="nobody" label="Nobody">
+      </paper-radio-button>
+    </my-radio-setting>
+  </template>
+  <script>
+    Polymer({
+    });
+  </script>
+</polymer-element>
+<!-- vim:set sw=2 sts=2 et: -->

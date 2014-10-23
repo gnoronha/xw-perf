@@ -28,11 +28,9 @@ license that can be found in the LICENSE.txt file.
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
     <link rel="import" href="bower_components/paper-item/paper-item.html" />
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
-    <link rel="import" href="boolean-setting.html" />
     <link rel="import" href="item.html" />
     <link rel="import" href="feed.html" />
-    <link rel="import" href="radio-setting.html" />
-    <link rel="import" href="toggle-setting.html" />
+    <link rel="import" href="my-settings-tab.html" />
     <link rel="stylesheet" href="app.css" />
   </head>
   <body class="polymer-ui-body-text" fullbleed>
@@ -126,38 +124,7 @@ license that can be found in the LICENSE.txt file.
                   your ad here
                 </section>
 
-                <section>
-                  <div id="my-settings" fill layout vertical>
-                    <div>
-                      <h3>Notifications</h3>
-                    </div>
-
-                    <my-boolean-setting id="notify-name"
-                      label="Notify when mentioned by @name">
-                    </my-boolean-setting>
-
-                    <my-boolean-setting id="notify-friends"
-                      label="Notify when friends say something">
-                    </my-boolean-setting>
-
-                    <my-boolean-setting id="notify-tos"
-                      label="Notify when terms of service change">
-                    </my-boolean-setting>
-
-                    <div>
-                      <h3>Privacy</h3>
-                    </div>
-
-                    <my-toggle-setting label="Encrypt messages">
-                    </my-toggle-setting>
-
-                    <my-radio-setting label="Show location to"
-                        value="everybody" id="show-location">
-                    </my-radio-setting>
-
-                  </div>
-                </section>
-
+                <my-settings-tab></my-settings-tab>
               </core-animated-pages>
             </core-header-panel>
           </div>
