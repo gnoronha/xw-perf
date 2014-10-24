@@ -155,43 +155,61 @@ license that can be found in the LICENSE.txt file.
       <div id="perf-timings"></div>
     </div>
     <script>
-      (function(){
+      (function(exports){
         'use strict';
+        // big enough for just over a minute at 60fps
+        var ringBuffer = new Float64Array(4096);
+        var frameIndex = 0;
+        var statsShowing = 1;
+
         var MAX_BUCKET = 30;
         var FPS_PER_BUCKET = 1;
         var MS_PER_BUCKET = 1;
-        var t = -1;
-        var fpsBuckets = {};
-        var timeBuckets = {};
-        var frames = 0;
+
         function frame(now) {
-          frames++;
-          if (t < 0) {
-            t = now;
-          }
-          else {
-            var dt = now - t;
-            t = now;
+          ringBuffer[frameIndex] = now;
 
-            // bucket = 2ms periods per frame
-            var roundedTime = Math.round(dt / MS_PER_BUCKET) * MS_PER_BUCKET;
-            if (!timeBuckets[roundedTime])
-              timeBuckets[roundedTime] = 0;
-            timeBuckets[roundedTime] += 1;
+          // approx. every second at 60fps, dump out stats
+          // (keep this a divisor of ringBuffer.length because we make
+          // frameIndex wrap around)
+          if (statsShowing && (frameIndex % 64) == 0) {
+            var t = -1;
+            var fpsBuckets = {};
+            var timeBuckets = {};
 
-            // don't divide by zero
-            if (dt == 0)
-              dt = 0.001;
+            for (var i = 1; i <= ringBuffer.length; i++) {
+              var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
 
-            // bucket = frames per 333ms, i.e. each bucket is 3fps wide
-            var roundedFps = Math.round(1000 / (FPS_PER_BUCKET * dt)) * FPS_PER_BUCKET;
-            if (!fpsBuckets[roundedFps])
-              fpsBuckets[roundedFps] = 0;
-            fpsBuckets[roundedFps] += 1;
-          }
-          requestAnimationFrame(frame);
+              if (t < 0) {
+                t = nt;
+                continue;
+              }
 
-          if (frames % 100 == 0) {
+              if (nt == 0) {
+                // skip unfilled portion of ring buffer: wrap around
+                // so that frameIndex + i = ringBufferLength ≡ 0 (mod length)
+                i = ringBuffer.length - frameIndex;
+                continue;
+              }
+
+              var dt = nt - t;
+              t = nt;
+
+              var roundedTime = Math.round(dt / MS_PER_BUCKET) * MS_PER_BUCKET;
+              if (!timeBuckets[roundedTime])
+                timeBuckets[roundedTime] = 0;
+              timeBuckets[roundedTime] += 1;
+
+              // don't divide by zero
+              if (dt == 0)
+                dt = 0.001;
+
+              var roundedFps = Math.floor(1000 / (FPS_PER_BUCKET * dt)) * FPS_PER_BUCKET;
+              if (!fpsBuckets[roundedFps])
+                fpsBuckets[roundedFps] = 0;
+              fpsBuckets[roundedFps] += 1;
+            }
+
             var s = 'fps:';
             for (var i in fpsBuckets) {
               s += ' ' + fpsBuckets[i] + '×' + i + 'fps;';
@@ -203,9 +221,13 @@ license that can be found in the LICENSE.txt file.
             }
             document.getElementById('perf-timings').innerText = s;
           }
+
+          requestAnimationFrame(frame);
+          frameIndex = (frameIndex + 1) % ringBuffer.length;
         }
+
         requestAnimationFrame(frame);
-      })();
+      })(window);
     </script>
   </body>
 </html>
