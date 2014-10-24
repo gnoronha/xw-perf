@@ -1,0 +1,28 @@
+Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+
+Files: *
+Copyright:
+ © 2013 The Polymer Authors
+ © 2014 Intel Corporation
+License: BSD-3
+ see LICENSE.txt
+
+Files: avatars
+Copyright: none
+License: CC-0
+ I, the owner of Picdrome.com, dedicate the work presented on this website
+ (digital photographs) to the public domain by waiving my rights to the
+ work worldwide under copyright law, including all related and neighboring
+ rights, to the extent allowed by law.
+ .
+ You can copy, modify, distribute and perform the work, even for
+ commercial purposes, all without asking my permission.
+ .
+ Please take note that I don't take responsibility for the usage of
+ this photos, including those which contain logos, trademarks, people
+ and other displays as such.
+ .
+ For more information on the license attached to all images on
+ Picdrome.com, make sure to visit:
+ .
+ http://creativecommons.org/publicdomain/zero/1.0/

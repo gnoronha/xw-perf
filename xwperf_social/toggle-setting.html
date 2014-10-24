@@ -1,0 +1,39 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE.txt file.
+-->
+<link rel="import" href="bower_components/paper-button/paper-button.html" />
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html" />
+<link rel="import" href="bower_components/paper-dialog/paper-dialog-transition.html" />
+<link rel="import" href="bower_components/paper-item/paper-item.html" />
+<link rel="import" href="bower_components/paper-toggle-button/paper-toggle-button.html" />
+<polymer-element name="my-toggle-setting" attributes="label">
+  <template>
+    <style>
+      label {
+        padding-left: 8px;
+      }
+    </style>
+
+    <paper-item horizontal layout on-tap="{{tap}}">
+      <paper-toggle-button id="toggle"></paper-toggle-button>
+      <label flex inline-block>{{ label }}</label>
+    </paper-item>
+  </template>
+  <script>
+    Polymer({
+      tap: function(ev, detail, sender) {
+        var tog = this.$.toggle;
+        if (ev.target !== tog) {
+          /* tapping the toggle already toggles it */
+          tog.checked = !tog.checked;
+        }
+      },
+    });
+</script>
+</polymer-element>
+<!-- vim:set sw=2 sts=2 et: -->
