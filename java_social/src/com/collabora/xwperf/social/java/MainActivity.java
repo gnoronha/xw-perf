@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -124,9 +125,20 @@ public class MainActivity extends Activity {
 		list.setAdapter(adapter);
 	}
 
-	static class ViewHolder {
-		TextView avatar;
-		TextView text;
+	private final static class ViewHolder {
+		TextView avatar_text;
+		ImageView avatar_image;
+		TextView headline;
+		TextView message;
+		TextView time;
+
+		public ViewHolder(View v) {
+			avatar_text = (TextView) v.findViewById(R.id.avatar_text);
+			avatar_image = (ImageView) v.findViewById(R.id.avatar_image);
+			headline = (TextView) v.findViewById(R.id.headline);
+			message = (TextView) v.findViewById(R.id.message);
+			time = (TextView) v.findViewById(R.id.time);
+		}
 	}
 
 	@Override
@@ -150,10 +162,14 @@ public class MainActivity extends Activity {
 
 	private class SpecialAdapter extends BaseAdapter {
 		private LayoutInflater mInflater;
+		private java.text.DateFormat dateformat;
+		private java.text.DateFormat timeformat;
 		private ArrayList<Tweet> data;
 
 		public SpecialAdapter(Context context, ArrayList<Tweet> items) {
 			mInflater = LayoutInflater.from(context);
+			dateformat = android.text.format.DateFormat.getDateFormat(context);
+			timeformat = android.text.format.DateFormat.getTimeFormat(context);
 			this.data = items;
 		}
 
@@ -186,24 +202,26 @@ public class MainActivity extends Activity {
 			ViewHolder holder;
 
 			if (convertView == null) {
-				convertView = mInflater.inflate(R.layout.row, parent, false);
+				convertView = mInflater.inflate(R.layout.tweet_row, parent,
+						false);
 
-				holder = new ViewHolder();
-				holder.text = (TextView) convertView
-						.findViewById(R.id.headline);
-				holder.avatar = (TextView) convertView
-						.findViewById(R.id.avatar);
+				holder = new ViewHolder(convertView);
 				convertView.setTag(holder);
 			} else {
 				holder = (ViewHolder) convertView.getTag();
 			}
 
 			Tweet t = data.get(position);
-			holder.text.setText(t.who);
-			holder.avatar.setText(t.who.substring(0, 1).toUpperCase(
+			holder.headline.setText(t.who);
+
+			holder.avatar_text.setText(t.who.substring(0, 1).toUpperCase(
 					Locale.getDefault()));
-			holder.avatar.setBackgroundColor(t.avatar_color);
-			holder.avatar.setTextColor(contrastBW(t.avatar_color));
+			holder.avatar_text.setBackgroundColor(t.avatar_color);
+			holder.avatar_text.setTextColor(contrastBW(t.avatar_color));
+
+			holder.message.setText(t.message);
+			holder.time.setText(dateformat.format(t.when) + "\n"
+					+ timeformat.format(t.when));
 
 			return convertView;
 		}

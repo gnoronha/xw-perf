@@ -8,10 +8,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.collabora.xwperf.social.java.MainActivity" >
 
-	<ListView
-	    android:id="@+id/list"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content" >
-	</ListView>
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+    </ListView>
 
 </RelativeLayout>
