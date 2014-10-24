@@ -42,7 +42,7 @@
         android:layout_alignParentTop="true"
         android:layout_toLeftOf="@id/time"
         android:layout_toRightOf="@id/avatar_text"
-        android:padding="10dp"
+        android:padding="8dp"
         android:textSize="20sp" />
 
     <TextView
