@@ -1,0 +1,108 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE.txt file.
+-->
+<link rel="import" href="bower_components/paper-item/paper-item.html" />
+<polymer-element name="my-perf-box" on-tap="tap">
+  <template>
+    <style>
+      :host {
+        height: 64px;
+        background: grey;
+      }
+    </style>
+    <div id="perf-fps"></div>
+    <div id="perf-timings"></div>
+  </template>
+  <script>
+    (function(exports){
+      'use strict';
+      // big enough for just over a minute at 60fps
+      var ringBuffer = new Float64Array(4096);
+      var frameIndex = 0;
+      var statsShowing = 0;
+
+      var MAX_BUCKET = 30;
+      var FPS_PER_BUCKET = 1;
+      var MS_PER_BUCKET = 1;
+      var drawStatsNextFrame = null;
+
+      Polymer({
+        frame: function(now) {
+          ringBuffer[frameIndex] = now;
+
+          // approx. every second at 60fps, dump out stats
+          // (keep this a divisor of ringBuffer.length because we make
+          // frameIndex wrap around)
+          if (drawStatsNextFrame) {
+            drawStatsNextFrame = null;
+            drawStatsNextFrame = null;
+            var t = -1;
+            var fpsBuckets = {};
+            var timeBuckets = {};
+
+            for (var i = 1; i <= ringBuffer.length; i++) {
+              var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
+
+              if (t < 0) {
+                t = nt;
+                continue;
+              }
+
+              if (nt == 0) {
+                // skip unfilled portion of ring buffer: wrap around
+                // so that frameIndex + i = ringBufferLength ≡ 0 (mod length)
+                i = ringBuffer.length - frameIndex;
+                continue;
+              }
+
+              var dt = nt - t;
+              t = nt;
+
+              var roundedTime = Math.round(dt / MS_PER_BUCKET) * MS_PER_BUCKET;
+              if (!timeBuckets[roundedTime])
+                timeBuckets[roundedTime] = 0;
+              timeBuckets[roundedTime] += 1;
+
+              // don't divide by zero
+              if (dt == 0)
+                dt = 0.001;
+
+              var roundedFps = Math.floor(1000 / (FPS_PER_BUCKET * dt)) * FPS_PER_BUCKET;
+              if (!fpsBuckets[roundedFps])
+                fpsBuckets[roundedFps] = 0;
+              fpsBuckets[roundedFps] += 1;
+            }
+
+            var s = 'fps:';
+            for (var i in fpsBuckets) {
+              s += ' ' + fpsBuckets[i] + '×' + i + 'fps;';
+            }
+            this.$['perf-fps'].innerText = s;
+            s = 'times:';
+            for (var i in timeBuckets) {
+              s += ' ' + timeBuckets[i] + '×' + i + 'ms;';
+            }
+            this.$['perf-timings'].innerText = s;
+          }
+
+          requestAnimationFrame(this.frame.bind(this));
+          frameIndex = (frameIndex + 1) % ringBuffer.length;
+        },
+
+        ready: function() {
+          requestAnimationFrame(this.frame.bind(this));
+        },
+
+        tap: function () {
+          drawStatsNextFrame = this;
+        },
+      });
+    })(window);
+  </script>
+</polymer-element>
+<!-- vim:set sw=2 sts=2 et: -->

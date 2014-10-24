@@ -30,6 +30,7 @@ license that can be found in the LICENSE.txt file.
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
     <link rel="import" href="item.html" />
     <link rel="import" href="feed.html" />
+    <link rel="import" href="my-perf-box.html" />
     <link rel="import" href="my-settings-tab.html" />
     <link rel="stylesheet" href="app.css" />
   </head>
@@ -150,95 +151,8 @@ license that can be found in the LICENSE.txt file.
     </polymer-element>
     <my-app flex relative>
     </my-app>
-    <div style="height: 64px; background: grey;">
-      <input type="checkbox" id="perf-enabled" style="float: left;"></input>
-      <div id="perf-fps"></div>
-      <div id="perf-timings"></div>
-    </div>
-    <script>
-      (function(exports){
-        'use strict';
-        // big enough for just over a minute at 60fps
-        var ringBuffer = new Float64Array(4096);
-        var frameIndex = 0;
-        var statsShowing = 0;
-
-        var MAX_BUCKET = 30;
-        var FPS_PER_BUCKET = 1;
-        var MS_PER_BUCKET = 1;
-
-        document.getElementById('perf-enabled').addEventListener('change', function () {
-
-          statsShowing = document.getElementById('perf-enabled').checked;
-          if (!statsShowing) {
-            document.getElementById('perf-fps').innerText = '';
-            document.getElementById('perf-timings').innerText = '';
-          }
-        });
-
-        function frame(now) {
-          ringBuffer[frameIndex] = now;
-
-          // approx. every second at 60fps, dump out stats
-          // (keep this a divisor of ringBuffer.length because we make
-          // frameIndex wrap around)
-          if (statsShowing && (frameIndex % 64) == 0) {
-            var t = -1;
-            var fpsBuckets = {};
-            var timeBuckets = {};
-
-            for (var i = 1; i <= ringBuffer.length; i++) {
-              var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
-
-              if (t < 0) {
-                t = nt;
-                continue;
-              }
-
-              if (nt == 0) {
-                // skip unfilled portion of ring buffer: wrap around
-                // so that frameIndex + i = ringBufferLength ≡ 0 (mod length)
-                i = ringBuffer.length - frameIndex;
-                continue;
-              }
-
-              var dt = nt - t;
-              t = nt;
-
-              var roundedTime = Math.round(dt / MS_PER_BUCKET) * MS_PER_BUCKET;
-              if (!timeBuckets[roundedTime])
-                timeBuckets[roundedTime] = 0;
-              timeBuckets[roundedTime] += 1;
-
-              // don't divide by zero
-              if (dt == 0)
-                dt = 0.001;
-
-              var roundedFps = Math.floor(1000 / (FPS_PER_BUCKET * dt)) * FPS_PER_BUCKET;
-              if (!fpsBuckets[roundedFps])
-                fpsBuckets[roundedFps] = 0;
-              fpsBuckets[roundedFps] += 1;
-            }
-
-            var s = 'fps:';
-            for (var i in fpsBuckets) {
-              s += ' ' + fpsBuckets[i] + '×' + i + 'fps;';
-            }
-            document.getElementById('perf-fps').innerText = s;
-            s = 'times:';
-            for (var i in timeBuckets) {
-              s += ' ' + timeBuckets[i] + '×' + i + 'ms;';
-            }
-            document.getElementById('perf-timings').innerText = s;
-          }
-
-          requestAnimationFrame(frame);
-          frameIndex = (frameIndex + 1) % ringBuffer.length;
-        }
-
-        requestAnimationFrame(frame);
-      })(window);
-    </script>
+    <my-perf-box>
+    </my-perf-box>
   </body>
 </html>
 <!-- vim:set sw=2 sts=2 et: -->
