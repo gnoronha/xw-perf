@@ -266,10 +266,14 @@ public class MainActivity extends Activity {
 				try {
 					InputStream in = assetm.open(t.avatar_file);
 					Bitmap bmp = BitmapFactory.decodeStream(in);
+					Thread.sleep(50); // fail harder!
 					holder.avatar_image.setImageBitmap(bmp);
 					holder.avatar_image.setVisibility(View.VISIBLE);
 					holder.avatar_text.setVisibility(View.INVISIBLE);
 				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
