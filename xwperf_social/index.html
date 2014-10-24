@@ -151,6 +151,7 @@ license that can be found in the LICENSE.txt file.
     <my-app flex relative>
     </my-app>
     <div style="height: 64px; background: grey;">
+      <input type="checkbox" id="perf-enabled" style="float: left;"></input>
       <div id="perf-fps"></div>
       <div id="perf-timings"></div>
     </div>
@@ -160,11 +161,20 @@ license that can be found in the LICENSE.txt file.
         // big enough for just over a minute at 60fps
         var ringBuffer = new Float64Array(4096);
         var frameIndex = 0;
-        var statsShowing = 1;
+        var statsShowing = 0;
 
         var MAX_BUCKET = 30;
         var FPS_PER_BUCKET = 1;
         var MS_PER_BUCKET = 1;
+
+        document.getElementById('perf-enabled').addEventListener('change', function () {
+
+          statsShowing = document.getElementById('perf-enabled').checked;
+          if (!statsShowing) {
+            document.getElementById('perf-fps').innerText = '';
+            document.getElementById('perf-timings').innerText = '';
+          }
+        });
 
         function frame(now) {
           ringBuffer[frameIndex] = now;
