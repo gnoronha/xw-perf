@@ -1,5 +1,8 @@
 package com.collabora.xwperf.social.java;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -9,8 +12,12 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +32,7 @@ class Tweet {
 	public String who;
 	public Date when;
 	public int avatar_color;
+	public String avatar_file;
 	public String message;
 }
 
@@ -46,8 +54,16 @@ class TweetFactory {
 
 	private Random random = new Random();
 
+	private String[] avatarfiles;
+
 	private String randomName() {
 		return names[random.nextInt(names.length)];
+	}
+
+	private String randomAvatar() {
+		if (avatarfiles.length == 0)
+			return null;
+		return avatarfiles[random.nextInt(avatarfiles.length)];
 	}
 
 	private String randomEmoticon() {
@@ -89,6 +105,8 @@ class TweetFactory {
 
 		t.who = randomName();
 		t.avatar_color = randomColor();
+		if (random.nextInt(100) < 50)
+			t.avatar_file = randomAvatar();
 		t.when = new Date();
 		t.message = msg.substring(1);
 
@@ -109,17 +127,39 @@ class TweetFactory {
 
 		return arr;
 	}
+
+	public TweetFactory(String[] avatarimgs) {
+		this.avatarfiles = avatarimgs;
+	}
 }
 
 public class MainActivity extends Activity {
+	private final String TAG = "social-java";
+	private AssetManager assetm;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+		assetm = getAssets();
+
+		String[] avatarimgs = {};
+		try {
+			String dir = "avatars";
+			avatarimgs = assetm.list(dir);
+			for (int i = 0; i < avatarimgs.length; i++) {
+				avatarimgs[i] = dir + File.separator + avatarimgs[i];
+			}
+		} catch (IOException e) {
+			Log.e(TAG, "finding avatar images failed", e);
+		}
+		for (int i = 0; i < avatarimgs.length; i++)
+			Log.d(TAG, avatarimgs[i]);
+
 		ListView list = (ListView) findViewById(R.id.list);
 
-		TweetFactory fac = new TweetFactory();
+		TweetFactory fac = new TweetFactory(avatarimgs);
 
 		SpecialAdapter adapter = new SpecialAdapter(this, fac.fakeList(100));
 		list.setAdapter(adapter);
@@ -214,10 +254,26 @@ public class MainActivity extends Activity {
 			Tweet t = data.get(position);
 			holder.headline.setText(t.who);
 
-			holder.avatar_text.setText(t.who.substring(0, 1).toUpperCase(
-					Locale.getDefault()));
-			holder.avatar_text.setBackgroundColor(t.avatar_color);
-			holder.avatar_text.setTextColor(contrastBW(t.avatar_color));
+			if (t.avatar_file == null) {
+				holder.avatar_text.setText(t.who.substring(0, 1).toUpperCase(
+						Locale.getDefault()));
+				holder.avatar_text.setBackgroundColor(t.avatar_color);
+				holder.avatar_text.setTextColor(contrastBW(t.avatar_color));
+				holder.avatar_text.setVisibility(View.VISIBLE);
+				holder.avatar_image.setVisibility(View.INVISIBLE);
+			} else {
+				// FIXME the stupid way
+				try {
+					InputStream in = assetm.open(t.avatar_file);
+					Bitmap bmp = BitmapFactory.decodeStream(in);
+					holder.avatar_image.setImageBitmap(bmp);
+					holder.avatar_image.setVisibility(View.VISIBLE);
+					holder.avatar_text.setVisibility(View.INVISIBLE);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 			holder.message.setText(t.message);
 			holder.time.setText(dateformat.format(t.when) + "\n"
