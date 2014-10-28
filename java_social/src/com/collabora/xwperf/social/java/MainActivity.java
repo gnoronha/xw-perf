@@ -1,7 +1,6 @@
 package com.collabora.xwperf.social.java;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.ref.WeakReference;
@@ -14,11 +13,13 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -32,7 +33,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
+class BitmapLoaderTask extends AsyncTask<Void, Void, Bitmap> {
+	// Written on the basis of http://developer.android.com/training/displaying-bitmaps/index.html
+
 	private final static String TAG = "social-java";
 
 	public static int samplingDivisor(BitmapFactory.Options info, int targetWidth, int targetHeight) {
@@ -69,20 +72,46 @@ class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
 		}
 	}
 
+	static class AsyncDrawable extends BitmapDrawable {
+		private final WeakReference<BitmapLoaderTask> loaderTaskRef;
+
+		public AsyncDrawable(Resources res, Bitmap bitmap, BitmapLoaderTask loaderTask) {
+			super(res, bitmap);
+			loaderTaskRef = new WeakReference<BitmapLoaderTask>(loaderTask);
+		}
+
+		public BitmapLoaderTask getLoaderTask() {
+			return loaderTaskRef.get();
+		}
+	}
+
+	private static BitmapLoaderTask getBitmapLoaderTask(ImageView imview) {
+		if (imview == null)
+			return null;
+
+		final Drawable d = imview.getDrawable();
+		if (d instanceof AsyncDrawable)
+				return ((AsyncDrawable)d).getLoaderTask();
+
+		return null;
+	}
+
 	private final WeakReference<ImageView> imageViewRef;
 	private final AssetManager assetMan;
+	private final String filename;
 	private final int targetWidth;
 	private final int targetHeight;
 
-	public BitmapLoaderTask(ImageView imview, AssetManager as) {
+	public BitmapLoaderTask(ImageView imview, AssetManager as, String fname) {
 		// To allow imview to be destroyed before loading completes.
 		imageViewRef = new WeakReference<ImageView>(imview);
 		assetMan = as;
+		filename = fname;
 		targetWidth = imview.getWidth();
 		targetHeight = imview.getHeight();
 	}
 
-	protected Bitmap doInBackground(String... fname) {
+	protected Bitmap doInBackground(Void... unused) {
 		try {
 			Thread.sleep(150); // fail harder!
 		} catch (InterruptedException e) {
@@ -91,10 +120,13 @@ class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
 		if (isCancelled())
 			return null;
 
-		return decodeFromAsset(assetMan, fname[0], targetWidth, targetHeight);
+		return decodeFromAsset(assetMan, filename, targetWidth, targetHeight);
 	}
 
 	protected void onPostExecute(Bitmap bitmap) {
+		if (isCancelled())
+			return;
+
 		if (bitmap == null)
 			return;
 
@@ -105,7 +137,35 @@ class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
 		if (imview == null)
 			return;
 
+		final BitmapLoaderTask loaderTask = getBitmapLoaderTask(imview);
+		if (this != loaderTask)
+			return;
+
 		imview.setImageBitmap(bitmap);
+	}
+
+	private static boolean cancelPotentialWork(ImageView imview, String fname) {
+		final BitmapLoaderTask loader = getBitmapLoaderTask(imview);
+
+		if (loader == null)
+			return true;
+
+		if (loader.filename == null || !loader.filename.equals(fname)) {
+			loader.cancel(true);
+			return true;
+		}
+
+		return false;
+	}
+
+	public static void start(ImageView imview, AssetManager asm, Resources res, String fname) {
+		if (!cancelPotentialWork(imview, fname))
+			return;
+
+		final BitmapLoaderTask task = new BitmapLoaderTask(imview, asm, fname);
+		final AsyncDrawable ad = new AsyncDrawable(res, null, task);
+		imview.setImageDrawable(ad);
+		task.execute();
 	}
 }
 
@@ -343,10 +403,9 @@ public class MainActivity extends Activity {
 				holder.avatar_text.setVisibility(View.VISIBLE);
 				holder.avatar_image.setVisibility(View.INVISIBLE);
 			} else {
-				BitmapLoaderTask task = new BitmapLoaderTask(holder.avatar_image, assetm);
 				holder.avatar_image.setVisibility(View.VISIBLE);
 				holder.avatar_text.setVisibility(View.INVISIBLE);
-				task.execute(t.avatar_file);
+				BitmapLoaderTask.start(holder.avatar_image, assetm, getResources(), t.avatar_file);
 			}
 
 			holder.message.setText(t.message);
