@@ -32,9 +32,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-class BitmapLoaderTask { //extends AsyncTask<Integer, Void, Bitmap> {
+class BitmapLoaderTask extends AsyncTask<String, Void, Bitmap> {
 	private final static String TAG = "social-java";
-//	private final WeakReference<ImageView> imageViewRef;
 
 	public static int samplingDivisor(BitmapFactory.Options info, int targetWidth, int targetHeight) {
 		final int hh = info.outHeight / 2;
@@ -68,6 +67,45 @@ class BitmapLoaderTask { //extends AsyncTask<Integer, Void, Bitmap> {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	private final WeakReference<ImageView> imageViewRef;
+	private final AssetManager assetMan;
+	private final int targetWidth;
+	private final int targetHeight;
+
+	public BitmapLoaderTask(ImageView imview, AssetManager as) {
+		// To allow imview to be destroyed before loading completes.
+		imageViewRef = new WeakReference<ImageView>(imview);
+		assetMan = as;
+		targetWidth = imview.getWidth();
+		targetHeight = imview.getHeight();
+	}
+
+	protected Bitmap doInBackground(String... fname) {
+		try {
+			Thread.sleep(150); // fail harder!
+		} catch (InterruptedException e) {
+		}
+
+		if (isCancelled())
+			return null;
+
+		return decodeFromAsset(assetMan, fname[0], targetWidth, targetHeight);
+	}
+
+	protected void onPostExecute(Bitmap bitmap) {
+		if (bitmap == null)
+			return;
+
+		if (imageViewRef == null)
+			return;
+
+		final ImageView imview = imageViewRef.get();
+		if (imview == null)
+			return;
+
+		imview.setImageBitmap(bitmap);
 	}
 }
 
@@ -298,27 +336,17 @@ public class MainActivity extends Activity {
 			holder.headline.setText(t.who);
 
 			if (t.avatar_file == null) {
-				holder.avatar_text.setText(t.who.substring(0, 1).toUpperCase(
-						Locale.getDefault()));
+				final String initial = t.who.substring(0, 1);
+				holder.avatar_text.setText(initial.toUpperCase(Locale.getDefault()));
 				holder.avatar_text.setBackgroundColor(t.avatar_color);
 				holder.avatar_text.setTextColor(contrastBW(t.avatar_color));
 				holder.avatar_text.setVisibility(View.VISIBLE);
 				holder.avatar_image.setVisibility(View.INVISIBLE);
 			} else {
-				// FIXME the stupid way
-				final int targetWidth = holder.avatar_image.getWidth();
-				final int targetHeight = holder.avatar_image.getHeight();
-
-				try {
-					Bitmap bmp = BitmapLoaderTask.decodeFromAsset(assetm, t.avatar_file, targetWidth, targetHeight);
-					Thread.sleep(50); // fail harder!
-					holder.avatar_image.setImageBitmap(bmp);
-					holder.avatar_image.setVisibility(View.VISIBLE);
-					holder.avatar_text.setVisibility(View.INVISIBLE);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				BitmapLoaderTask task = new BitmapLoaderTask(holder.avatar_image, assetm);
+				holder.avatar_image.setVisibility(View.VISIBLE);
+				holder.avatar_text.setVisibility(View.INVISIBLE);
+				task.execute(t.avatar_file);
 			}
 
 			holder.message.setText(t.message);
