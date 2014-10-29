@@ -153,6 +153,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       undoDismissTap: function(e, detail, sender) {
         e.stopPropagation();
         this.backToNormal();
+        this.content.style.opacity = 0.0;
+        this.content.style.transition = 'opacity 1s';
+        this.async(function() {
+          this.content.style.opacity = 1.0;
+        }.bind(this));
       },
       // Based on app-dismissable-item
       enteredView: function() {
