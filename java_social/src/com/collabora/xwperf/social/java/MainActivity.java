@@ -111,6 +111,7 @@ class BitmapLoaderTask extends AsyncTask<Void, Void, Bitmap> {
 		targetHeight = imview.getHeight();
 	}
 
+	@Override
 	protected Bitmap doInBackground(Void... unused) {
 		try {
 			Thread.sleep(150); // fail harder!
@@ -123,6 +124,7 @@ class BitmapLoaderTask extends AsyncTask<Void, Void, Bitmap> {
 		return decodeFromAsset(assetMan, filename, targetWidth, targetHeight);
 	}
 
+	@Override
 	protected void onPostExecute(Bitmap bitmap) {
 		if (isCancelled())
 			return;
