@@ -124,10 +124,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     </paper-button>
   </template>
   <script>
-    function getTransformValue(item) {
-      return item.transformValue_ || 0;
-    }
-
     Polymer({
       modelChanged: function(oldValue, newValue) {
         if (!oldValue || oldValue.html !== newValue.html) {
@@ -170,8 +166,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             var width = this.offsetWidth;
             this.content.classList.toggle('moving', true);
             this.content.style.opacity = (width - Math.abs(position)) / width;
-            var currentY = getTransformValue(this.content);
-            this.content.style.transform = 'translate3d(' + position + 'px,' + currentY + 'px,0)';
+            this.content.style.transform = 'translate3d(' + position + 'px,0,0)';
           },
           onCanceled: function() {
             this.backToNormal();
