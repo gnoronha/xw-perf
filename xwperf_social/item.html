@@ -5,10 +5,12 @@ Copyright 2014 Intel Corporation. All rights reserved.
 
 License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 -->
+<link rel="import" href="bower_components/core-icon/core-icon.html" />
+<link rel="import" href="bower_components/core-icons/core-icons.html" />
+<link rel="import" href="bower_components/paper-button/paper-button.html" />
 <script src="dynamics.js" type="text/javascript">
 </script>
-<polymer-element name="my-item" horizontal center layout
-    attributes="model dismissed">
+<polymer-element name="my-item" attributes="model">
   <template>
     <style>
       .avatar {
@@ -63,12 +65,33 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       :host {
         height: 80px;
         overflow: hidden;
-        transform: translate3d(0,0,0);
         display: block;
         flex-shrink: 0;
       }
+      #undo-dismissal {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+      }
+      #undo-dismissal core-icon {
+        margin-right: 8px;
+      }
+      #content {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        background-color: white;
+      }
+      #content.moving {
+        z-index: 2;
+        box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+      }
     </style>
-    <template if="{{ !dismissed }}">
+    <div id="content" horizontal layout>
       <template if="{{ model.avatar }}">
         <div class="avatar">
           <img src="avatars/{{ model.avatar }}" />
@@ -93,10 +116,12 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
           </div>
         </div>
       </div>
-    </template>
-  </template>
-  <template if="{{ dismissed }}">
-    <div>Dismissed. _Undo_</div>
+    </div>
+    <paper-button id="undo-dismissal" flex on-tap="{{ undoDismissTap }}"
+        hidden layout horizontal center>
+      <core-icon icon="undo"></core-icon>
+      <span flex>Undo</span>
+    </paper-button>
   </template>
   <script>
     function getTransformValue(item) {
@@ -104,43 +129,60 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     }
 
     Polymer({
-      model: {},
-      dismissed: false,
       modelChanged: function(oldValue, newValue) {
-        if (oldValue.html !== newValue.html) {
-          this.$.text.innerHTML = newValue.html;
+        if (!oldValue || oldValue.html !== newValue.html) {
+          this.async(this.updateHtml);
         }
       },
+      updateHtml: function() {
+        this.$.text.innerHTML = this.model.html;
+      },
       created: function() {
-        this.modelChanged({}, this.model);
+        this.async(this.updateHtml);
+      },
+      ready: function() {
+        this.content = this.$.content;
+        this.undoDismissal = this.$['undo-dismissal'];
       },
       formatTime: function(value) {
         return new Date(value).toLocaleTimeString();
       },
+      backToNormal: function() {
+        this.content.classList.toggle('moving', false);
+        this.controller.setActive(true);
+        this.content.style.cssText = '';
+        this.content.removeAttribute('hidden');
+        this.undoDismissal.setAttribute('hidden', '');
+      },
+      undoDismissTap: function(e, detail, sender) {
+        e.stopPropagation();
+        this.backToNormal();
+      },
       // Based on app-dismissable-item
       enteredView: function() {
-        this.style.transform = 'translate3d(0,0,0)';
         this.controller = new DismissController({
           target: this,
           curve: 'ease-in-out',
           onStart: function() {
-            //this.parentNode.queueDismissal();
+            this.content.classList.toggle('moving', true);
           },
           onMove: function(position) {
             var width = this.offsetWidth;
-            this.style.opacity = (width - Math.abs(position)) / width;
-            var currentY = getTransformValue(this);
-            this.style.transform = 'translate3d(' + position + 'px,' + currentY + 'px,0)';
+            this.content.classList.toggle('moving', true);
+            this.content.style.opacity = (width - Math.abs(position)) / width;
+            var currentY = getTransformValue(this.content);
+            this.content.style.transform = 'translate3d(' + position + 'px,' + currentY + 'px,0)';
           },
           onCanceled: function() {
-            //this.parentNode.unqueueDismissal();
+            this.backToNormal();
           },
           onDismiss: function(direction) {
-            this.dismissed = true;
-            this.style.transform = 'translate3d(0,0,0)';
-            this.style.opacity = 1.0;
+            this.content.setAttribute('hidden', '');
+            this.$['undo-dismissal'].removeAttribute('hidden');
+            this.controller.setActive(false);
           },
         });
+        this.backToNormal();
       },
     });
   </script>
