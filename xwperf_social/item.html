@@ -1,12 +1,14 @@
 <!doctype html>
 <!--
 Copyright 2013 The Polymer Authors. All rights reserved.
-Copyright 2014 Intel Corporation
+Copyright 2014 Intel Corporation. All rights reserved.
 
-Use of this source code is governed by a BSD-style
-license that can be found in the LICENSE.txt file.
+License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 -->
-<polymer-element name="my-item" horizontal center layout attributes="model">
+<script src="dynamics.js" type="text/javascript">
+</script>
+<polymer-element name="my-item" horizontal center layout
+    attributes="model dismissed">
   <template>
     <style>
       .avatar {
@@ -61,36 +63,49 @@ license that can be found in the LICENSE.txt file.
       :host {
         height: 80px;
         overflow: hidden;
+        transform: translate3d(0,0,0);
+        display: block;
+        flex-shrink: 0;
       }
     </style>
-    <template if="{{ model.avatar }}">
-      <div class="avatar">
-        <img src="avatars/{{ model.avatar }}" />
+    <template if="{{ !dismissed }}">
+      <template if="{{ model.avatar }}">
+        <div class="avatar">
+          <img src="avatars/{{ model.avatar }}" />
+        </div>
+      </template>
+      <template if="{{ !model.avatar }}">
+        <div class="avatar" style="{{ model.avatarColors | styleObject }}">
+          {{ model.avatarLetter }}
+        </div>
+      </template>
+      <div class="summary">
+        <div class="topline">
+          <div class="who">
+            <span class="name">{{ model.who }}</span>
+            <span class="login">{{ model.login }}</span>
+          </div>
+          <div class="when">{{ model.when | formatTime }}</div>
+        </div>
+        <div class="bottomline">
+          <div class="text" id="text">
+            <content></content>
+          </div>
+        </div>
       </div>
     </template>
-    <template if="{{ !model.avatar }}">
-      <div class="avatar" style="{{ model.avatarColors | styleObject }}">
-        {{ model.avatarLetter }}
-      </div>
-    </template>
-    <div class="summary">
-      <div class="topline">
-        <div class="who">
-          <span class="name">{{ model.who }}</span>
-          <span class="login">{{ model.login }}</span>
-        </div>
-        <div class="when">{{ model.when | formatTime }}</div>
-      </div>
-      <div class="bottomline">
-        <div class="text" id="text">
-          <content></content>
-        </div>
-      </div>
-    </div>
+  </template>
+  <template if="{{ dismissed }}">
+    <div>Dismissed. _Undo_</div>
   </template>
   <script>
+    function getTransformValue(item) {
+      return item.transformValue_ || 0;
+    }
+
     Polymer({
       model: {},
+      dismissed: false,
       modelChanged: function(oldValue, newValue) {
         if (oldValue.html !== newValue.html) {
           this.$.text.innerHTML = newValue.html;
@@ -101,6 +116,31 @@ license that can be found in the LICENSE.txt file.
       },
       formatTime: function(value) {
         return new Date(value).toLocaleTimeString();
+      },
+      // Based on app-dismissable-item
+      enteredView: function() {
+        this.style.transform = 'translate3d(0,0,0)';
+        this.controller = new DismissController({
+          target: this,
+          curve: 'ease-in-out',
+          onStart: function() {
+            //this.parentNode.queueDismissal();
+          },
+          onMove: function(position) {
+            var width = this.offsetWidth;
+            this.style.opacity = (width - Math.abs(position)) / width;
+            var currentY = getTransformValue(this);
+            this.style.transform = 'translate3d(' + position + 'px,' + currentY + 'px,0)';
+          },
+          onCanceled: function() {
+            //this.parentNode.unqueueDismissal();
+          },
+          onDismiss: function(direction) {
+            this.dismissed = true;
+            this.style.transform = 'translate3d(0,0,0)';
+            this.style.opacity = 1.0;
+          },
+        });
       },
     });
   </script>

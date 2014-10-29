@@ -2,8 +2,9 @@ Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 
 Files: *
 Copyright:
+ © 2013 The Polymer Authors
  © 2014 Intel Corporation
-License: BSD-3-Intel
+License: BSD-3-clause-Google and BSD-3-clause-Intel
 
 Files:
  app-widgets/*
@@ -17,7 +18,7 @@ Copyright:
  © 2013 The Polymer Authors
  © 2013-2014 The Polymer Project Authors
  © Ivan Sagalaev
-License: BSD-3-Google and Apache-2.0 and Expat
+License: BSD-3-clause-Google and Apache-2.0 and Expat
 Comment: The Expat license is also known as the MIT license
 
 Files:
@@ -42,7 +43,7 @@ License: CC-0
  .
  http://creativecommons.org/publicdomain/zero/1.0/
 
-License: BSD-3-Intel
+License: BSD-3-clause-Intel
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are
  met:
@@ -69,7 +70,7 @@ License: BSD-3-Intel
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-License: BSD-3-Google
+License: BSD-3-clause-Google
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are
  met:
