@@ -21,6 +21,7 @@ $(XW_APKS): %_x86.apk: always
 	cd crosswalk && python ./make_apk.py \
 		--package=com.collabora.xwperf.$* \
 		--manifest=$(CURDIR)/$*/manifest.json \
+		--enable-remote-debugging \
 		--target-dir=$(CURDIR) \
 		$(NULL)
 
