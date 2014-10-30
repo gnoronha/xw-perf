@@ -3,6 +3,7 @@ package com.collabora.xwperf.social.java;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -13,9 +14,13 @@ import java.util.Random;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +32,144 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+class BitmapLoaderTask extends AsyncTask<Void, Void, Bitmap> {
+	// Written on the basis of http://developer.android.com/training/displaying-bitmaps/index.html
+
+	private final static String TAG = "social-java";
+
+	public static int samplingDivisor(BitmapFactory.Options info, int targetWidth, int targetHeight) {
+		final int hh = info.outHeight / 2;
+		final int hw = info.outWidth / 2;
+		int div = 1;
+
+		while (hh / div > targetHeight && hw / div > targetWidth)
+			div *= 2;
+
+		return div;
+	}
+
+	public static Bitmap decodeFromAsset(AssetManager assetm, String fname, int targetWidth, int targetHeight) {
+		final BitmapFactory.Options opt = new BitmapFactory.Options();
+
+		try {
+			InputStream istream;
+
+			istream = assetm.open(fname);
+			opt.inJustDecodeBounds = true;
+			BitmapFactory.decodeStream(istream, null, opt);
+			istream.close();
+
+			istream = assetm.open(fname);
+			opt.inSampleSize = samplingDivisor(opt, targetWidth, targetHeight);
+			opt.inJustDecodeBounds = false;
+			Log.d(TAG, String.format("decode '%s': %dx%d, div %d", fname, opt.outWidth, opt.outHeight, opt.inSampleSize));
+			return BitmapFactory.decodeStream(istream, null, opt);
+		} catch (IOException e) {
+			Log.e(TAG, e.getMessage());
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	static class AsyncDrawable extends BitmapDrawable {
+		private final WeakReference<BitmapLoaderTask> loaderTaskRef;
+
+		public AsyncDrawable(Resources res, Bitmap bitmap, BitmapLoaderTask loaderTask) {
+			super(res, bitmap);
+			loaderTaskRef = new WeakReference<BitmapLoaderTask>(loaderTask);
+		}
+
+		public BitmapLoaderTask getLoaderTask() {
+			return loaderTaskRef.get();
+		}
+	}
+
+	private static BitmapLoaderTask getBitmapLoaderTask(ImageView imview) {
+		if (imview == null)
+			return null;
+
+		final Drawable d = imview.getDrawable();
+		if (d instanceof AsyncDrawable)
+				return ((AsyncDrawable)d).getLoaderTask();
+
+		return null;
+	}
+
+	private final WeakReference<ImageView> imageViewRef;
+	private final AssetManager assetMan;
+	private final String filename;
+	private final int targetWidth;
+	private final int targetHeight;
+
+	public BitmapLoaderTask(ImageView imview, AssetManager as, String fname) {
+		// To allow imview to be destroyed before loading completes.
+		imageViewRef = new WeakReference<ImageView>(imview);
+		assetMan = as;
+		filename = fname;
+		targetWidth = imview.getWidth();
+		targetHeight = imview.getHeight();
+	}
+
+	@Override
+	protected Bitmap doInBackground(Void... unused) {
+		try {
+			Thread.sleep(150); // fail harder!
+		} catch (InterruptedException e) {
+		}
+
+		if (isCancelled())
+			return null;
+
+		return decodeFromAsset(assetMan, filename, targetWidth, targetHeight);
+	}
+
+	@Override
+	protected void onPostExecute(Bitmap bitmap) {
+		if (isCancelled())
+			return;
+
+		if (bitmap == null)
+			return;
+
+		if (imageViewRef == null)
+			return;
+
+		final ImageView imview = imageViewRef.get();
+		if (imview == null)
+			return;
+
+		final BitmapLoaderTask loaderTask = getBitmapLoaderTask(imview);
+		if (this != loaderTask)
+			return;
+
+		imview.setImageBitmap(bitmap);
+	}
+
+	private static boolean cancelPotentialWork(ImageView imview, String fname) {
+		final BitmapLoaderTask loader = getBitmapLoaderTask(imview);
+
+		if (loader == null)
+			return true;
+
+		if (loader.filename == null || !loader.filename.equals(fname)) {
+			loader.cancel(true);
+			return true;
+		}
+
+		return false;
+	}
+
+	public static void start(ImageView imview, AssetManager asm, Resources res, String fname) {
+		if (!cancelPotentialWork(imview, fname))
+			return;
+
+		final BitmapLoaderTask task = new BitmapLoaderTask(imview, asm, fname);
+		final AsyncDrawable ad = new AsyncDrawable(res, null, task);
+		imview.setImageDrawable(ad);
+		task.execute();
+	}
+}
 
 class Tweet {
 	public String who;
@@ -255,28 +398,16 @@ public class MainActivity extends Activity {
 			holder.headline.setText(t.who);
 
 			if (t.avatar_file == null) {
-				holder.avatar_text.setText(t.who.substring(0, 1).toUpperCase(
-						Locale.getDefault()));
+				final String initial = t.who.substring(0, 1);
+				holder.avatar_text.setText(initial.toUpperCase(Locale.getDefault()));
 				holder.avatar_text.setBackgroundColor(t.avatar_color);
 				holder.avatar_text.setTextColor(contrastBW(t.avatar_color));
 				holder.avatar_text.setVisibility(View.VISIBLE);
 				holder.avatar_image.setVisibility(View.INVISIBLE);
 			} else {
-				// FIXME the stupid way
-				try {
-					InputStream in = assetm.open(t.avatar_file);
-					Bitmap bmp = BitmapFactory.decodeStream(in);
-					Thread.sleep(50); // fail harder!
-					holder.avatar_image.setImageBitmap(bmp);
-					holder.avatar_image.setVisibility(View.VISIBLE);
-					holder.avatar_text.setVisibility(View.INVISIBLE);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				holder.avatar_image.setVisibility(View.VISIBLE);
+				holder.avatar_text.setVisibility(View.INVISIBLE);
+				BitmapLoaderTask.start(holder.avatar_image, assetm, getResources(), t.avatar_file);
 			}
 
 			holder.message.setText(t.message);
