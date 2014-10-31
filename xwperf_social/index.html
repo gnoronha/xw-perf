@@ -28,6 +28,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
     <link rel="import" href="item.html" />
     <link rel="import" href="feed.html" />
+    <link rel="import" href="my-item-list.html" />
     <link rel="import" href="my-perf-box.html" />
     <link rel="import" href="my-settings-tab.html" />
     <link rel="stylesheet" href="app.css" />
@@ -115,13 +116,12 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                 selected="0">
 
                 <section layout flex id="my-list-section">
-                  <core-list data="{{data}}" height="80" id="my-list" flex
-                      selectionEnabled="false">
+                  <my-item-list id="my-list">
                     <template>
                       <my-item model="{{ model }}" index="{{ index }}">
                       </my-item>
                     </template>
-                  </core-list>
+                  </my-item-list>
                 </section>
 
                 <section>
@@ -143,11 +143,15 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             var myTabs = this.$['my-tabs'];
             var myPages = this.$['my-pages'];
             var myList = this.$['my-list'];
-            myList.scrollTarget = this.$['my-header-panel'];
             myTabs.addEventListener('core-select', function() {
               myPages.selected = myTabs.selected;
             });
             this.data = this.$.myFeed.data;
+            myList.scrollTarget = this.$['my-header-panel'];
+            myList.feed = this.$.myFeed;
+            // this should really be triggered by assigning the scroll target
+            // but this will do...
+            myList.go();
           },
         });
       </script>

@@ -1,0 +1,79 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation
+
+Use of this source code is governed by a BSD-style
+license that can be found in the LICENSE.txt file.
+-->
+
+<link rel="import" href="bower_components/core-list/core-list.html" />
+<link rel="import" href="bower_components/paper-progress/paper-progress.html" />
+<link rel="import" href="feed.html" />
+<link rel="import" href="item.html" />
+
+<polymer-element name="my-item-list" extends="core-list"
+    flex selectionEnabled="false" height="80">
+  <template>
+    <style>
+    :host {
+      display: block;
+    }
+    #progress {
+      width: 90%;
+    }
+    #progressBox {
+      height: 32px;
+    }
+    </style>
+    <shadow>
+      <content></content>
+    </shadow>
+    <div id="progressBox" layout center horizontal center-justified>
+      <paper-progress id="progress" hidden>
+      </paper-progress>
+    </div>
+  </template>
+  <script>
+    // fake network lag
+    var NETWORK_LAG_MS = 500;
+
+    function scrollHandler(e, detail) {
+      var target = e.detail ? e.detail.target : e.target;
+
+      if (target.scrollTop > 0 &&
+          this.data.length > 0 &&
+          this.$.progress.hidden &&
+          target.scrollTop + target.offsetHeight >=
+            this.$.progressBox.offsetTop) {
+        this.$.progress.hidden = false;
+
+        for (var i = 0; i < 10; i++) {
+          setTimeout((function(i){
+            this.$.progress.value = 10 * i;
+          }).bind(this, i), NETWORK_LAG_MS * i / 10);
+        }
+
+        setTimeout((function(){
+          this.feed.loadMore();
+          this.data = this.feed.data;
+          console.log('now have ' + this.data.length + ' items');
+          this.refresh();
+          this.$.progress.hidden = true;
+        }).bind(this), NETWORK_LAG_MS);
+      }
+    }
+
+    Polymer({
+      lastDismissedIndex: null,
+      data: [],
+      _myItemListScrollTop: null,
+      go: function() {
+        (this.scrollTarget || this).addEventListener('scroll',
+            scrollHandler.bind(this), false);
+        this.data = this.feed.data;
+      },
+    });
+  </script>
+</polymer-element>
+<!-- vim:set sw=2 sts=2 et: -->
