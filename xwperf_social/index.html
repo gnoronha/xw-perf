@@ -66,7 +66,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             padding: 0 0.5em;
           }
           #my-list {
-            background-color: #cfd8dc;
+            /* not keeping up is less jarring if this matches the items
+            background-color: white;
           }
         </style>
         <my-feed id="myFeed">
@@ -117,7 +118,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                   <core-list data="{{data}}" height="80" id="my-list" flex
                       selectionEnabled="false">
                     <template>
-                      <my-item model="{{ model }}">
+                      <my-item model="{{ model }}" index="{{ index }}">
                       </my-item>
                     </template>
                   </core-list>

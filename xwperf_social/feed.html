@@ -180,6 +180,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     }
 
     Polymer({
+      lastDismissed: null,
       created: function () {
         this.data = generateFakeListData(100);
       },
