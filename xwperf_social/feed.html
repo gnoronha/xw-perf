@@ -121,7 +121,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
         for (i = 0; i < nWords; i++) {
           if (Math.random() < 0.1) {
-            s = s + ' <a href="about:blank">@';
+            s = s + ' <a href="javascript:console.log(&quot;link clicked&quot;)">@';
             s = s + getRandomItem(possibleParticipants).toLowerCase();
             s = s + '</a>';
           }
@@ -143,7 +143,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         for (i = 0; i < nWords; i++) {
           var nLetters = Math.floor(Math.random() * 10) + 3;
           var j;
-          s = s + ' <a href="about:blank">#';
+          s = s + ' <a href="javascript:console.log(&quot;link clicked&quot;)">#';
           for (j = 0; j < nLetters; j++) {
             s = s + getRandomItem(possibleLetters);
           }

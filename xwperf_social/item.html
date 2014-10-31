@@ -117,6 +117,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         </div>
       </div>
     </div>
+    <div id="clickBarrier" hidden>
+    </div>
     <paper-button id="undo-dismissal" flex on-tap="{{ undoDismissTap }}"
         hidden layout horizontal center>
       <core-icon icon="undo"></core-icon>
@@ -138,6 +140,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       },
       ready: function() {
         this.content = this.$.content;
+        this.clickBarrier = this.$.clickBarrier;
         this.undoDismissal = this.$['undo-dismissal'];
       },
       formatTime: function(value) {
@@ -151,12 +154,14 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         this.undoDismissal.setAttribute('hidden', '');
       },
       undoDismissTap: function(e, detail, sender) {
+        this.clickBarrier.removeAttribute('hidden');
         e.stopPropagation();
         this.backToNormal();
         this.content.style.opacity = 0.0;
         this.content.style.transition = 'opacity 1s';
         this.async(function() {
           this.content.style.opacity = 1.0;
+          this.clickBarrier.setAttribute('hidden', '');
         }.bind(this));
       },
       // Based on app-dismissable-item
