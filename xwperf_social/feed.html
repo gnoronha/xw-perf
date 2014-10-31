@@ -153,7 +153,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       return s.substring(1);
     }
 
-    function appendFakeListData(data, numberOfItems) {
+    // Don't use arbitrarily much RAM. The official Twitter app's "infinite
+    // scroll" isn't infinite either
+    var MAX_ITEMS = 1000;
+
+    function addFakeListData(data, numberOfItems, isRefresh) {
       var tmp = [];
       for (var i = 0; i < numberOfItems; ++i) {
         var who = getRandomItem(people);
@@ -177,24 +181,31 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       console.log('serialized and parsed ' + numberOfItems + ' JSON records in ' + dt + ' ms');
 
       for (var i = 0; i < tmp.length; i++) {
-        data.push(tmp[i]);
+        if (data.length > MAX_ITEMS)
+          break;
+
+        if (isRefresh)
+          data.unshift(tmp[tmp.length - i - 1]);
+        else
+          data.push(tmp[i]);
       }
     }
 
     var INITIAL_ITEMS_BATCH = 50;
     var EXTRA_ITEMS_BATCH = 20;
-    // Don't use arbitrarily much RAM. The official Twitter app's "infinite
-    // scroll" isn't infinite either
-    var MAX_ITEMS = 1000;
+    var REFRESH_BATCH = 5;
 
     Polymer({
       lastDismissed: null,
       created: function () {
         this.data = [];
-        appendFakeListData(this.data, INITIAL_ITEMS_BATCH);
+        addFakeListData(this.data, INITIAL_ITEMS_BATCH);
       },
       loadMore: function () {
-        appendFakeListData(this.data, EXTRA_ITEMS_BATCH);
+        addFakeListData(this.data, EXTRA_ITEMS_BATCH);
+      },
+      refresh: function () {
+        addFakeListData(this.data, REFRESH_BATCH, true);
       },
     });
 

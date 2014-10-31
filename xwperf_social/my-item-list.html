@@ -22,10 +22,18 @@ license that can be found in the LICENSE.txt file.
     #progress {
       width: 90%;
     }
+    #refreshBox {
+      height: 128px;
+    }
     #progressBox {
       height: 32px;
     }
     </style>
+    <div id="refreshBox" layout center vertical end-justified hidden>
+      <div id="pullToRefresh">Pull to refresh…</div>
+      <paper-progress id="refreshProgress" hidden>
+      </paper-progress>
+    </div>
     <shadow>
       <content></content>
     </shadow>
@@ -40,6 +48,32 @@ license that can be found in the LICENSE.txt file.
 
     function scrollHandler(e, detail) {
       var target = e.detail ? e.detail.target : e.target;
+
+      if (target.scrollTop == 0 && this.hasScrolled) {
+        if (this.$.refreshBox.hidden) {
+          this.$.refreshBox.hidden = false;
+          this.$.pullToRefresh.hidden = false;
+          this.$.refreshProgress.hidden = true;
+          target.scrollTop = this.$.refreshBox.offsetHeight;
+        } else {
+          this.$.refreshProgress.hidden = false;
+
+          for (var i = 0; i < 10; i++) {
+            setTimeout((function(i){
+              this.$.refreshProgress.value = 10 * i;
+            }).bind(this, i), NETWORK_LAG_MS * i / 10);
+          }
+
+          setTimeout((function(){
+            this.feed.refresh();
+            this.$.refreshBox.hidden = true;
+          }).bind(this), NETWORK_LAG_MS);
+        }
+      }
+
+      if (target.scrollTop > 0) {
+        this.hasScrolled = true;
+      }
 
       if (target.scrollTop > 0 &&
           this.data.length > 0 &&
@@ -65,6 +99,7 @@ license that can be found in the LICENSE.txt file.
     }
 
     Polymer({
+      hasScrolled: false,
       lastDismissedIndex: null,
       data: [],
       _myItemListScrollTop: null,
