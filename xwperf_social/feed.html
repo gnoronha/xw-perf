@@ -154,9 +154,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     }
 
     function appendFakeListData(data, numberOfItems) {
+      var tmp = [];
       for (var i = 0; i < numberOfItems; ++i) {
         var who = getRandomItem(people);
-        data[i] = {
+        tmp[i] = {
           id: i,
           avatarColors: who.avatarColor,
           avatarLetter: who.name[0].toUpperCase(),
@@ -171,9 +172,13 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
       // fake a round-trip
       var timeBefore = +(new Date());
-      data = JSON.parse(JSON.stringify(data));
+      tmp = JSON.parse(JSON.stringify(tmp));
       var dt = +(new Date()) - timeBefore;
       console.log('serialized and parsed ' + numberOfItems + ' JSON records in ' + dt + ' ms');
+
+      for (var i = 0; i < tmp.length; i++) {
+        data.push(tmp[i]);
+      }
     }
 
     var INITIAL_ITEMS_BATCH = 100;
