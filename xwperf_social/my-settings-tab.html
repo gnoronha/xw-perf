@@ -4,9 +4,9 @@ Copyright 2014 Intel Corporation. All rights reserved.
 
 License: BSD-3-clause-Intel, see LICENSE.txt
 -->
-<link rel="import" href="boolean-setting.html" />
-<link rel="import" href="radio-setting.html" />
-<link rel="import" href="toggle-setting.html" />
+<link rel="import" href="bower_components/my-utils/my-boolean-setting.html" />
+<link rel="import" href="bower_components/my-utils/my-select-setting.html" />
+<link rel="import" href="bower_components/my-utils/my-toggle-setting.html" />
 
 <polymer-element name="my-settings-tab" layout>
   <template>
@@ -48,7 +48,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
     <my-toggle-setting label="Encrypt messages">
     </my-toggle-setting>
 
-    <my-radio-setting label="Show location to"
+    <my-select-setting label="Show location to"
         value="everybody" id="show-location">
       <paper-radio-button name="everybody" label="Everybody">
       </paper-radio-button>
@@ -59,7 +59,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
       </paper-radio-button>
       <paper-radio-button name="nobody" label="Nobody">
       </paper-radio-button>
-    </my-radio-setting>
+    </my-select-setting>
   </template>
   <script>
     Polymer({
