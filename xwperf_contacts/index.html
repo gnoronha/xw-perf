@@ -1,0 +1,160 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation. All rights reserved.
+
+License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Contacts</title>
+
+    <meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json" />
+
+    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html" />
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html" />
+    <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html" />
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html" />
+    <link rel="import" href="bower_components/core-icons/core-icons.html" />
+    <link rel="import" href="bower_components/core-icons/social-icons.html" />
+    <link rel="import" href="bower_components/core-item/core-item.html" />
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
+    <link rel="import" href="bower_components/paper-item/paper-item.html" />
+    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
+
+    <link rel="import" href="bower_components/my-utils/my-perf-box.html" />
+
+    <link rel="stylesheet" href="app.css" />
+  </head>
+  <body class="polymer-ui-body-text" fullbleed layout vertical>
+    <polymer-element name="my-app">
+      <template>
+        <style type="text/css">
+          /*
+          * {
+            outline: 1px dotted #f0f;
+          }
+          */
+          #my-toolbar {
+            padding: 0px;
+          }
+          #my-toolbar-top {
+            height: 100%;
+            width: 100%;
+            padding: 0 8px;
+          }
+          #my-toolbar, #my-toolbar-top, #my-tab-box {
+            background-color: #607d8b;
+            color: white;
+          }
+          #my-tab-box paper-tab #ink {
+            color: #ffcc80;
+          }
+          #my-tab-box #selectionBar {
+            background-color: #ffcc80;
+          }
+          #my-drawer {
+            background-color: #cfd8dc;
+          }
+          #my-drawer {
+            padding: 0 0.5em;
+          }
+        </style>
+
+        <core-drawer-panel id="my-drawer-panel">
+          <div drawer id="my-drawer">
+            <core-item>
+              Options
+            </core-item>
+            <core-item>
+              Settings
+            </core-item>
+            <core-item>
+              Preferences
+            </core-item>
+            <core-item>
+              Misc
+            </core-item>
+            <core-item>
+              Other
+            </core-item>
+          </div>
+
+          <div main id="my-main" layout vertical>
+            <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
+                id="my-header-panel" flex>
+              <core-toolbar id="my-toolbar" vertical>
+                <div horizontal layout id="my-toolbar-top" flex class="fit"
+                    center>
+                  <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"></paper-icon-button>
+                  <div flex>Contacts</div>
+                  <paper-icon-button icon="search"></paper-icon-button>
+                  <paper-icon-button icon="more-vert"></paper-icon-button>
+                </div>
+
+                <div class="bottom fit" horizontal layout id="my-tab-box">
+                  <paper-tabs selected="0" flex id="my-tabs">
+                    <paper-tab>
+                      <paper-icon-button icon="favorite">
+                      </paper-icon-button>
+                      Favorites
+                    </paper-tab>
+                    <paper-tab>
+                      <paper-icon-button icon="social:person">
+                      </paper-icon-button>
+                      All
+                    </paper-tab>
+                    <paper-tab>
+                      <paper-icon-button icon="social:group">
+                      </paper-icon-button>
+                      Groups
+                    </paper-tab>
+                  </paper-tabs>
+                </div>
+              </core-toolbar>
+
+              <core-animated-pages transitions="slide-from-right" id="my-pages"
+                selected="0">
+
+                <section>
+                  favorite contacts go here
+                </section>
+
+                <section>
+                  all contacts go here
+                </section>
+
+                <section>
+                  groups go here
+                </section>
+              </core-animated-pages>
+            </core-header-panel>
+          </div>
+        </core-drawer-panel>
+      </template>
+      <script>
+        Polymer({
+          toggleMenu: function() {
+            this.$['my-drawer-panel'].togglePanel();
+          },
+          ready: function() {
+            var myTabs = this.$['my-tabs'];
+            var myPages = this.$['my-pages'];
+            myTabs.addEventListener('core-select', function() {
+              myPages.selected = myTabs.selected;
+            });
+          },
+        });
+      </script>
+    </polymer-element>
+    <my-app flex relative>
+    </my-app>
+    <my-perf-box>
+    </my-perf-box>
+  </body>
+</html>
+<!-- vim:set sw=2 sts=2 et: -->

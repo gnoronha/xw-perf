@@ -1,0 +1,6 @@
+{
+  "name": "XW Contacts demo",
+  "start_url": "index.html",
+  "display": "standalone",
+  "app_root": "."
+}

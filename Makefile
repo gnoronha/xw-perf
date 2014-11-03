@@ -3,6 +3,7 @@ all:
 -include android-paths.mk
 
 XW_APPS = \
+	xwperf_contacts \
 	xwperf_social \
 	$(NULL)
 JAVA_APPS = \
