@@ -1,10 +1,6 @@
 {
-  "name": "xwperf_social",
+  "name": "XW Social demo",
   "start_url": "index.html",
-  "icons": [{
-    "src": "icon.png",
-    "type": "image/png"
-  }],
   "display": "standalone",
   "app_root": "."
 }
