@@ -11,43 +11,56 @@ License: BSD-3-clause-Intel, see LICENSE.txt
       :host {
         height: 64px;
         background: grey;
+        margin: 0px;
+        overflow: hidden;
+      }
+      #perf-text {
+        margin: 0px;
       }
     </style>
-    <div id="perf-fps"></div>
-    <div id="perf-timings"></div>
+    <div>
+    <canvas id="perf-canvas" height="64" width="400">
+    </canvas>
+    </div>
   </template>
   <script>
     (function(exports){
       'use strict';
-      // big enough for just over a minute at 60fps
-      var ringBuffer = new Float64Array(4096);
+      var ringBuffer = new Float64Array(300);
       var frameIndex = 0;
       var statsShowing = 0;
 
-      var MAX_BUCKET = 30;
-      var FPS_PER_BUCKET = 1;
-      var MS_PER_BUCKET = 1;
       var drawStatsNextFrame = null;
 
       Polymer({
         frame: function(now) {
           ringBuffer[frameIndex] = now;
 
-          // approx. every second at 60fps, dump out stats
-          // (keep this a divisor of ringBuffer.length because we make
-          // frameIndex wrap around)
           if (drawStatsNextFrame) {
             drawStatsNextFrame = null;
-            drawStatsNextFrame = null;
-            var t = -1;
-            var fpsBuckets = {};
-            var timeBuckets = {};
+            var prev = [];
+            var canvas = this.$['perf-canvas'];
+            var ctx = canvas.getContext('2d');
+            var HEIGHT = 64;
+            var SMOOTH = 3;
+            ctx.fillStyle = "#000";
+            ctx.fillRect(0, 0, 400, 64);
+
+            var lt28 = 0;
+            var lt30 = 0;
+            var lt32 = 0;
+            var lt58 = 0;
+            var lt60 = 0;
+            var lt62 = 0;
+            var ge62 = 0;
+            var total = 0;
+            var samples = 0;
 
             for (var i = 1; i <= ringBuffer.length; i++) {
               var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
 
-              if (t < 0) {
-                t = nt;
+              if (prev.length < 1) {
+                prev.push(nt);
                 continue;
               }
 
@@ -58,34 +71,130 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                 continue;
               }
 
-              var dt = nt - t;
-              t = nt;
+              var dt = nt - prev[prev.length - 1];
+              var fps = Infinity;
+              if (dt != 0) {
+                fps = 1000 / dt;
+                total += fps;
+                samples += 1;
+              }
 
-              var roundedTime = Math.round(dt / MS_PER_BUCKET) * MS_PER_BUCKET;
-              if (!timeBuckets[roundedTime])
-                timeBuckets[roundedTime] = 0;
-              timeBuckets[roundedTime] += 1;
+              // Smooth it a little bit for the graph: base our fps figures
+              // on the average of the last SMOOTH frames
+              var dt = (nt - prev[0]) / prev.length;
+              prev.push(nt);
+              while (prev.length > SMOOTH)
+                prev.shift();
 
-              // don't divide by zero
-              if (dt == 0)
-                dt = 0.001;
+              var fps = Infinity;
+              if (dt != 0)
+                fps = 1000 / dt;
 
-              var roundedFps = Math.floor(1000 / (FPS_PER_BUCKET * dt)) * FPS_PER_BUCKET;
-              if (!fpsBuckets[roundedFps])
-                fpsBuckets[roundedFps] = 0;
-              fpsBuckets[roundedFps] += 1;
+              if (fps < 28) {
+                lt28++;
+                ctx.fillStyle = "#f00";
+              } else if (fps < 29) {
+                lt30++;
+                ctx.fillStyle = "#f40";
+              } else if (fps < 30) {
+                lt30++;
+                ctx.fillStyle = "#f80";
+              } else if (fps < 31) {
+                lt32++;
+                ctx.fillStyle = "#fb0";
+              } else if (fps < 32) {
+                lt32++;
+                ctx.fillStyle = "#ff0";
+              } else if (fps < 58) {
+                lt58++;
+                ctx.fillStyle = "#bf0";
+              } else if (fps < 59) {
+                lt60++;
+                ctx.fillStyle = "#8f0";
+              } else if (fps < 60) {
+                lt60++;
+                ctx.fillStyle = "#4f0";
+              } else if (fps < 61) {
+                lt62++;
+                ctx.fillStyle = "#0f0";
+              } else if (fps < 62) {
+                lt62++;
+                ctx.fillStyle = "#0f8";
+              } else {
+                ge62++;
+                ctx.fillStyle = "#0ff";
+              }
+
+              if (fps > 60)
+                ctx.fillRect(i, HEIGHT - fps, 1, fps - 60 + 1);
+              else
+                ctx.fillRect(i, HEIGHT - 60, 1, 60 - fps + 1);
             }
 
-            var s = 'fps:';
-            for (var i in fpsBuckets) {
-              s += ' ' + fpsBuckets[i] + '×' + i + 'fps;';
+            var mean = total / samples;
+
+            prev = [];
+            var squareDiffs = 0;
+            var minFps = Infinity;
+            var maxFps = 0;
+            for (var i = 1; i <= ringBuffer.length; i++) {
+              var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
+
+              if (prev.length < 1) {
+                prev.push(nt);
+                continue;
+              }
+
+              if (nt == 0) {
+                // skip unfilled portion of ring buffer: wrap around
+                // so that frameIndex + i = ringBufferLength ≡ 0 (mod length)
+                i = ringBuffer.length - frameIndex;
+                continue;
+              }
+
+              var dt = nt - prev[prev.length - 1];
+              var fps = Infinity;
+              if (dt != 0) {
+                fps = 1000 / dt;
+                squareDiffs += ((fps - mean) * (fps - mean));
+
+                if (fps < minFps)
+                  minFps = fps;
+
+                if (fps > maxFps)
+                  maxFps = fps;
+              }
+
+              prev.push(nt);
+              prev.shift();
             }
-            this.$['perf-fps'].innerText = s;
-            s = 'times:';
-            for (var i in timeBuckets) {
-              s += ' ' + timeBuckets[i] + '×' + i + 'ms;';
-            }
-            this.$['perf-timings'].innerText = s;
+
+            var stdDev = Math.sqrt(squareDiffs / samples);
+
+            ctx.textBaseline = 'top';
+            ctx.font = '9px sans-serif';
+
+            ctx.fillStyle = '#f00';
+            ctx.fillText(lt28 + ' <28fps', 308, 48);
+            ctx.fillStyle = '#f80';
+            ctx.fillText(lt30 + ' <30fps', 308, 40);
+            ctx.fillStyle = '#ff0';
+            ctx.fillText(lt32 + ' <32fps', 308, 32);
+            ctx.fillStyle = '#bf0';
+            ctx.fillText(lt58 + ' <58fps', 308, 24);
+            ctx.fillStyle = '#8f0';
+            ctx.fillText(lt60 + ' <60fps', 308, 16);
+            ctx.fillStyle = '#0f8';
+            ctx.fillText(lt62 + ' <62fps', 308, 8);
+            ctx.fillStyle = '#0ff';
+            ctx.fillText(ge62 + ' ≥62fps', 308, 0);
+
+            ctx.fillStyle = '#fff';
+            ctx.fillText('µ = ' + mean.toFixed(2) +
+                ', σ = ' + stdDev.toFixed(2) +
+                ', min = ' + minFps.toFixed(2) +
+                ', max = ' + maxFps.toFixed(2),
+                8, 48);
           }
 
           requestAnimationFrame(this.frame.bind(this));
@@ -93,6 +202,10 @@ License: BSD-3-clause-Intel, see LICENSE.txt
         },
 
         ready: function() {
+          var canvas = this.$['perf-canvas'];
+          var ctx = canvas.getContext('2d');
+          ctx.textBaseline = 'top';
+          ctx.fillText('touch to update graph', 8, 8);
           requestAnimationFrame(this.frame.bind(this));
         },
 
