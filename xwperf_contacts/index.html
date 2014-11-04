@@ -21,6 +21,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="import" href="bower_components/core-icons/core-icons.html" />
     <link rel="import" href="bower_components/core-icons/social-icons.html" />
     <link rel="import" href="bower_components/core-item/core-item.html" />
+    <link rel="import" href="bower_components/core-list/core-list.html" />
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
     <link rel="import" href="bower_components/paper-item/paper-item.html" />
@@ -28,6 +29,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
     <link rel="import" href="bower_components/my-utils/my-perf-box.html" />
 
+    <link rel="import" href="contacts-datagen.html" />
+    <link rel="import" href="contacts-item.html" />
     <link rel="stylesheet" href="app.css" />
   </head>
   <body class="polymer-ui-body-text" fullbleed layout vertical>
@@ -48,22 +51,25 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             padding: 0 8px;
           }
           #my-toolbar, #my-toolbar-top, #my-tab-box {
-            background-color: #607d8b;
+            background-color: #388e3c;
             color: white;
           }
-          #my-tab-box paper-tab #ink {
-            color: #ffcc80;
+          #my-tab-box paper-tab::shadow #ink {
+            color: #2196f3;
           }
-          #my-tab-box #selectionBar {
-            background-color: #ffcc80;
+          #my-tab-box paper-tabs::shadow #selectionBar {
+            background-color: #2196f3;
           }
           #my-drawer {
-            background-color: #cfd8dc;
+            background-color: #c8e6c9;
           }
           #my-drawer {
             padding: 0 0.5em;
           }
         </style>
+
+        <contacts-datagen id="data">
+        </contacts-datagen>
 
         <core-drawer-panel id="my-drawer-panel">
           <div drawer id="my-drawer">
@@ -118,18 +124,38 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               </core-toolbar>
 
               <core-animated-pages transitions="slide-from-right" id="my-pages"
-                selected="0">
+                selected="0" layout>
 
-                <section>
-                  favorite contacts go here
+                <section layout>
+                  <core-list data="{{favorites}}" id="favoritesList"
+                      height="80">
+                    <template>
+                      <contacts-item
+                          name="{{model.name}}"
+                          avatar="{{model.avatar}}"
+                          color="{{model.color}}"
+                          favorite="{{model.favorite}}">
+                      </contacts-item>
+                    </template>
+                  </core-list>
                 </section>
 
-                <section>
-                  all contacts go here
+                <section layout>
+                  <core-list data="{{data}}" id="allList" height="80">
+                    <template>
+                      <contacts-item
+                          name="{{model.name}}"
+                          avatar="{{model.avatar}}"
+                          color="{{model.color}}"
+                          favorite="{{model.favorite}}"
+                          favicon>
+                      </contacts-item>
+                    </template>
+                  </core-list>
                 </section>
 
-                <section>
-                  groups go here
+                <section layout>
+                  <div style="margin: 1em">groups are not yet implemented</div>
                 </section>
               </core-animated-pages>
             </core-header-panel>
@@ -142,6 +168,17 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             this.$['my-drawer-panel'].togglePanel();
           },
           ready: function() {
+            var data = this.$.data.data;
+            this.data = data;
+            this.favorites = [];
+            for (var i = 0; i < data.length; i++) {
+              if (data[i].favorite) {
+                this.favorites.push(data[i]);
+              }
+            }
+            this.$.favoritesList.scrollTarget = this.$['my-header-panel'];
+            this.$.allList.scrollTarget = this.$['my-header-panel'];
+
             var myTabs = this.$['my-tabs'];
             var myPages = this.$['my-pages'];
             myTabs.addEventListener('core-select', function() {
