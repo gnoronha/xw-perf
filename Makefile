@@ -14,7 +14,8 @@ JAVA_APPS = \
 XW_APKS = $(patsubst %,%_x86.apk,$(XW_APPS))
 JAVA_APKS = $(patsubst %,%.apk,$(JAVA_APPS))
 
-all: $(XW_APKS) $(JAVA_APKS)
+all: $(XW_APKS)
+# can add $(JAVA_APKS) if desired
 
 $(XW_APKS): %_x86.apk: always
 	test -d dist || mkdir dist
@@ -25,8 +26,11 @@ $(XW_APKS): %_x86.apk: always
 	cp -a avatars build-$*/
 	cp -a $*/manifest.json build-$*/
 	cp -a LICENSE.txt build-$*/
-	cd $* && vulcanize --csp --inline --strip -o ../build-$*/index.html \
+	cd $* && vulcanize --csp --inline --strip -o ../tmp-$*/index.html \
 		index.html
+	mv tmp-$*/index.html build-$*/index.html
+	uglifyjs tmp-$*/index.js --screw-ie8 --compress --mangle \
+		--output build-$*/index.js
 	cd crosswalk && python ./make_apk.py \
 		--package=com.collabora.xwperf.$* \
 		--manifest=$(CURDIR)/build-$*/manifest.json \
