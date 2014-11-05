@@ -174,9 +174,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         };
       }
 
-      // fake a round-trip
+      // fake a round-trip and storage
       var timeBefore = +(new Date());
-      tmp = JSON.parse(JSON.stringify(tmp));
+      localStorage.setItem('posts', JSON.stringify(tmp));
+      tmp = JSON.parse(localStorage.getItem('posts'));
       var dt = +(new Date()) - timeBefore;
       console.log('serialized and parsed ' + numberOfItems + ' JSON records in ' + dt + ' ms');
 
@@ -199,13 +200,14 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       lastDismissed: null,
       created: function () {
         this.data = [];
-        addFakeListData(this.data, INITIAL_ITEMS_BATCH);
       },
       loadMore: function () {
         addFakeListData(this.data, EXTRA_ITEMS_BATCH);
       },
       refresh: function () {
-        addFakeListData(this.data, REFRESH_BATCH, true);
+        addFakeListData(this.data,
+            this.data.length == 0 ? INITIAL_ITEMS_BATCH : REFRESH_BATCH,
+            true);
       },
     });
 

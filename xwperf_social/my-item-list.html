@@ -46,6 +46,24 @@ license that can be found in the LICENSE.txt file.
     // fake network lag
     var NETWORK_LAG_MS = 500;
 
+    function refresh(that) {
+      console.log('refreshing');
+      that.$.refreshBox.hidden = false;
+      that.$.pullToRefresh.hidden = true;
+      that.$.refreshProgress.hidden = false;
+
+      for (var i = 0; i < 10; i++) {
+        setTimeout((function(i){
+          this.$.refreshProgress.value = 10 * i;
+        }).bind(that, i), NETWORK_LAG_MS * i / 10);
+      }
+
+      setTimeout((function(){
+        this.feed.refresh();
+        this.$.refreshBox.hidden = true;
+      }).bind(that), NETWORK_LAG_MS);
+    }
+
     function scrollHandler(e, detail) {
       var target = e.detail ? e.detail.target : e.target;
 
@@ -56,18 +74,7 @@ license that can be found in the LICENSE.txt file.
           this.$.refreshProgress.hidden = true;
           target.scrollTop = this.$.refreshBox.offsetHeight;
         } else {
-          this.$.refreshProgress.hidden = false;
-
-          for (var i = 0; i < 10; i++) {
-            setTimeout((function(i){
-              this.$.refreshProgress.value = 10 * i;
-            }).bind(this, i), NETWORK_LAG_MS * i / 10);
-          }
-
-          setTimeout((function(){
-            this.feed.refresh();
-            this.$.refreshBox.hidden = true;
-          }).bind(this), NETWORK_LAG_MS);
+          refresh(this);
         }
       }
 
@@ -107,6 +114,7 @@ license that can be found in the LICENSE.txt file.
         (this.scrollTarget || this).addEventListener('scroll',
             scrollHandler.bind(this), false);
         this.data = this.feed.data;
+        refresh(this);
       },
     });
   </script>
