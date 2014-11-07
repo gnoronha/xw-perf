@@ -1,0 +1,94 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation. All rights reserved.
+
+License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
+-->
+<link rel="import" href="bower_components/core-toolbar/core-toolbar.html" />
+<link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
+
+<polymer-element name="contacts-card" attributes="model"
+    layout vertical>
+  <template>
+    <style>
+      :host {
+        display: block;
+        background-color: white;
+        width: 100%;
+        height: 100%;
+      }
+      #toolbar {
+        background-color: #388e3c;
+        color: white;
+      }
+      #avatar {
+        background-size: cover;
+        background-position: 50% 50%;
+        height: 160px;
+        width: 100%;
+        font-size: 160px;
+        line-height: 160px;
+        text-align: center;
+      }
+    </style>
+
+    <core-toolbar id="toolbar" horizontal>
+      <paper-icon-button icon="done" id="done" on-tap="{{done}}">
+      </paper-icon-button>
+
+      <div flex>{{ model.name }}</div>
+
+      <template if="{{ model.favorite }}">
+        <paper-icon-button icon="star" id="fave"
+            on-tap="{{ toggleFavorite }}">
+        </paper-icon-button>
+      </template>
+
+      <template if="{{ !model.favorite }}">
+        <paper-icon-button icon="star-outline" id="not-fave"
+            on-tap="{{ toggleFavorite }}">
+        </paper-icon-button>
+      </template>
+
+    </core-toolbar>
+
+    <template if="{{ model.avatar}}">
+      <div id="avatar"
+          style="background-image: url(avatars/{{ model.avatar }});">
+      </div>
+    </template>
+    <template if="{{ !model.avatar}}">
+      <div id="avatar" style="{{ model.color | styleObject }}">
+        {{ model.name | getInitial }}
+      </div>
+    </template>
+
+    <ul>
+      <li>Name: {{ model.name }}</li>
+      <li>Email: {{ model.email }}</li>
+      <li>Phone: {{ model.phone }}</li>
+    </ul>
+
+  </template>
+  <script>
+    (function(exports) {
+      'use strict';
+
+      Polymer({
+        done: function() {
+          this.fire('done');
+        },
+        getInitial: function(value) {
+          return (value || 'x')[0].toUpperCase();
+        },
+        toggleFavorite: function() {
+          this.async((function(){
+            this.model.favorite = !this.model.favorite;
+          }).bind(this));
+        },
+      });
+    })(window);
+  </script>
+</polymer-element>
+<!-- vim:set sw=2 sts=2 et: -->

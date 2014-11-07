@@ -15,6 +15,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="manifest" href="manifest.json" />
 
     <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html" />
+    <link rel="import" href="bower_components/core-animated-pages/transitions/cross-fade.html" />
     <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html" />
     <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html" />
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html" />
@@ -29,6 +30,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
     <link rel="import" href="bower_components/my-utils/my-perf-box.html" />
 
+    <link rel="import" href="contacts-card.html" />
     <link rel="import" href="contacts-datagen.html" />
     <link rel="import" href="contacts-item.html" />
     <link rel="stylesheet" href="app.css" />
@@ -90,41 +92,43 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             </core-item>
           </div>
 
-          <div main id="my-main" layout vertical>
-            <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
-                id="my-header-panel" flex>
-              <core-toolbar id="my-toolbar" vertical>
-                <div horizontal layout id="my-toolbar-top" flex class="fit"
-                    center>
-                  <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"></paper-icon-button>
-                  <div flex>Contacts</div>
-                  <paper-icon-button icon="search"></paper-icon-button>
-                  <paper-icon-button icon="more-vert"></paper-icon-button>
-                </div>
+          <core-animated-pages main id="listOrCard" selected="0"
+              transitions="cross-fade">
+            <section layout vertical>
+              <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
+                  id="my-header-panel" flex cross-fade>
+                <core-toolbar id="my-toolbar" vertical>
+                  <div horizontal layout id="my-toolbar-top" flex class="fit"
+                      center>
+                    <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"></paper-icon-button>
+                    <div flex>Contacts</div>
+                    <paper-icon-button icon="search"></paper-icon-button>
+                    <paper-icon-button icon="more-vert"></paper-icon-button>
+                  </div>
 
-                <div class="bottom fit" horizontal layout id="my-tab-box">
-                  <paper-tabs selected="0" flex id="my-tabs">
-                    <paper-tab>
-                      <paper-icon-button icon="favorite">
-                      </paper-icon-button>
-                      Favorites
-                    </paper-tab>
-                    <paper-tab>
-                      <paper-icon-button icon="social:person">
-                      </paper-icon-button>
-                      All
-                    </paper-tab>
-                    <paper-tab>
-                      <paper-icon-button icon="social:group">
-                      </paper-icon-button>
-                      Groups
-                    </paper-tab>
-                  </paper-tabs>
-                </div>
-              </core-toolbar>
+                  <div class="bottom fit" horizontal layout id="my-tab-box">
+                    <paper-tabs selected="0" flex id="my-tabs">
+                      <paper-tab>
+                        <paper-icon-button icon="favorite">
+                        </paper-icon-button>
+                        Favorites
+                      </paper-tab>
+                      <paper-tab>
+                        <paper-icon-button icon="social:person">
+                        </paper-icon-button>
+                        All
+                      </paper-tab>
+                      <paper-tab>
+                        <paper-icon-button icon="social:group">
+                        </paper-icon-button>
+                        Groups
+                      </paper-tab>
+                    </paper-tabs>
+                  </div>
+                </core-toolbar>
 
-              <core-animated-pages transitions="slide-from-right" id="my-pages"
-                selected="0" layout>
+                <core-animated-pages transitions="slide-from-right" id="my-pages"
+                  selected="0" layout>
 
                   <section layout>
                     <core-list data="{{favorites}}" id="favoritesList"
@@ -146,12 +150,18 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                     </core-list>
                   </section>
 
-                <section layout>
-                  <div style="margin: 1em">groups are not yet implemented</div>
-                </section>
-              </core-animated-pages>
-            </core-header-panel>
-          </div>
+                  <section layout>
+                    <div style="margin: 1em">groups are not yet implemented</div>
+                  </section>
+                </core-animated-pages>
+              </core-header-panel>
+            </section>
+
+            <section layout vertical>
+              <contacts-card id="card" on-done="{{cardDone}}" cross-fade>
+              </contacts-card>
+            </section>
+          </core-animated-pages>
         </core-drawer-panel>
       </template>
       <script>
@@ -249,6 +259,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               });
             },
             itemActivated: function(e) {
+              this.$.card.model = e.detail.item.model;
+              this.$.listOrCard.selected = 1;
+            },
+            cardDone: function(e) {
+              this.$.listOrCard.selected = 0;
             },
           });
         })();
