@@ -44,6 +44,12 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             outline: 1px dotted #f0f;
           }
           */
+          #sideMenuButton {
+            display: none;
+          }
+          [narrow] #sideMenuButton {
+            display: inline-block;
+          }
           #my-toolbar {
             padding: 0px;
           }
@@ -100,7 +106,9 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                 <core-toolbar id="my-toolbar" vertical>
                   <div horizontal layout id="my-toolbar-top" flex class="fit"
                       center>
-                    <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"></paper-icon-button>
+                    <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"
+                        id="sideMenuButton">
+                    </paper-icon-button>
                     <div flex>Contacts</div>
                     <paper-icon-button icon="search"></paper-icon-button>
                     <paper-icon-button icon="more-vert"></paper-icon-button>
