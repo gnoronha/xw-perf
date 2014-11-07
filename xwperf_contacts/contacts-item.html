@@ -8,8 +8,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 <link rel="import" href="bower_components/core-icon/core-icon.html" />
 <link rel="import" href="bower_components/core-icons/core-icons.html" />
 <link rel="import" href="bower_components/paper-button/paper-button.html" />
-<polymer-element name="contacts-item"
-    attributes="name avatar color favorite favicon"
+<polymer-element name="contacts-item" attributes="model favicon"
     horizontal layout center>
   <template>
     <style>
@@ -47,35 +46,32 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       }
     </style>
 
-    <div layout horizontal center relative flex class="item">
-      <template if="{{ avatar}}">
+    <div layout horizontal center relative flex class="item"
+        on-tap="activate">
+      <template if="{{ model.avatar}}">
         <div class="avatar">
-          <img src="avatars/{{ avatar }}" />
+          <img src="avatars/{{ model.avatar }}" />
         </div>
       </template>
-      <template if="{{ !avatar }}">
-        <div class="avatar" style="{{ color | styleObject }}">
-          {{ name | getInitial }}
+      <template if="{{ !model.avatar }}">
+        <div class="avatar" style="{{ model.color | styleObject }}">
+          {{ model.name | getInitial }}
         </div>
       </template>
 
       <div class="text" id="text">
-        {{ name }}
+        {{ model.name }}
       </div>
     </div>
 
-    <template if="{{ favicon }}">
-      <paper-button class="fave" horizontal layout center end-justified
+    <template if="{{ favicon && model.favorite }}">
+      <paper-icon-button icon="star" id="fave" on-tap="{{ toggleFavorite }}">
+      </paper-icon-button>
+    </template>
+    <template if="{{ favicon && !model.favorite }}">
+      <paper-icon-button icon="star-outline" id="not-fave"
           on-tap="{{ toggleFavorite }}">
-        <template if="{{ favorite }}">
-          <core-icon icon="star" id="fave">
-          </core-icon>
-        </template>
-        <template if="{{ !favorite }}">
-          <core-icon icon="star-outline" id="not-fave">
-          </core-icon>
-        </template>
-      </paper-button>
+      </paper-icon-button>
     </template>
 
   </template>
@@ -87,6 +83,9 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       },
       toggleFavorite: function() {
         this.favorite = !this.favorite;
+      },
+      activate: function(e) {
+        this.fire('activated');
       },
     });
   </script>

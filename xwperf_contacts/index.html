@@ -126,33 +126,25 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               <core-animated-pages transitions="slide-from-right" id="my-pages"
                 selected="0" layout>
 
-                <section layout>
-                  <core-list data="{{favorites}}" id="favoritesList"
-                      height="80">
-                    <template>
-                      <contacts-item
-                          name="{{model.name}}"
-                          avatar="{{model.avatar}}"
-                          color="{{model.color}}"
-                          favorite="{{model.favorite}}">
-                      </contacts-item>
-                    </template>
-                  </core-list>
-                </section>
+                  <section layout>
+                    <core-list data="{{favorites}}" id="favoritesList"
+                        height="80" on-core-activate="{{itemActivated}}">
+                      <template>
+                        <contacts-item model="{{model}}">
+                        </contacts-item>
+                      </template>
+                    </core-list>
+                  </section>
 
-                <section layout>
-                  <core-list data="{{data}}" id="allList" height="80">
-                    <template>
-                      <contacts-item
-                          name="{{model.name}}"
-                          avatar="{{model.avatar}}"
-                          color="{{model.color}}"
-                          favorite="{{model.favorite}}"
-                          favicon>
-                      </contacts-item>
-                    </template>
-                  </core-list>
-                </section>
+                  <section layout>
+                    <core-list data="{{data}}" id="allList"
+                        height="80" on-core-activate="{{itemActivated}}">
+                      <template>
+                        <contacts-item model="{{model}}" favicon>
+                        </contacts-item>
+                      </template>
+                    </core-list>
+                  </section>
 
                 <section layout>
                   <div style="margin: 1em">groups are not yet implemented</div>
@@ -255,6 +247,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               myTabs.addEventListener('core-select', function() {
                 myPages.selected = myTabs.selected;
               });
+            },
+            itemActivated: function(e) {
             },
           });
         })();
