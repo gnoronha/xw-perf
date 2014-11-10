@@ -8,8 +8,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 <link rel="import" href="bower_components/core-toolbar/core-toolbar.html" />
 <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
 
-<polymer-element name="contacts-card" attributes="model"
-    layout vertical>
+<polymer-element name="contacts-card" attributes="model flying"
+    layout vertical hero hero-id="container">
   <template>
     <style>
       :host {
@@ -30,6 +30,9 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         font-size: 160px;
         line-height: 160px;
         text-align: center;
+      }
+      :host[flying] ul {
+        visibility: hidden;
       }
     </style>
 
@@ -55,27 +58,31 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
     <template if="{{ model.avatar}}">
       <div id="avatar"
-          style="background-image: url(avatars/{{ model.avatar }});">
+          style="background-image: url(avatars/{{ model.avatar }});"
+          hero hero-id="avatar">
       </div>
     </template>
     <template if="{{ !model.avatar}}">
-      <div id="avatar" style="{{ model.color | styleObject }}">
+      <div id="avatar" style="{{ model.color | styleObject }}"
+          hero hero-id="avatar">
         {{ model.name | getInitial }}
       </div>
     </template>
 
-    <ul>
+    <ul hidden?="{{flying}}">
       <li>Name: {{ model.name }}</li>
       <li>Email: {{ model.email }}</li>
       <li>Phone: {{ model.phone }}</li>
     </ul>
 
+    <paper-shadow z="1"></paper-shadow>
   </template>
   <script>
     (function(exports) {
       'use strict';
 
       Polymer({
+        flying: false,
         done: function() {
           this.fire('done');
         },
