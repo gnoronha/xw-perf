@@ -98,7 +98,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             </core-item>
           </div>
 
-          <core-animated-pages main id="listOrCard" selected="0"
+          <core-animated-pages main id="modePages" selected="0"
               transitions="cross-fade">
             <section layout vertical>
               <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
@@ -161,7 +161,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             </section>
 
             <section layout vertical>
-              <contacts-card id="card" on-done="{{cardDone}}" cross-fade>
+              <contacts-card id="card" on-done="{{backToLists}}" cross-fade>
               </contacts-card>
             </section>
           </core-animated-pages>
@@ -263,10 +263,12 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             },
             itemActivated: function(e) {
               this.$.card.model = e.detail.item.model;
-              this.$.listOrCard.selected = 1;
+              this.$.modePages.selected = 1;
             },
-            cardDone: function(e) {
-              this.$.listOrCard.selected = 0;
+            backToLists: function(e) {
+              this.$.modePages.selected = 0;
+            },
+            settingsActivated: function(e) {
             },
           });
         })();

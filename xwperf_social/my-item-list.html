@@ -46,35 +46,18 @@ license that can be found in the LICENSE.txt file.
     // fake network lag
     var NETWORK_LAG_MS = 500;
 
-    function refresh(that) {
-      console.log('refreshing');
-      that.$.refreshBox.hidden = false;
-      that.$.pullToRefresh.hidden = true;
-      that.$.refreshProgress.hidden = false;
-
-      for (var i = 0; i < 10; i++) {
-        setTimeout((function(i){
-          this.$.refreshProgress.value = 10 * i;
-        }).bind(that, i), NETWORK_LAG_MS * i / 10);
-      }
-
-      setTimeout((function(){
-        this.feed.refresh();
-        this.$.refreshBox.hidden = true;
-      }).bind(that), NETWORK_LAG_MS);
-    }
-
     function scrollHandler(e, detail) {
       var target = e.detail ? e.detail.target : e.target;
 
       if (target.scrollTop == 0 && this.hasScrolled) {
         if (this.$.refreshBox.hidden) {
           this.$.refreshBox.hidden = false;
+          this.$.refreshBox.style.height = '128px';
           this.$.pullToRefresh.hidden = false;
           this.$.refreshProgress.hidden = true;
           target.scrollTop = this.$.refreshBox.offsetHeight;
         } else {
-          refresh(this);
+          this.refreshContent();
         }
       }
 
@@ -110,11 +93,30 @@ license that can be found in the LICENSE.txt file.
       lastDismissedIndex: null,
       data: [],
       _myItemListScrollTop: null,
+      /* slightly awkward naming because core-list already has a refresh() */
+      refreshContent: function() {
+        console.log('refreshing');
+        this.$.refreshBox.hidden = false;
+        this.$.refreshBox.style.height = '32px';
+        this.$.pullToRefresh.hidden = true;
+        this.$.refreshProgress.hidden = false;
+
+        for (var i = 0; i < 10; i++) {
+          setTimeout((function(i){
+            this.$.refreshProgress.value = 10 * i;
+          }).bind(this, i), NETWORK_LAG_MS * i / 10);
+        }
+
+        setTimeout((function(){
+          this.feed.refresh();
+          this.$.refreshBox.hidden = true;
+        }).bind(this), NETWORK_LAG_MS);
+      },
       go: function() {
         (this.scrollTarget || this).addEventListener('scroll',
             scrollHandler.bind(this), false);
         this.data = this.feed.data;
-        refresh(this);
+        this.refreshContent();
       },
     });
   </script>
