@@ -42,7 +42,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             outline: 1px dotted #f0f;
           }
           */
-          main {
+          #my-header-panel {
             position: absolute;
             overflow: hidden;
             top: 0;
@@ -51,12 +51,12 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             right: 0;
           }
           #my-toolbar {
-            padding: 0px;
-          }
-          #my-toolbar-top {
-            height: 100%;
+            left: 0px;
+            right: 0px;
             width: 100%;
-            padding: 0 8px;
+          }
+          #my-toolbar * {
+            display: block;
           }
           #my-toolbar, #my-toolbar-top {
             background-color: #607d8b;
@@ -70,27 +70,23 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         <my-feed id="myFeed">
         </my-feed>
 
-        <main layout vertical>
-          <core-header-panel id="my-header-panel" flex>
-            <core-toolbar id="my-toolbar" vertical>
-              <div horizontal layout id="my-toolbar-top" flex class="fit"
-                  center>
-                <div flex>Social</div>
-                <paper-icon-button icon="search"></paper-icon-button>
-                <paper-icon-button icon="more-vert"></paper-icon-button>
-              </div>
-            </core-toolbar>
+        <core-header-panel id="my-header-panel">
+          <core-toolbar id="my-toolbar">
+            <div flex>Social</div>
+            <paper-icon-button icon="search"></paper-icon-button>
+            <paper-icon-button icon="more-vert"></paper-icon-button>
+          </core-toolbar>
 
-            <section layout flex id="my-list-section">
-              <my-item-list id="my-list">
-                <template>
-                  <my-item model="{{ model }}" index="{{ index }}">
-                  </my-item>
-                </template>
-              </my-item-list>
-            </section>
-          </core-header-panel>
-        </main>
+          <section layout id="my-list-section">
+            <my-item-list id="my-list">
+              <template>
+                <my-item model="{{ model }}" index="{{ index }}">
+                </my-item>
+              </template>
+            </my-item-list>
+          </section>
+        </core-header-panel>
+
       </template>
       <script>
         Polymer({
