@@ -16,7 +16,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
     <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html" />
     <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html" />
-    <link rel="import" href="bower_components/core-drawer-panel/core-drawer-panel.html" />
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html" />
     <link rel="import" href="bower_components/core-icons/core-icons.html" />
     <link rel="import" href="bower_components/core-item/core-item.html" />
@@ -46,11 +45,13 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             outline: 1px dotted #f0f;
           }
           */
-          #sideMenuButton {
-            display: none;
-          }
-          [narrow] #sideMenuButton {
-            display: inline-block;
+          main {
+            position: absolute;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
           }
           #my-toolbar {
             padding: 0px;
@@ -70,12 +71,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
           #my-tab-box #selectionBar {
             background-color: #ffcc80;
           }
-          #my-drawer {
-            background-color: #cfd8dc;
-          }
-          #my-drawer {
-            padding: 0 0.5em;
-          }
           #my-list {
             /* not keeping up is less jarring if this matches the items
             background-color: white;
@@ -83,74 +78,52 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         </style>
         <my-feed id="myFeed">
         </my-feed>
-        <core-drawer-panel id="my-drawer-panel">
-          <div drawer id="my-drawer">
-            <core-item>
-              Options
-            </core-item>
-            <core-item>
-              Settings
-            </core-item>
-            <core-item>
-              Preferences
-            </core-item>
-            <core-item>
-              Misc
-            </core-item>
-            <core-item>
-              Other
-            </core-item>
-          </div>
-          <div main id="my-main" layout vertical>
-            <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
-                id="my-header-panel" flex>
-              <core-toolbar id="my-toolbar" vertical>
-                <div horizontal layout id="my-toolbar-top" flex class="fit"
-                    center>
-                  <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"
-                      id="sideMenuButton">
-                  </paper-icon-button>
-                  <div flex>Social</div>
-                  <paper-icon-button icon="search"></paper-icon-button>
-                  <paper-icon-button icon="more-vert"></paper-icon-button>
-                </div>
 
-                <div class="bottom fit" horizontal layout id="my-tab-box">
-                  <paper-tabs selected="0" flex id="my-tabs">
-                    <paper-tab>RECENT</paper-tab>
-                    <paper-tab>COMPOSE</paper-tab>
-                    <paper-tab>SETTINGS</paper-tab>
-                  </paper-tabs>
-                </div>
-              </core-toolbar>
+        <main layout vertical>
+          <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
+              id="my-header-panel" flex>
+            <core-toolbar id="my-toolbar" vertical>
+              <div horizontal layout id="my-toolbar-top" flex class="fit"
+                  center>
+                <div flex>Social</div>
+                <paper-icon-button icon="search"></paper-icon-button>
+                <paper-icon-button icon="more-vert"></paper-icon-button>
+              </div>
 
-              <core-animated-pages transitions="slide-from-right" id="my-pages"
-                selected="0">
+              <div class="bottom fit" horizontal layout id="my-tab-box">
+                <paper-tabs selected="0" flex id="my-tabs">
+                  <paper-tab>RECENT</paper-tab>
+                  <paper-tab>COMPOSE</paper-tab>
+                  <paper-tab>SETTINGS</paper-tab>
+                </paper-tabs>
+              </div>
+            </core-toolbar>
 
-                <section layout flex id="my-list-section">
-                  <my-item-list id="my-list">
-                    <template>
-                      <my-item model="{{ model }}" index="{{ index }}">
-                      </my-item>
-                    </template>
-                  </my-item-list>
-                </section>
+            <core-animated-pages transitions="slide-from-right" id="my-pages"
+              selected="0">
 
-                <section>
-                  your ad here
-                </section>
+              <section layout flex id="my-list-section">
+                <my-item-list id="my-list">
+                  <template>
+                    <my-item model="{{ model }}" index="{{ index }}">
+                    </my-item>
+                  </template>
+                </my-item-list>
+              </section>
 
+              <section>
+                your ad here
+              </section>
+
+              <section>
                 <my-settings-tab></my-settings-tab>
-              </core-animated-pages>
-            </core-header-panel>
-          </div>
-        </core-drawer-panel>
+              </section>
+            </core-animated-pages>
+          </core-header-panel>
+        </main>
       </template>
       <script>
         Polymer({
-          toggleMenu: function() {
-            this.$['my-drawer-panel'].togglePanel();
-          },
           ready: function() {
             var myTabs = this.$['my-tabs'];
             var myPages = this.$['my-pages'];
