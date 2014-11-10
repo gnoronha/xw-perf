@@ -14,8 +14,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json" />
 
-    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html" />
-    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html" />
     <link rel="import" href="bower_components/core-header-panel/core-header-panel.html" />
     <link rel="import" href="bower_components/core-icons/core-icons.html" />
     <link rel="import" href="bower_components/core-item/core-item.html" />
@@ -25,7 +23,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="import" href="bower_components/paper-button/paper-button.html" />
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
     <link rel="import" href="bower_components/paper-item/paper-item.html" />
-    <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
 
     <link rel="import" href="bower_components/my-utils/my-perf-box.html" />
 
@@ -61,15 +58,9 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             width: 100%;
             padding: 0 8px;
           }
-          #my-toolbar, #my-toolbar-top, #my-tab-box {
+          #my-toolbar, #my-toolbar-top {
             background-color: #607d8b;
             color: white;
-          }
-          #my-tab-box paper-tab #ink {
-            color: #ffcc80;
-          }
-          #my-tab-box #selectionBar {
-            background-color: #ffcc80;
           }
           #my-list {
             /* not keeping up is less jarring if this matches the items
@@ -80,8 +71,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         </my-feed>
 
         <main layout vertical>
-          <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
-              id="my-header-panel" flex>
+          <core-header-panel id="my-header-panel" flex>
             <core-toolbar id="my-toolbar" vertical>
               <div horizontal layout id="my-toolbar-top" flex class="fit"
                   center>
@@ -89,48 +79,23 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                 <paper-icon-button icon="search"></paper-icon-button>
                 <paper-icon-button icon="more-vert"></paper-icon-button>
               </div>
-
-              <div class="bottom fit" horizontal layout id="my-tab-box">
-                <paper-tabs selected="0" flex id="my-tabs">
-                  <paper-tab>RECENT</paper-tab>
-                  <paper-tab>COMPOSE</paper-tab>
-                  <paper-tab>SETTINGS</paper-tab>
-                </paper-tabs>
-              </div>
             </core-toolbar>
 
-            <core-animated-pages transitions="slide-from-right" id="my-pages"
-              selected="0">
-
-              <section layout flex id="my-list-section">
-                <my-item-list id="my-list">
-                  <template>
-                    <my-item model="{{ model }}" index="{{ index }}">
-                    </my-item>
-                  </template>
-                </my-item-list>
-              </section>
-
-              <section>
-                your ad here
-              </section>
-
-              <section>
-                <my-settings-tab></my-settings-tab>
-              </section>
-            </core-animated-pages>
+            <section layout flex id="my-list-section">
+              <my-item-list id="my-list">
+                <template>
+                  <my-item model="{{ model }}" index="{{ index }}">
+                  </my-item>
+                </template>
+              </my-item-list>
+            </section>
           </core-header-panel>
         </main>
       </template>
       <script>
         Polymer({
           ready: function() {
-            var myTabs = this.$['my-tabs'];
-            var myPages = this.$['my-pages'];
             var myList = this.$['my-list'];
-            myTabs.addEventListener('core-select', function() {
-              myPages.selected = myTabs.selected;
-            });
             this.data = this.$.myFeed.data;
             myList.scrollTarget = this.$['my-header-panel'];
             myList.feed = this.$.myFeed;
