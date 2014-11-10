@@ -45,10 +45,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
           }
           */
           #sideMenuButton {
-            display: none;
+            visibility: hidden;
           }
           [narrow] #sideMenuButton {
-            display: inline-block;
+            visibility: visible;
           }
           #my-toolbar {
             padding: 0px;
@@ -56,9 +56,9 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
           #my-toolbar-top {
             height: 100%;
             width: 100%;
-            padding: 0 8px;
+            padding: 0 16px;
           }
-          #my-toolbar, #my-toolbar-top, #my-tab-box {
+          #my-toolbar, #my-toolbar::shadow #topBar {
             background-color: #388e3c;
             color: white;
           }
@@ -103,36 +103,31 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             <section layout vertical>
               <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
                   id="my-header-panel" flex cross-fade>
-                <core-toolbar id="my-toolbar" vertical>
-                  <div horizontal layout id="my-toolbar-top" flex class="fit"
-                      center>
-                    <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"
-                        id="sideMenuButton">
-                    </paper-icon-button>
-                    <div flex>Contacts</div>
-                    <paper-icon-button icon="search"></paper-icon-button>
-                    <paper-icon-button icon="more-vert"></paper-icon-button>
-                  </div>
+                <core-toolbar id="my-toolbar">
+                  <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"
+                      id="sideMenuButton">
+                  </paper-icon-button>
+                  <div flex>Contacts</div>
+                  <paper-icon-button icon="search"></paper-icon-button>
+                  <paper-icon-button icon="more-vert"></paper-icon-button>
 
-                  <div class="bottom fit" horizontal layout id="my-tab-box">
-                    <paper-tabs selected="0" flex id="my-tabs">
-                      <paper-tab>
-                        <paper-icon-button icon="favorite">
-                        </paper-icon-button>
-                        Favorites
-                      </paper-tab>
-                      <paper-tab>
-                        <paper-icon-button icon="social:person">
-                        </paper-icon-button>
-                        All
-                      </paper-tab>
-                      <paper-tab>
-                        <paper-icon-button icon="social:group">
-                        </paper-icon-button>
-                        Groups
-                      </paper-tab>
-                    </paper-tabs>
-                  </div>
+                  <paper-tabs class="bottom fit" selected="0" flex id="my-tabs">
+                    <paper-tab>
+                      <paper-icon-button icon="favorite">
+                      </paper-icon-button>
+                      Favorites
+                    </paper-tab>
+                    <paper-tab>
+                      <paper-icon-button icon="social:person">
+                      </paper-icon-button>
+                      All
+                    </paper-tab>
+                    <paper-tab>
+                      <paper-icon-button icon="social:group">
+                      </paper-icon-button>
+                      Groups
+                    </paper-tab>
+                  </paper-tabs>
                 </core-toolbar>
 
                 <core-animated-pages transitions="slide-from-right" id="my-pages"
