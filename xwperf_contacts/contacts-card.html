@@ -5,70 +5,117 @@ Copyright 2014 Intel Corporation. All rights reserved.
 
 License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 -->
+<link rel="import" href="bower_components/core-media-query/core-media-query.html" />
 <link rel="import" href="bower_components/core-toolbar/core-toolbar.html" />
 <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
+<link rel="import" href="bower_components/paper-input/paper-input.html" />
+<link rel="import" href="bower_components/paper-shadow/paper-shadow.html" />
 
-<polymer-element name="contacts-card" attributes="model"
-    layout vertical>
+<polymer-element name="contacts-card">
   <template>
     <style>
       :host {
         display: block;
+        position: relative;
         background-color: white;
+        width: 100%;
+        height: 100%;
+      }
+      core-header-panel {
         width: 100%;
         height: 100%;
       }
       #toolbar {
         background-color: #388e3c;
         color: white;
+        z-index: 1;
       }
       #avatar {
+        position: relative;
         background-size: cover;
         background-position: 50% 50%;
-        height: 160px;
+        height: 100%;
         width: 100%;
+        text-align: center;
         font-size: 160px;
         line-height: 160px;
-        text-align: center;
+      }
+      #initial {
+        position: relative;
+        top: calc(50% - 80px);
+      }
+      #scrollable {
+        min-height: 100%;
+        overflow: auto;
+      }
+      #controls {
+        position: relative;
+        padding: 0 16px;
+        margin: 0;
+        z-index: 1;
+      }
+      :host #avatarBox {
+        width: 240px;
+        height: 160px;
+        position: relative;
+        margin: 16px 72px;
+      }
+      #avatarBox.narrow {
+        width: 100vw;
+        height: 66.666vw;
+        margin: 0;
       }
     </style>
 
-    <core-toolbar id="toolbar" horizontal>
-      <paper-icon-button icon="done" id="done" on-tap="{{done}}">
-      </paper-icon-button>
+    <core-media-query query="max-width: {{responsiveWidth}}"
+        queryMatches="{{queryMatches}}"></core-media-query>
 
-      <div flex>{{ model.name }}</div>
-
-      <template if="{{ model.favorite }}">
-        <paper-icon-button icon="star" id="fave"
-            on-tap="{{ toggleFavorite }}">
+    <core-header-panel mode="{{ narrow ? 'standard' : 'waterfall' }}">
+      <core-toolbar id="toolbar" horizontal>
+        <paper-icon-button icon="done" id="done" on-tap="{{done}}">
         </paper-icon-button>
-      </template>
 
-      <template if="{{ !model.favorite }}">
-        <paper-icon-button icon="star-outline" id="not-fave"
-            on-tap="{{ toggleFavorite }}">
-        </paper-icon-button>
-      </template>
+        <div flex>{{ model.name }}</div>
 
-    </core-toolbar>
+        <template if="{{ model.favorite }}">
+          <paper-icon-button icon="star" id="fave"
+              on-tap="{{ toggleFavorite }}">
+          </paper-icon-button>
+        </template>
 
-    <template if="{{ model.avatar}}">
-      <div id="avatar"
-          style="background-image: url(avatars/{{ model.avatar }});">
+        <template if="{{ !model.favorite }}">
+          <paper-icon-button icon="star-outline" id="not-fave"
+              on-tap="{{ toggleFavorite }}">
+          </paper-icon-button>
+        </template>
+      </core-toolbar>
+
+      <div id="scrollable">
+        <div id="avatarBox" class="{{ {narrow: narrow} | tokenList }}">
+          <template if="{{ model.avatar}}">
+            <div id="avatar"
+                style="background-image: url(avatars/{{ model.avatar }});">
+            </div>
+          </template>
+          <template if="{{ !model.avatar}}">
+            <div id="avatar" style="{{ model.color | styleObject }}">
+              <div id="initial">{{ model.name | getInitial }}</div>
+            </div>
+          </template>
+        </div>
+
+        <div id="controls">
+          <paper-input label="Name" floatingLabel type="text"
+              value="{{model.name}}"></paper-input>
+          <paper-input label="Email" floatingLabel type="email"
+              value="{{model.email}}"></paper-input>
+          <paper-input label="Phone" floatingLabel type="tel"
+              value="{{model.phone}}"></paper-input>
+
+          <paper-shadow z="{{ narrow ? 1 : 0 }}"></paper-shadow>
+        </div>
       </div>
-    </template>
-    <template if="{{ !model.avatar}}">
-      <div id="avatar" style="{{ model.color | styleObject }}">
-        {{ model.name | getInitial }}
-      </div>
-    </template>
-
-    <ul>
-      <li>Name: {{ model.name }}</li>
-      <li>Email: {{ model.email }}</li>
-      <li>Phone: {{ model.phone }}</li>
-    </ul>
+    </core-header-panel>
 
   </template>
   <script>
@@ -76,6 +123,14 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       'use strict';
 
       Polymer({
+        publish: {
+          model: null,
+          responsiveWidth: '420px',
+          narrow: { value: false, reflect: true },
+        },
+        queryMatchesChanged: function() {
+          this.narrow = this.queryMatches;
+        },
         done: function() {
           this.fire('done');
         },
