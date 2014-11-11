@@ -14,15 +14,29 @@ License: BSD-3-clause-Intel, see LICENSE.txt
         background: grey;
         margin: 0px;
         overflow: hidden;
+        position: relative;
       }
       #perf-text {
         margin: 0px;
       }
+      #blinkenlight {
+        position: absolute;
+        display: inline-block;
+        height: 64px;
+        width: 1px;
+        left: 0px;
+        top: 0px;
+      }
+      #perf-canvas {
+        position: absolute;
+        left: 1px;
+        top: 0px;
+      }
     </style>
-    <div>
+    <div id="blinkenlight">
+    </div>
     <canvas id="perf-canvas" height="64" width="400">
     </canvas>
-    </div>
   </template>
   <script>
     (function(exports){
@@ -33,9 +47,18 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
       var drawStatsNextFrame = null;
 
+      exports.alwaysAnimate = false;
+
       Polymer({
         frame: function(now) {
           ringBuffer[frameIndex] = now;
+
+          if (exports.alwaysAnimate) {
+            if (frameIndex % 2 == 0)
+              this.bl.backgroundColor = '#f00';
+            else
+              this.bl.backgroundColor = '#0f0';
+          }
 
           if (drawStatsNextFrame) {
             drawStatsNextFrame = null;
@@ -208,6 +231,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
           ctx.textBaseline = 'top';
           ctx.fillText('touch to update graph', 8, 8);
           requestAnimationFrame(this.frame.bind(this));
+          this.bl = this.$.blinkenlight.style;
         },
 
         tap: function () {
