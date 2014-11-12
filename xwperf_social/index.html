@@ -84,6 +84,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                 <paper-menu-button icon="more-vert" halign="right">
                   <paper-item on-tap="{{ refresh }}">Refresh</paper-item>
                   <paper-item on-tap="{{ goToSettings }}">Settings</paper-item>
+                  <my-boolean-setting id="alwaysAnimateCheck"
+                      label="Always animate"
+                      on-core-change="{{toggleAlwaysAnimate}}">
+                  </my-boolean-setting>
                 </paper-menu-button>
               </core-toolbar>
 
@@ -124,6 +128,9 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         };
 
         Polymer({
+          toggleAlwaysAnimate: function() {
+            window.MyPerfBoxGlobal.alwaysAnimate = this.$.alwaysAnimateCheck.checked;
+          },
           ready: function() {
             var myList = this.$['my-list'];
             this.data = this.$.myFeed.data;
