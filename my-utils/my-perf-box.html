@@ -47,13 +47,13 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
       var drawStatsNextFrame = null;
 
-      exports.alwaysAnimate = false;
+      exports.MyPerfBoxGlobal = { alwaysAnimate: false };
 
       Polymer({
         frame: function(now) {
           ringBuffer[frameIndex] = now;
 
-          if (exports.alwaysAnimate) {
+          if (exports.MyPerfBoxGlobal.alwaysAnimate) {
             if (frameIndex % 2 == 0)
               this.bl.backgroundColor = '#f00';
             else

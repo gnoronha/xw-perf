@@ -16,12 +16,19 @@ License: BSD-3-clause-Intel, see LICENSE.txt
       }
     </style>
     <paper-item id="item" on-tap="{{tap}}">
-      <paper-checkbox id="checkBox" label="{{ label }}" fill flex>
+      <paper-checkbox id="checkBox" label="{{ label }}" fill flex
+          on-core-change="{{onCoreChange}}">
       </paper-checkbox>
     </paper-item>
   </template>
   <script>
     Polymer({
+      get checked() {
+        return this.$.checkBox.checked;
+      },
+      onCoreChange: function(e) {
+        this.fire('core-change');
+      },
       tap: function(ev, detail, sender) {
         /* don't trigger if a child, i.e. the checkbox itself, is tapped */
         if (ev.target === sender) {
