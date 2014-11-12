@@ -28,6 +28,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="import" href="bower_components/paper-item/paper-item.html" />
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
 
+    <link rel="import" href="bower_components/my-utils/my-boolean-setting.html" />
     <link rel="import" href="bower_components/my-utils/my-perf-box.html" />
 
     <link rel="import" href="contacts-card.html" />
@@ -96,6 +97,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             <core-item>
               Other
             </core-item>
+            <my-boolean-setting id="alwaysAnimateCheck"
+                label="Always animate"
+                on-core-change="{{toggleAlwaysAnimate}}">
+            </my-boolean-setting>
           </div>
 
           <core-animated-pages main id="modePages" selected="0"
@@ -231,6 +236,9 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             toggleMenu: function() {
               this.$['my-drawer-panel'].togglePanel();
             },
+            toggleAlwaysAnimate: function() {
+              window.MyPerfBoxGlobal.alwaysAnimate = this.$.alwaysAnimateCheck.checked;
+            },
             data: [],
             favorites: [],
             ready: function() {
@@ -276,7 +284,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     </polymer-element>
     <my-app flex relative>
     </my-app>
-    <my-perf-box>
+    <my-perf-box id="perfBox">
     </my-perf-box>
   </body>
 </html>
