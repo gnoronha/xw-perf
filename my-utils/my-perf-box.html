@@ -62,11 +62,10 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
           if (drawStatsNextFrame) {
             drawStatsNextFrame = null;
-            var prev = [];
+            var prev = -1;
             var canvas = this.$['perf-canvas'];
             var ctx = canvas.getContext('2d');
             var HEIGHT = 64;
-            var SMOOTH = 3;
             ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, 400, 64);
 
@@ -83,8 +82,8 @@ License: BSD-3-clause-Intel, see LICENSE.txt
             for (var i = 1; i <= ringBuffer.length; i++) {
               var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
 
-              if (prev.length < 1) {
-                prev.push(nt);
+              if (prev == -1) {
+                prev = nt;
                 continue;
               }
 
@@ -95,7 +94,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                 continue;
               }
 
-              var dt = nt - prev[prev.length - 1];
+              var dt = nt - prev;
               var fps = Infinity;
               if (dt != 0) {
                 fps = 1000 / dt;
@@ -103,12 +102,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                 samples += 1;
               }
 
-              // Smooth it a little bit for the graph: base our fps figures
-              // on the average of the last SMOOTH frames
-              var dt = (nt - prev[0]) / prev.length;
-              prev.push(nt);
-              while (prev.length > SMOOTH)
-                prev.shift();
+              prev = nt;
 
               var fps = Infinity;
               if (dt != 0)
@@ -157,15 +151,15 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
             var mean = total / samples;
 
-            prev = [];
+            prev = -1;
             var squareDiffs = 0;
             var minFps = Infinity;
             var maxFps = 0;
             for (var i = 1; i <= ringBuffer.length; i++) {
               var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
 
-              if (prev.length < 1) {
-                prev.push(nt);
+              if (prev == -1) {
+                prev = nt;
                 continue;
               }
 
@@ -176,7 +170,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                 continue;
               }
 
-              var dt = nt - prev[prev.length - 1];
+              var dt = nt - prev;
               var fps = Infinity;
               if (dt != 0) {
                 fps = 1000 / dt;
@@ -189,8 +183,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                   maxFps = fps;
               }
 
-              prev.push(nt);
-              prev.shift();
+              prev = nt;
             }
 
             var stdDev = Math.sqrt(squareDiffs / samples);
