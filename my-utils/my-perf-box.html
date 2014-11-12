@@ -55,17 +55,18 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
           if (exports.MyPerfBoxGlobal.alwaysAnimate) {
             if (frameIndex % 2 == 0)
-              this.bl.backgroundColor = '#f00';
+              this.bl.backgroundColor = '#f0f';
             else
               this.bl.backgroundColor = '#0f0';
           }
 
           if (drawStatsNextFrame) {
             drawStatsNextFrame = null;
-            var prev = -1;
+            var nextTime = -1;
             var canvas = this.$['perf-canvas'];
             var ctx = canvas.getContext('2d');
             var HEIGHT = 64;
+            var WIDTH = 300;
             ctx.fillStyle = "#000";
             ctx.fillRect(0, 0, 400, 64);
 
@@ -79,22 +80,19 @@ License: BSD-3-clause-Intel, see LICENSE.txt
             var total = 0;
             var samples = 0;
 
-            for (var i = 1; i <= ringBuffer.length; i++) {
-              var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
+            nextTime = now;
+            for (var i = frameIndex - 1; ; i--) {
+              i = (ringBuffer.length + i) % ringBuffer.length;
+              if (i == frameIndex)
+                break;
+              var thisTime = ringBuffer[i];
 
-              if (prev == -1) {
-                prev = nt;
-                continue;
+              if (thisTime == 0) {
+                // skip unfilled portion of ring buffer
+                break;
               }
 
-              if (nt == 0) {
-                // skip unfilled portion of ring buffer: wrap around
-                // so that frameIndex + i = ringBufferLength ≡ 0 (mod length)
-                i = ringBuffer.length - frameIndex;
-                continue;
-              }
-
-              var dt = nt - prev;
+              var dt = nextTime - thisTime;
               var fps = Infinity;
               if (dt != 0) {
                 fps = 1000 / dt;
@@ -102,7 +100,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                 samples += 1;
               }
 
-              prev = nt;
+              nextTime = thisTime;
 
               var fps = Infinity;
               if (dt != 0)
@@ -143,34 +141,39 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                 ctx.fillStyle = "#0ff";
               }
 
+              // 1 pixel per 1/60 second so we get 1px at 60fps
+              var x = WIDTH - ((now - thisTime) * 60 / 1000);
+              var w = dt * 60 / 1000;
+
               if (fps > 60)
-                ctx.fillRect(i, HEIGHT - fps, 1, fps - 60 + 1);
+                ctx.fillRect(x, HEIGHT - fps, w, fps - 60 + 1);
               else
-                ctx.fillRect(i, HEIGHT - 60, 1, 60 - fps + 1);
+                ctx.fillRect(x, HEIGHT - 60, w, 60 - fps + 1);
+
+              // Don't go off the left-hand end of the graph
+              if (x < 0)
+                break;
             }
 
             var mean = total / samples;
 
-            prev = -1;
             var squareDiffs = 0;
             var minFps = Infinity;
             var maxFps = 0;
-            for (var i = 1; i <= ringBuffer.length; i++) {
-              var nt = ringBuffer[(frameIndex + i) % ringBuffer.length];
 
-              if (prev == -1) {
-                prev = nt;
-                continue;
+            nextTime = now;
+            for (var i = frameIndex - 1; ; i--) {
+              i = (ringBuffer.length + i) % ringBuffer.length;
+              if (i == frameIndex)
+                break;
+              var thisTime = ringBuffer[i];
+
+              if (thisTime == 0) {
+                // skip unfilled portion of ring buffer
+                break;
               }
 
-              if (nt == 0) {
-                // skip unfilled portion of ring buffer: wrap around
-                // so that frameIndex + i = ringBufferLength ≡ 0 (mod length)
-                i = ringBuffer.length - frameIndex;
-                continue;
-              }
-
-              var dt = nt - prev;
+              var dt = nextTime - thisTime;
               var fps = Infinity;
               if (dt != 0) {
                 fps = 1000 / dt;
@@ -183,7 +186,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                   maxFps = fps;
               }
 
-              prev = nt;
+              nextTime = thisTime;
             }
 
             var stdDev = Math.sqrt(squareDiffs / samples);
