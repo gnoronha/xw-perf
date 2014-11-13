@@ -43,6 +43,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
       'use strict';
       var ringBuffer = new Float64Array(300);
       var frameIndex = 0;
+      var firstTimeRound = true;
       var statsShowing = 0;
 
       var drawStatsNextFrame = null;
@@ -52,6 +53,13 @@ License: BSD-3-clause-Intel, see LICENSE.txt
       Polymer({
         frame: function(now) {
           ringBuffer[frameIndex] = now;
+
+          if (firstTimeRound && frameIndex == 0) {
+            var sinceEpoch = new Date().getTime();
+            var canvas = this.$['perf-canvas'];
+            var ctx = canvas.getContext('2d');
+            ctx.fillText('first frame drawn by JS at ' + (sinceEpoch % (60*1000)) + 'ms past the minute', 8, 40);
+          }
 
           if (exports.MyPerfBoxGlobal.alwaysAnimate) {
             if (frameIndex % 2 == 0)
@@ -219,13 +227,19 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
           requestAnimationFrame(this.frame.bind(this));
           frameIndex = (frameIndex + 1) % ringBuffer.length;
+          if (firstTimeRound && frameIndex == 0) {
+            firstTimeRound = false;
+          }
         },
 
         ready: function() {
           var canvas = this.$['perf-canvas'];
           var ctx = canvas.getContext('2d');
           ctx.textBaseline = 'top';
-          ctx.fillText('touch to update graph', 8, 8);
+          ctx.fillText('touch to update graph', 8, 10);
+          ctx.fillText('navigationStart was at ' + (performance.timing.navigationStart % (60*1000)) + 'ms past the minute', 8, 20);
+          var now = new Date().getTime();
+          ctx.fillText('this widget is ready at ' + (now % (60*1000)) + 'ms past the minute', 8, 30);
           requestAnimationFrame(this.frame.bind(this));
           this.bl = this.$.blinkenlight.style;
         },
