@@ -60,6 +60,21 @@ License: BSD-3-clause-Intel, see LICENSE.txt
         background: white;
         color: blue;
       }
+      #popupResults .resource {
+        color: purple;
+      }
+      #popupResults .measure {
+        color: black;
+      }
+      #popupResults .measure.measure_to_next_frame {
+        color: navy;
+      }
+      #popupResults .mark {
+        color: grey;
+      }
+      #popupResults .mark.mark_perf_frame {
+        color: blue;
+      }
     </style>
     <div id="blinkenlight">
     </div>
@@ -264,6 +279,8 @@ License: BSD-3-clause-Intel, see LICENSE.txt
           requestAnimationFrame(this.frame.bind(this));
           frameIndex = (frameIndex + 1) % ringBuffer.length;
           if (firstTimeRound && frameIndex == 0) {
+            performance.mark('finished doing first ' + ringBuffer.length +
+                ' frames');
             firstTimeRound = false;
           }
         },
@@ -297,21 +314,20 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
           for (var i = 0; i < entries.length; i++) {
             var e = entries[i];
-            s += (niceTime(e.startTime) + ' ' +
+            s += '<span class="' + e.entryType + ' ' + e.name + '">' +
+                (niceTime(e.startTime) + ' ' +
                 niceTime(e.duration) + ' ' +
                 e.entryType + ': ' +
-                e.name + '\n');
+                e.name + '</span>\n');
           }
 
-          console.log(s);
-
-          this.$.popupResults.innerText = s;
+          this.$.popupResults.innerHTML = s;
           this.$.popup.removeAttribute('hidden');
         },
 
         closePopup: function() {
           this.$.popup.setAttribute('hidden', '');
-          this.$.popupResults.innerText = '';
+          this.$.popupResults.innerHTML = '';
         },
       });
     })(window);

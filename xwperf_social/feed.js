@@ -181,7 +181,7 @@ Polymer('my-feed', {
       isRefresh: isRefresh,
     }
 
-    performance.mark('mark_load_begin_' + numberOfItems);
+    performance.mark('mark_feed_load_begin_' + numberOfItems);
 
     var tmp = [];
     for (var i = 0; i < numberOfItems; ++i) {
@@ -223,20 +223,31 @@ Polymer('my-feed', {
     }.bind(this);
 
     var onLoadEnd = function (ev) {
-      performance.mark('mark_feed_loadend');
+      performance.mark('mark_feed_read_as_text_end');
+      performance.measure('measure_feed_read_as_text',
+          'mark_feed_read_as_text_begin',
+          'mark_feed_read_as_text_end');
       this.loadFromJson(req, ev.target.result);
     }.bind(this);
 
     var onGetFileForRead = function (f) {
-      performance.mark('mark_feed_file_read');
+      performance.mark('mark_feed_get_file_for_read_end');
+      performance.measure('measure_feed_get_file_for_read',
+          'mark_feed_get_file_for_read_begin',
+          'mark_feed_get_file_for_read_end');
       var fr = new FileReader();
       fr.addEventListener('loadend', onLoadEnd);
       fr.addEventListener('error', onError);
+      performance.mark('mark_feed_read_as_text_begin');
       fr.readAsText(f, 'utf-8');
     }.bind(this);
 
     var onGetFileEntryForRead = function (f) {
-      performance.mark('mark_feed_file_entry_read');
+      performance.mark('mark_feed_get_entry_for_read_end');
+      performance.measure('measure_feed_get_entry_for_read',
+          'mark_feed_get_entry_for_read_begin',
+          'mark_feed_get_entry_for_read_end');
+      performance.mark('mark_feed_get_file_for_read_begin');
       f.file(onGetFileForRead, onFileSystemFailure);
     }.bind(this);
 
@@ -252,21 +263,32 @@ Polymer('my-feed', {
       if (w.position == 0) {
         // We've done the truncate but not the write. Come back to this
         // callback when the write has finished
+        performance.measure('measure_feed_truncate',
+            'mark_feed_truncate_begin', 'mark_feed_writeend');
+        performance.mark('mark_feed_json_stringify_begin');
         var json = JSON.stringify(tmp);
+        performance.mark('measure_feed_json_stringify',
+            'mark_feed_json_stringify_begin');
+        performance.mark('mark_feed_write_begin');
         w.write(new Blob([json]));
         return;
       }
 
+      performance.measure('measure_feed_write',
+          'mark_feed_write_begin', 'mark_feed_writeend');
+
+      performance.mark('mark_feed_get_entry_for_read_begin');
       this.fileSystem.root.getFile('latest.json', {}, onGetFileEntryForRead,
           onFileSystemFailure);
     }.bind(this);
 
     var onCreateWriter = function (w) {
-      performance.mark('mark_feed_create_writer');
+      performance.mark('mark_feed_create_writer_end');
       performance.measure('measure_feed_create_writer',
-          'mark_feed_file_entry_write', 'mark_feed_create_writer');
+          'mark_feed_create_writer_begin', 'mark_feed_create_writer_end');
       w.addEventListener('writeend', onWriteEnd);
       w.addEventListener('error', onError);
+      performance.mark('mark_feed_truncate_begin');
       w.truncate(0);
     }.bind(this);
 
@@ -274,12 +296,16 @@ Polymer('my-feed', {
       performance.mark('mark_feed_create_file_end');
       performance.measure('measure_feed_create_file',
           'mark_feed_create_file_begin');
-      performance.mark('mark_feed_file_entry_write');
+      performance.mark('mark_feed_create_writer_begin');
       f.createWriter(onCreateWriter, onFileSystemFailure);
     }.bind(this);
 
     var onRequestFileSystem = function (fs) {
-      performance.mark('mark_feed_file_system');
+      if (!this.fileSystem) {
+        performance.mark('mark_feed_get_file_system_end');
+        performance.measure('measure_feed_get_file_system',
+            'mark_feed_get_file_system_begin', 'mark_feed_get_file_system_end');
+      }
       this.fileSystem = fs;
       performance.mark('mark_feed_create_file_begin');
       fs.root.getFile('latest.json', {create: true},
@@ -289,6 +315,7 @@ Polymer('my-feed', {
     if (this.fileSystem) {
       onRequestFileSystem(this.fileSystem);
     } else if (window.webkitRequestFileSystem) {
+      performance.mark('mark_feed_get_file_system_begin');
       webkitRequestFileSystem(
           // our usage is actually temporary, but we're trying to exercise
           // functionality that would be used by apps wanting to save
@@ -310,10 +337,10 @@ Polymer('my-feed', {
 
   loadFromJson: function(req, json) {
     var tmp = JSON.parse(json);
-    performance.mark('mark_load_end_' + tmp.length);
-    performance.measure('measure_load_' + tmp.length,
-        'mark_load_begin_' + tmp.length,
-        'mark_load_end_' + tmp.length);
+    performance.mark('mark_feed_load_end_' + tmp.length);
+    performance.measure('measure_feed_load_' + tmp.length,
+        'mark_feed_load_begin_' + tmp.length,
+        'mark_feed_load_end_' + tmp.length);
 
     for (var i = 0; i < tmp.length; i++) {
       if (this.data.length > MAX_ITEMS)
