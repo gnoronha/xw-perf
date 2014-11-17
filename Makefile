@@ -9,6 +9,13 @@ XW_APPS = \
 
 XW_DEMOS = \
 	xwperf_app_widgets \
+	xwperf_transition_grid \
+	xwperf_transition_list \
+	xwperf_transition_music \
+	xwperf_transition_nested \
+	xwperf_transition_news \
+	xwperf_transition_quiz1 \
+	xwperf_transition_simple \
 	$(NULL)
 
 JAVA_APPS = \

@@ -1,0 +1,6 @@
+{
+  "name": "XW simple transitions",
+  "start_url": "index.html",
+  "display": "standalone",
+  "app_root": "."
+}

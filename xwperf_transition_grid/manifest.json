@@ -1,0 +1,6 @@
+{
+  "name": "XW hero: grid",
+  "start_url": "index.html",
+  "display": "standalone",
+  "app_root": "."
+}
