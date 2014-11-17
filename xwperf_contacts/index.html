@@ -186,11 +186,14 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             var loadedData = [];
 
             function onerror(err) {
+              performance.mark('mark_contacts_db_error');
               console.log('DB error: ' + err);
             };
 
+            performance.mark('mark_contacts_open_begin');
             var req = indexedDB.open('contacts', 1);
             req.onupgradeneeded = function(e) {
+              performance.mark('mark_contacts_onupgradeneeded_begin');
               db = e.target.result;
               e.target.transaction.onerror = onerror;
               try {
@@ -200,10 +203,19 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               var store = db.createObjectStore('contacts', {
                 autoIncrement: true,
               });
+              performance.mark('mark_contacts_onupgradeneeded_end');
+              performance.measure('measure_contacts_onupgradeneeded',
+                  'mark_contacts_onupgradeneeded_begin',
+                  'mark_contacts_onupgradeneeded_end');
             };
 
             req.onsuccess = function(e) {
+              performance.mark('mark_contacts_open_end');
+              performance.measure('measure_contacts_open',
+                  'mark_contacts_open_begin',
+                  'mark_contacts_open_end');
               db = e.target.result;
+              performance.mark('mark_contacts_insert_begin');
               var txn = db.transaction(['contacts'], 'readwrite');
               var store = txn.objectStore('contacts');
               store.clear();
@@ -212,6 +224,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               }
               txn.onerror = onerror;
               txn.oncomplete = function(e) {
+                performance.mark('mark_contacts_insert_end');
+              performance.measure('measure_contacts_insert',
+                  'mark_contacts_insert_begin',
+                  'mark_contacts_insert_end');
+                performance.mark('mark_contacts_read_begin');
                 var txn = db.transaction(['contacts']);
                 var store = txn.objectStore('contacts');
                 var readReq = store.openCursor();
@@ -222,12 +239,21 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                     cursor.continue();
                   }
                   else {
+                    performance.mark('mark_contacts_read_end');
+                    performance.measure('measure_contacts_read',
+                        'mark_contacts_read_begin',
+                        'mark_contacts_read_end');
+                    performance.mark('mark_contacts_copy_begin');
                     var favorites = [];
                     for (var i = 0; i < loadedData.length; i++) {
                       if (loadedData[i].favorite) {
                         favorites.push(loadedData[i]);
                       }
                     }
+                    performance.mark('mark_contacts_copy_end');
+                    performance.measure('measure_contacts_copy',
+                        'mark_contacts_copy_begin',
+                        'mark_contacts_copy_end');
                     cb(data, favorites);
                   }
                 };
