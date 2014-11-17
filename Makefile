@@ -6,20 +6,36 @@ XW_APPS = \
 	xwperf_contacts \
 	xwperf_social \
 	$(NULL)
+
+XW_DEMOS = \
+	xwperf_app_widgets \
+	$(NULL)
+
 JAVA_APPS = \
 	notxw_hello_world \
 	notxw_list \
 	notxw_starter \
 	$(NULL)
 
-XW_APKS = $(patsubst %,%_x86.apk,$(XW_APPS))
-JAVA_APKS = $(patsubst %,%.apk,$(JAVA_APPS))
+# We produce standalone .apks for the apps, but only shim .apks for the
+# demos.
+XW_APKS = \
+	$(patsubst %,dist/%.apk,$(XW_APPS)) \
+	$(patsubst %,dist/%_arm.apk,$(XW_APPS)) \
+	$(patsubst %,dist/%_x86.apk,$(XW_APPS)) \
+	$(patsubst %,dist/%.apk,$(XW_DEMOS)) \
+	$(NULL)
+JAVA_APKS = $(patsubst %,dist/%.apk,$(JAVA_APPS))
 
-all: $(XW_APKS)
-# can add $(JAVA_APKS) if desired
+all: xw java
+.PHONY: all
+xw: $(XW_APKS)
+.PHONY: xw
+java: $(JAVA_APKS)
+.PHONY: java
 
-$(XW_APKS): %_x86.apk: always
-	test -d dist || mkdir dist
+# no real dependency tracking yet so use "always"
+tmp-%/index.js: always
 	rm -fr build-$*/
 	mkdir build-$*/
 	rm -fr tmp-$*/
@@ -32,16 +48,29 @@ $(XW_APKS): %_x86.apk: always
 	mv tmp-$*/index.html build-$*/index.html
 	uglifyjs tmp-$*/index.js --screw-ie8 --compress --mangle \
 		--output build-$*/index.js
-	cd crosswalk && python ./make_apk.py \
-		--package=com.collabora.xwperf.$* \
-		--manifest=$(CURDIR)/build-$*/manifest.json \
-		--enable-remote-debugging \
-		--target-dir=$(CURDIR)/tmp-$* \
-		$(NULL)
-	mv tmp-$*/*_arm.apk dist/$*_arm.apk
-	mv tmp-$*/*_x86.apk dist/$*_x86.apk
 
-$(JAVA_APKS): %.apk: always
+define build_apk =
+	test -d dist || mkdir dist
+	cd crosswalk && python ./make_apk.py \
+		--package=com.collabora.xwperf.$1 \
+		--manifest=$(CURDIR)/build-$1/manifest.json \
+		--enable-remote-debugging \
+		--target-dir=$(CURDIR)/tmp-$1 \
+		$3 \
+		$(NULL)
+	mv tmp-$1/*.apk $2
+endef
+
+$(filter %_x86.apk,$(XW_APKS)): dist/%_x86.apk: tmp-%/index.js
+	$(call build_apk,$*,$@,--arch=x86)
+
+$(filter %_arm.apk,$(XW_APKS)): dist/%_arm.apk: tmp-%/index.js
+	$(call build_apk,$*,$@,--arch=arm)
+
+$(filter-out %_x86.apk %_arm.apk,$(XW_APKS)): dist/%.apk: tmp-%/index.js
+	$(call build_apk,$*,$@,--mode=shared)
+
+$(JAVA_APKS): dist/%.apk: always
 	cd $* && ant debug
 	mv $*/bin/$*-debug.apk dist/$*.apk
 
