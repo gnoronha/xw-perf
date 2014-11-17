@@ -198,24 +198,115 @@ Polymer('my-feed', {
       isRefresh: isRefresh,
     }
 
-    console.log('async-saving JSON...');
-    this.async(function() {
-      console.log('saving JSON...');
-      localStorage.setItem('posts', JSON.stringify(tmp));
+    function progress() {
+      console.log('[' + ((+(new Date())) - req.timeBefore) + '] ', arguments);
+    }
 
-      console.log('async-loading JSON...');
+    var onFileSystemFailure = function (e) {
+      console.log('failed to use FileSystem API:', e);
+      console.log('falling back to localStorage');
+      // progress('async-saving JSON...');
       this.async(function() {
-        console.log('loading JSON...');
-        this.loadFromJson(req, localStorage.getItem('posts'));
+        // progress('saving JSON...');
+        localStorage.setItem('posts', JSON.stringify(tmp));
+
+        // progress('async-loading JSON...');
+        this.async(function() {
+          // progress('loading JSON...');
+          this.loadFromJson(req, localStorage.getItem('posts'));
+        });
       });
-    });
+    }.bind(this);
+
+    var onError = function (ev) {
+      onFileSystemFailure(ev.target.error);
+    }.bind(this);
+
+    var onLoadEnd = function (ev) {
+      progress('got loadend');
+      this.loadFromJson(req, ev.target.result);
+    }.bind(this);
+
+    var onGetFileForRead = function (f) {
+      progress('got file');
+      var fr = new FileReader();
+      fr.addEventListener('loadend', onLoadEnd);
+      fr.addEventListener('error', onError);
+      fr.readAsText(f, 'utf-8');
+    }.bind(this);
+
+    var onGetFileEntryForRead = function (f) {
+      progress('got file entry');
+      f.file(onGetFileForRead, onFileSystemFailure);
+    }.bind(this);
+
+    var onWriteEnd = function (ev) {
+      progress('got writeend');
+      var w = ev.target;
+
+      if (w.error) {
+        // should have been handled by onError already
+        return;
+      }
+
+      if (w.position == 0) {
+        // We've done the truncate but not the write. Come back to this
+        // callback when the write has finished
+        var json = JSON.stringify(tmp);
+        w.write(new Blob([json]));
+        return;
+      }
+
+      this.fileSystem.root.getFile('latest.json', {}, onGetFileEntryForRead,
+          onFileSystemFailure);
+    }.bind(this);
+
+    var onCreateWriter = function (w) {
+      progress('got createWriter');
+      w.addEventListener('writeend', onWriteEnd);
+      w.addEventListener('error', onError);
+      w.truncate(0);
+    }.bind(this);
+
+    var onGetFileEntryForWrite = function (f) {
+      progress('got file entry');
+      f.createWriter(onCreateWriter, onFileSystemFailure);
+    }.bind(this);
+
+    var onRequestFileSystem = function (fs) {
+      progress('got filesystem');
+      this.fileSystem = fs;
+      fs.root.getFile('latest.json', {create: true},
+          onGetFileEntryForWrite, onFileSystemFailure);
+    }.bind(this);
+
+    if (this.fileSystem) {
+      onRequestFileSystem(this.fileSystem);
+    } else if (window.webkitRequestFileSystem) {
+      webkitRequestFileSystem(
+          // our usage is actually temporary, but we're trying to exercise
+          // functionality that would be used by apps wanting to save
+          // persistent files, so ask for persistence - but only in Crosswalk,
+          // because we have a persistent quota of 0 when prototyping
+          // in a normal browser
+          navigator.userAgent.indexOf('Crosswalk') > -1 ?
+            PERSISTENT :
+            TEMPORARY,
+          // according to tradition, this ought to be enough for anybody
+          640 * 1024,
+          onRequestFileSystem,
+          onFileSystemFailure);
+    }
+    else {
+      onFileSystemFailure(new Error('no webkitRequestFileSystem'));
+    }
   },
 
   loadFromJson: function(req, json) {
     var tmp = JSON.parse(json);
 
     var dt = +(new Date()) - req.timeBefore;
-    console.log('serialized and parsed ' + json.length + ' JSON records in ' + dt + ' ms');
+    console.log('serialized and parsed ' + tmp.length + ' JSON records in ' + dt + ' ms');
 
     for (var i = 0; i < tmp.length; i++) {
       if (this.data.length > MAX_ITEMS)
