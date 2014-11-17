@@ -177,7 +177,11 @@ Polymer('my-feed', {
   },
 
   addFakeListData: function(numberOfItems, isRefresh) {
-    performance.mark('mark_before_loading_' + numberOfItems);
+    var req = {
+      isRefresh: isRefresh,
+    }
+
+    performance.mark('mark_load_begin_' + numberOfItems);
 
     var tmp = [];
     for (var i = 0; i < numberOfItems; ++i) {
@@ -195,22 +199,20 @@ Polymer('my-feed', {
       };
     }
 
-    var req = {
-      isRefresh: isRefresh,
-    }
-
     var onFileSystemFailure = function (e) {
-      console.log('failed to use FileSystem API:', e);
-      console.log('falling back to localStorage');
-      performance.mark('mark_schedule_legacy_async_save');
       this.async(function() {
-        performance.mark('mark_legacy_async_save');
+        performance.mark('mark_legacy_save_begin');
         localStorage.setItem('posts', JSON.stringify(tmp));
+        performance.mark('mark_legacy_save_end');
+        performance.measure('measure_legacy_save', 'mark_legacy_save_begin',
+            'mark_legacy_save_end');
 
-        performance.mark('mark_schedule_legacy_async_load');
         this.async(function() {
-          performance.mark('mark_legacy_async_load');
+          performance.mark('mark_legacy_load_begin');
           this.loadFromJson(req, localStorage.getItem('posts'));
+          performance.mark('mark_legacy_load_end');
+          performance.measure('measure_legacy_load', 'mark_legacy_load_begin',
+              'mark_legacy_load_end');
         });
       });
     }.bind(this);
@@ -261,12 +263,17 @@ Polymer('my-feed', {
 
     var onCreateWriter = function (w) {
       performance.mark('mark_feed_create_writer');
+      performance.measure('measure_feed_create_writer',
+          'mark_feed_file_entry_write', 'mark_feed_create_writer');
       w.addEventListener('writeend', onWriteEnd);
       w.addEventListener('error', onError);
       w.truncate(0);
     }.bind(this);
 
     var onGetFileEntryForWrite = function (f) {
+      performance.mark('mark_feed_create_file_end');
+      performance.measure('measure_feed_create_file',
+          'mark_feed_create_file_begin');
       performance.mark('mark_feed_file_entry_write');
       f.createWriter(onCreateWriter, onFileSystemFailure);
     }.bind(this);
@@ -274,6 +281,7 @@ Polymer('my-feed', {
     var onRequestFileSystem = function (fs) {
       performance.mark('mark_feed_file_system');
       this.fileSystem = fs;
+      performance.mark('mark_feed_create_file_begin');
       fs.root.getFile('latest.json', {create: true},
           onGetFileEntryForWrite, onFileSystemFailure);
     }.bind(this);
@@ -302,7 +310,10 @@ Polymer('my-feed', {
 
   loadFromJson: function(req, json) {
     var tmp = JSON.parse(json);
-    performance.mark('mark_after_loading_' + tmp.length);
+    performance.mark('mark_load_end_' + tmp.length);
+    performance.measure('measure_load_' + tmp.length,
+        'mark_load_begin_' + tmp.length,
+        'mark_load_end_' + tmp.length);
 
     for (var i = 0; i < tmp.length; i++) {
       if (this.data.length > MAX_ITEMS)

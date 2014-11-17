@@ -32,11 +32,44 @@ License: BSD-3-clause-Intel, see LICENSE.txt
         left: 1px;
         top: 0px;
       }
+      #popupCloseButton {
+        position: absolute;
+        top: 0;
+        height: 32px;
+        width: calc(100% - 32px);
+        background: blue;
+        color: white;
+        font-size: 32px;
+        text-align: center;
+        padding: 0.5em;
+      }
+      #popupResults {
+        position: absolute;
+        top: 64px;
+        margin: 1em;
+      }
+      #popup {
+        position: fixed;
+        height: 100%;
+        width: 100%;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        overflow: scroll;
+        background: white;
+        color: blue;
+      }
     </style>
     <div id="blinkenlight">
     </div>
     <canvas id="perf-canvas" height="64" width="400">
     </canvas>
+    <div id="popup" hidden>
+      <div id="popupCloseButton" on-tap="{{ closePopup }}">Close</div>
+      <pre id="popupResults">
+      </pre>
+    </div>
   </template>
   <script>
     (function(exports){
@@ -50,12 +83,18 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
       exports.MyPerfBoxGlobal = { alwaysAnimate: false };
 
+      function niceTime(t) {
+        return (t / 1000).toFixed(6);
+      }
+
       Polymer({
         frame: function(now) {
           ringBuffer[frameIndex] = now;
 
           if (firstTimeRound) {
-            performance.mark('mark_perf_frame_' + frameIndex);
+            if (frameIndex != 0)
+              performance.measure('measure_to_next_frame', 'mark_perf_frame');
+            performance.mark('mark_perf_frame');
           }
 
           if (exports.MyPerfBoxGlobal.alwaysAnimate) {
@@ -241,6 +280,38 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 
         tap: function () {
           drawStatsNextFrame = this;
+        },
+
+        openPopup: function () {
+          var s = '';
+          var start = performance.timing.navigationStart;
+          s += 'Start time (ms since the epoch): ' + start + '\n';
+          // so we can compare it with the timestamp from notxw_starter
+          s += 'Start time (ms since the last whole minute): ' + (start % 60000) + '\n';
+          s += '\n';
+
+          var entries = performance.getEntries();
+
+          s += '  time   duration\n';
+          s += '-------- --------\n';
+
+          for (var i = 0; i < entries.length; i++) {
+            var e = entries[i];
+            s += (niceTime(e.startTime) + ' ' +
+                niceTime(e.duration) + ' ' +
+                e.entryType + ': ' +
+                e.name + '\n');
+          }
+
+          console.log(s);
+
+          this.$.popupResults.innerText = s;
+          this.$.popup.removeAttribute('hidden');
+        },
+
+        closePopup: function() {
+          this.$.popup.setAttribute('hidden', '');
+          this.$.popupResults.innerText = '';
         },
       });
     })(window);

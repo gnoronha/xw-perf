@@ -36,7 +36,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
     <link rel="stylesheet" href="app.css" />
   </head>
-  <body class="polymer-ui-body-text" fullbleed layout vertical>
+  <body class="polymer-ui-body-text" fullbleed layout vertical
+      onLoad="performance.mark('mark_load'); performance.measure('measure_load', 'navigationStart', 'mark_load')">
     <polymer-element name="my-app">
       <template>
         <style type="text/css">
@@ -84,6 +85,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                 <paper-menu-button icon="more-vert" halign="right">
                   <paper-item on-tap="{{ refresh }}">Refresh</paper-item>
                   <paper-item on-tap="{{ goToSettings }}">Settings</paper-item>
+                  <paper-item on-tap="{{ goToPerf }}">Performance</paper-item>
                   <my-boolean-setting id="alwaysAnimateCheck"
                       label="Always animate"
                       on-core-change="{{toggleAlwaysAnimate}}">
@@ -149,6 +151,9 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
           goToSettings: function() {
             this.$.activityPages.selected = Page.SETTINGS;
           },
+          goToPerf: function() {
+            window.document.getElementById('perfBox').openPopup();
+          },
         });
 
         })(window);
@@ -156,7 +161,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     </polymer-element>
     <my-app flex relative>
     </my-app>
-    <my-perf-box>
+    <my-perf-box id="perfBox">
     </my-perf-box>
   </body>
 </html>

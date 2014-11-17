@@ -36,7 +36,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="import" href="contacts-item.html" />
     <link rel="stylesheet" href="app.css" />
   </head>
-  <body class="polymer-ui-body-text" fullbleed layout vertical>
+  <body class="polymer-ui-body-text" fullbleed layout vertical
+      onLoad="performance.mark('mark_load'); performance.measure('measure_load', 'navigationStart', 'mark_load')">
     <polymer-element name="my-app">
       <template>
         <style type="text/css">
@@ -82,25 +83,29 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
         <core-drawer-panel id="my-drawer-panel">
           <div drawer id="my-drawer">
-            <core-item>
+            <paper-item>
               Options
-            </core-item>
-            <core-item>
+            </paper-item>
+            <paper-item>
               Settings
-            </core-item>
-            <core-item>
+            </paper-item>
+            <paper-item>
               Preferences
-            </core-item>
-            <core-item>
+            </paper-item>
+            <paper-item>
               Misc
-            </core-item>
-            <core-item>
+            </paper-item>
+            <paper-item>
               Other
-            </core-item>
+            </paper-item>
+            <hr />
             <my-boolean-setting id="alwaysAnimateCheck"
                 label="Always animate"
                 on-core-change="{{toggleAlwaysAnimate}}">
             </my-boolean-setting>
+            <paper-item on-tap="{{goToPerf}}">
+              Performance
+            </paper-item>
           </div>
 
           <core-animated-pages main id="modePages" selected="0"
@@ -277,6 +282,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               this.$.modePages.selected = 0;
             },
             settingsActivated: function(e) {
+            },
+
+            goToPerf: function() {
+              window.document.getElementById('perfBox').openPopup();
             },
           });
         })();
