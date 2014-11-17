@@ -177,6 +177,8 @@ Polymer('my-feed', {
   },
 
   addFakeListData: function(numberOfItems, isRefresh) {
+    performance.mark('mark_before_loading_' + numberOfItems);
+
     var tmp = [];
     for (var i = 0; i < numberOfItems; ++i) {
       var who = getRandomItem(people);
@@ -194,41 +196,37 @@ Polymer('my-feed', {
     }
 
     var req = {
-      timeBefore: +(new Date()),
       isRefresh: isRefresh,
-    }
-
-    function progress() {
-      console.log('[' + ((+(new Date())) - req.timeBefore) + '] ', arguments);
     }
 
     var onFileSystemFailure = function (e) {
       console.log('failed to use FileSystem API:', e);
       console.log('falling back to localStorage');
-      // progress('async-saving JSON...');
+      performance.mark('mark_schedule_legacy_async_save');
       this.async(function() {
-        // progress('saving JSON...');
+        performance.mark('mark_legacy_async_save');
         localStorage.setItem('posts', JSON.stringify(tmp));
 
-        // progress('async-loading JSON...');
+        performance.mark('mark_schedule_legacy_async_load');
         this.async(function() {
-          // progress('loading JSON...');
+          performance.mark('mark_legacy_async_load');
           this.loadFromJson(req, localStorage.getItem('posts'));
         });
       });
     }.bind(this);
 
     var onError = function (ev) {
+      performance.mark('mark_feed_error');
       onFileSystemFailure(ev.target.error);
     }.bind(this);
 
     var onLoadEnd = function (ev) {
-      progress('got loadend');
+      performance.mark('mark_feed_loadend');
       this.loadFromJson(req, ev.target.result);
     }.bind(this);
 
     var onGetFileForRead = function (f) {
-      progress('got file');
+      performance.mark('mark_feed_file_read');
       var fr = new FileReader();
       fr.addEventListener('loadend', onLoadEnd);
       fr.addEventListener('error', onError);
@@ -236,12 +234,12 @@ Polymer('my-feed', {
     }.bind(this);
 
     var onGetFileEntryForRead = function (f) {
-      progress('got file entry');
+      performance.mark('mark_feed_file_entry_read');
       f.file(onGetFileForRead, onFileSystemFailure);
     }.bind(this);
 
     var onWriteEnd = function (ev) {
-      progress('got writeend');
+      performance.mark('mark_feed_writeend');
       var w = ev.target;
 
       if (w.error) {
@@ -262,19 +260,19 @@ Polymer('my-feed', {
     }.bind(this);
 
     var onCreateWriter = function (w) {
-      progress('got createWriter');
+      performance.mark('mark_feed_create_writer');
       w.addEventListener('writeend', onWriteEnd);
       w.addEventListener('error', onError);
       w.truncate(0);
     }.bind(this);
 
     var onGetFileEntryForWrite = function (f) {
-      progress('got file entry');
+      performance.mark('mark_feed_file_entry_write');
       f.createWriter(onCreateWriter, onFileSystemFailure);
     }.bind(this);
 
     var onRequestFileSystem = function (fs) {
-      progress('got filesystem');
+      performance.mark('mark_feed_file_system');
       this.fileSystem = fs;
       fs.root.getFile('latest.json', {create: true},
           onGetFileEntryForWrite, onFileSystemFailure);
@@ -304,9 +302,7 @@ Polymer('my-feed', {
 
   loadFromJson: function(req, json) {
     var tmp = JSON.parse(json);
-
-    var dt = +(new Date()) - req.timeBefore;
-    console.log('serialized and parsed ' + tmp.length + ' JSON records in ' + dt + ' ms');
+    performance.mark('mark_after_loading_' + tmp.length);
 
     for (var i = 0; i < tmp.length; i++) {
       if (this.data.length > MAX_ITEMS)

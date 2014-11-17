@@ -249,11 +249,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               // the item count, and perform bidirection mapping between
               // dense 0-based index and raw data.
               // TODO: future work: fork core-list as my-db-list?
-              var timeBefore = +(new Date());
+              window.performance.mark('mark_before_db_access');
               passThroughDatabase(data, (function (data, favorites) {
-                var dt = +(new Date()) - timeBefore;
-                console.log('serialized and parsed ' + data.length + ' IndexedDB records in ' + dt + ' ms');
-
+                window.performance.mark('mark_after_db_access');
+                window.performance.measure('measure_db_access',
+                    'mark_before_db_access', 'mark_after_db_access');
                 this.data = data;
                 this.favorites = favorites;
                 this.$.allList.refresh();

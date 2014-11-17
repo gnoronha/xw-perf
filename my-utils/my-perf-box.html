@@ -54,11 +54,8 @@ License: BSD-3-clause-Intel, see LICENSE.txt
         frame: function(now) {
           ringBuffer[frameIndex] = now;
 
-          if (firstTimeRound && frameIndex == 0) {
-            var sinceEpoch = new Date().getTime();
-            var canvas = this.$['perf-canvas'];
-            var ctx = canvas.getContext('2d');
-            ctx.fillText('first frame drawn by JS at ' + (sinceEpoch % (60*1000)) + 'ms past the minute', 8, 40);
+          if (firstTimeRound) {
+            performance.mark('mark_perf_frame_' + frameIndex);
           }
 
           if (exports.MyPerfBoxGlobal.alwaysAnimate) {
@@ -237,9 +234,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
           var ctx = canvas.getContext('2d');
           ctx.textBaseline = 'top';
           ctx.fillText('touch to update graph', 8, 10);
-          ctx.fillText('navigationStart was at ' + (performance.timing.navigationStart % (60*1000)) + 'ms past the minute', 8, 20);
-          var now = new Date().getTime();
-          ctx.fillText('this widget is ready at ' + (now % (60*1000)) + 'ms past the minute', 8, 30);
+          performance.mark('mark_my_perf_box_ready');
           requestAnimationFrame(this.frame.bind(this));
           this.bl = this.$.blinkenlight.style;
         },
