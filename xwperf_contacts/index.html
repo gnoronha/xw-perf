@@ -26,6 +26,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
     <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
     <link rel="import" href="bower_components/paper-item/paper-item.html" />
+    <link rel="import" href="bower_components/paper-shadow/paper-shadow.html" />
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
 
     <link rel="import" href="bower_components/my-utils/my-boolean-setting.html" />
@@ -103,7 +104,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         </contacts-datagen>
 
         <core-drawer-panel id="my-drawer-panel">
-          <div drawer id="my-drawer">
+          <div drawer id="my-drawer" z=2>
+            <paper-shadow z="1"></paper-shadow>
             <paper-item>
               Options
             </paper-item>
