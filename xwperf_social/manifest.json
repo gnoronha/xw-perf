@@ -2,5 +2,14 @@
   "name": "XW Social demo",
   "start_url": "index.html",
   "display": "standalone",
-  "app_root": "."
+  "app_root": ".",
+  "launch_screen": {
+    "ready_when": "user-interactive",
+    "landscape": {
+      "background_color": "#ff0000"
+    },
+    "portrait": {
+      "background_color": "#0000ff"
+    }
+  }
 }
