@@ -47,7 +47,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     </style>
 
     <paper-focusable layout horizontal center relative flex
-        id="clickable" active="{{ clickableActive }}">
+        id="clickable" on-tap="{{ clickableTapped }}">
       <template if="{{ model.avatar}}">
         <div class="avatar" style="background-image: url(avatars/{{ model.avatar }});">
         </div>
@@ -78,10 +78,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     Polymer({
       favicon: false,
 
-      clickableActive: false,
-      clickableActiveChanged: function () {
-        if (this.$.clickable.active)
-          this.fire('activated');
+      clickableTapped: function () {
+        this.fire('activated');
       },
 
       getInitial: function(value) {
