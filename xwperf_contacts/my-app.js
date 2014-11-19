@@ -132,10 +132,12 @@ Polymer({
       myPages.selected = myTabs.selected;
     });
   },
+
   itemActivated: function(e) {
-    this.$.card.model = e.detail.item.model;
+    this.$.card.model = e.target.model;
     this.$.modePages.selected = 1;
   },
+
   backToLists: function(e) {
     this.$.modePages.selected = 0;
   },
@@ -152,12 +154,14 @@ Polymer({
       this.clearSearch();
     } else {
       this.searching = true;
-      this.$.searchInput.focus();
+      this.async(function() {
+        this.$.searchInput.focus();
+      });
     }
   },
 
   clearSearch: function() {
-    this.$.searchInput.value = '';
+    this.$.searchInput.inputValue = this.$.searchInput.value = '';
     this.$.searchInput.commit();
     this.updateSearch();
   },

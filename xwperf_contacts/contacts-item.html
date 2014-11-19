@@ -8,6 +8,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 <link rel="import" href="bower_components/core-icon/core-icon.html" />
 <link rel="import" href="bower_components/core-icons/core-icons.html" />
 <link rel="import" href="bower_components/paper-button/paper-button.html" />
+<link rel="import" href="bower_components/paper-focusable/paper-focusable.html" />
 <polymer-element name="contacts-item" attributes="model favicon"
     horizontal layout center>
   <template>
@@ -32,13 +33,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       }
       #fave {
         color: #2196f3;
+        margin-left: 16px;
       }
       #not-fave {
         color: #bbdefb;
-      }
-      .fave {
-        width: 64px;
-        height: 64px;
+        margin-left: 16px;
       }
       :host {
         height: 72px;
@@ -47,8 +46,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       }
     </style>
 
-    <div layout horizontal center relative flex class="item"
-        on-tap="activate">
+    <paper-focusable layout horizontal center relative flex
+        id="clickable" active="{{ clickableActive }}">
       <template if="{{ model.avatar}}">
         <div class="avatar" style="background-image: url(avatars/{{ model.avatar }});">
         </div>
@@ -62,7 +61,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       <div class="text" id="text">
         {{ model.name }}
       </div>
-    </div>
+    </paper-focusable>
 
     <template if="{{ favicon && model.favorite }}">
       <paper-icon-button icon="star" id="fave" on-tap="{{ toggleFavorite }}">
@@ -78,14 +77,18 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
   <script>
     Polymer({
       favicon: false,
+
+      clickableActive: false,
+      clickableActiveChanged: function () {
+        if (this.$.clickable.active)
+          this.fire('activated');
+      },
+
       getInitial: function(value) {
         return (value || 'x')[0].toUpperCase();
       },
       toggleFavorite: function() {
-        this.favorite = !this.favorite;
-      },
-      activate: function(e) {
-        this.fire('activated');
+        this.model.favorite = !this.model.favorite;
       },
     });
   </script>

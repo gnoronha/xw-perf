@@ -176,9 +176,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
                   <section layout>
                     <core-list data="{{filteredFavorites}}" id="favoritesList"
-                        height="72" on-core-activate="{{itemActivated}}">
+                        height="72">
                       <template>
-                        <contacts-item model="{{model}}">
+                        <contacts-item model="{{model}}"
+                          on-activated="{{itemActivated}}">
                         </contacts-item>
                       </template>
                     </core-list>
@@ -186,9 +187,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
                   <section layout>
                     <core-list data="{{filteredData}}" id="allList"
-                        height="72" on-core-activate="{{itemActivated}}">
+                        height="72">
                       <template>
-                        <contacts-item model="{{model}}" favicon>
+                        <contacts-item model="{{model}}" favicon
+                          on-activated="{{itemActivated}}">
                         </contacts-item>
                       </template>
                     </core-list>
