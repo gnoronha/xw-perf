@@ -88,6 +88,13 @@ function passThroughDatabase(data, cb) {
 }
 
 Polymer({
+  publish: {
+    searching: {
+      default: false,
+      reflect: true,
+    },
+  },
+
   toggleMenu: function() {
     this.$['my-drawer-panel'].togglePanel();
   },
@@ -96,6 +103,8 @@ Polymer({
   },
   data: [],
   favorites: [],
+  filteredData: [],
+  filteredFavorites: [],
   ready: function() {
     var data = this.$.data.data;
 
@@ -111,8 +120,7 @@ Polymer({
           'mark_before_db_access', 'mark_after_db_access');
       this.data = data;
       this.favorites = favorites;
-      this.$.allList.refresh();
-      this.$.favoritesList.refresh();
+      this.updateSearch();
     }).bind(this));
 
     this.$.favoritesList.scrollTarget = this.$['my-header-panel'];
@@ -136,6 +144,50 @@ Polymer({
 
   goToPerf: function() {
     window.document.getElementById('perfBox').openPopup();
+  },
+
+  toggleSearch: function() {
+    if (this.searching) {
+      this.searching = false;
+      this.clearSearch();
+    } else {
+      this.searching = true;
+      this.$.searchInput.focus();
+    }
+  },
+
+  clearSearch: function() {
+    this.$.searchInput.value = '';
+    this.$.searchInput.commit();
+    this.updateSearch();
+  },
+
+  updateSearch: function() {
+    var key = this.$.searchInput.inputValue;
+    if (this.searching && key) {
+      var filteredData = [];
+      var filteredFavorites = [];
+
+      for (var i = 0; i < this.data.length; i++) {
+        var c = this.data[i];
+
+        if (c.name.toLocaleLowerCase().indexOf(key.toLocaleLowerCase()) > -1) {
+          filteredData.push(c);
+
+          if (c.favorite)
+            filteredFavorites.push(c);
+        }
+      }
+
+      this.filteredData = filteredData;
+      this.filteredFavorites = filteredFavorites;
+    } else {
+      this.filteredData = this.data;
+      this.filteredFavorites = this.favorites;
+    }
+
+    this.$.allList.refresh();
+    this.$.favoritesList.refresh();
   },
 });
 

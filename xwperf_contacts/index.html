@@ -76,6 +76,27 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
           #my-drawer {
             padding: 0 0.5em;
           }
+          #searchBox {
+            transition: width 0.3s, padding 0.3s;
+            width: 0;
+            overflow: hidden;
+            padding: 0;
+          }
+          #searchBoxInner {
+            border-radius: 8px;
+            padding: 4px;
+            background: white;
+            color: #000;
+            width: 100%;
+          }
+          #searchInput {
+            font-size: 1rem;
+            padding: 0;
+          }
+          :host([searching]) #searchBox {
+            width: 50%;
+            padding: 8px;
+          }
         </style>
 
         <contacts-datagen id="data">
@@ -118,7 +139,18 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                       id="sideMenuButton">
                   </paper-icon-button>
                   <div flex>Contacts</div>
-                  <paper-icon-button icon="search"></paper-icon-button>
+                  <div id="searchBox">
+                    <div id="searchBoxInner" layout horizontal>
+                      <paper-input label="Search" id="searchInput"
+                        on-input="{{ updateSearch }}" flex>
+                      </paper-input>
+                      <paper-icon-button icon="backspace"
+                        on-tap="{{ clearSearch }}">
+                      </paper-icon-button>
+                    </div>
+                  </div>
+                  <paper-icon-button icon="search" on-tap="{{ toggleSearch }}">
+                  </paper-icon-button>
 
                   <paper-tabs class="bottom fit" selected="0" flex id="my-tabs">
                     <paper-tab>
@@ -143,7 +175,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                   selected="0" layout>
 
                   <section layout>
-                    <core-list data="{{favorites}}" id="favoritesList"
+                    <core-list data="{{filteredFavorites}}" id="favoritesList"
                         height="72" on-core-activate="{{itemActivated}}">
                       <template>
                         <contacts-item model="{{model}}">
@@ -153,7 +185,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                   </section>
 
                   <section layout>
-                    <core-list data="{{data}}" id="allList"
+                    <core-list data="{{filteredData}}" id="allList"
                         height="72" on-core-activate="{{itemActivated}}">
                       <template>
                         <contacts-item model="{{model}}" favicon>
