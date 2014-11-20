@@ -1,0 +1,150 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation. All rights reserved.
+
+License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
+-->
+
+    <link rel="import" href="bower_components/core-animated-pages/core-animated-pages.html" />
+    <link rel="import" href="bower_components/core-animated-pages/transitions/slide-from-right.html" />
+    <link rel="import" href="bower_components/core-header-panel/core-header-panel.html" />
+    <link rel="import" href="bower_components/core-icons/core-icons.html" />
+    <link rel="import" href="bower_components/core-item/core-item.html" />
+    <link rel="import" href="bower_components/core-list/core-list.html" />
+    <link rel="import" href="bower_components/core-toolbar/core-toolbar.html">
+    <link rel="import" href="bower_components/paper-checkbox/paper-checkbox.html" />
+    <link rel="import" href="bower_components/paper-button/paper-button.html" />
+    <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html" />
+    <link rel="import" href="bower_components/paper-item/paper-item.html" />
+    <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html" />
+
+    <link rel="import" href="bower_components/my-utils/my-perf-box.html" />
+
+    <link rel="import" href="item.html" />
+    <link rel="import" href="feed.html" />
+    <link rel="import" href="my-item-list.html" />
+    <link rel="import" href="my-settings-tab.html" />
+
+    <link rel="stylesheet" href="app.css" />
+
+    <polymer-element name="my-app">
+      <template>
+        <style type="text/css">
+          /*
+          * {
+            outline: 1px dotted #f0f;
+          }
+          */
+          core-header-panel {
+            position: absolute;
+            overflow: hidden;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+          }
+          core-toolbar {
+            left: 0;
+            right: 0;
+            width: 100%;
+            background-color: #607d8b;
+            color: white;
+          }
+          .no-button {
+            width: 40px;
+          }
+          #my-list {
+            /* not keeping up is less jarring if this matches the items */
+            background-color: white;
+          }
+        </style>
+        <my-feed id="myFeed">
+        </my-feed>
+
+        <main flex>
+        <core-animated-pages id="activityPages" selected="0"
+            transitions="cross-fade" fit>
+
+          <section id="activityMain">
+            <core-header-panel id="my-header-panel" cross-fade>
+              <core-toolbar id="my-toolbar">
+                <div class="no-button"></div>
+                <div flex>Social</div>
+                <paper-menu-button icon="more-vert" halign="right">
+                  <paper-item on-tap="{{ refresh }}">Refresh</paper-item>
+                  <paper-item on-tap="{{ goToSettings }}">Settings</paper-item>
+                  <paper-item on-tap="{{ goToPerf }}">Performance</paper-item>
+                  <my-boolean-setting id="alwaysAnimateCheck"
+                      label="Always animate"
+                      on-core-change="{{toggleAlwaysAnimate}}">
+                  </my-boolean-setting>
+                </paper-menu-button>
+              </core-toolbar>
+
+              <section layout id="my-list-section">
+                <my-item-list id="my-list">
+                  <template>
+                    <my-item model="{{ model }}" index="{{ index }}">
+                    </my-item>
+                  </template>
+                </my-item-list>
+              </section>
+            </core-header-panel>
+          </section>
+
+          <section id="activitySettings">
+            <core-header-panel cross-fade>
+              <core-toolbar>
+                <paper-icon-button icon="arrow-back" on-tap="{{ goToFeed }}">
+                </paper-icon-button>
+                <div flex>Settings</div>
+              </core-toolbar>
+
+              <my-settings-tab>
+              </my-settings-tab>
+            </core-header-panel>
+          </section>
+        </core-animated-pages>
+        </main>
+
+      </template>
+      <script>
+        (function(exports) {
+        'use strict';
+
+        var Page = {
+          FEED: 0,
+          SETTINGS: 1,
+        };
+
+        Polymer({
+          toggleAlwaysAnimate: function() {
+            window.MyPerfBoxGlobal.alwaysAnimate = this.$.alwaysAnimateCheck.checked;
+          },
+          ready: function() {
+            var myList = this.$['my-list'];
+            this.data = this.$.myFeed.data;
+            myList.scrollTarget = this.$['my-header-panel'];
+            myList.feed = this.$.myFeed;
+            // this should really be triggered by assigning the scroll target
+            // but this will do...
+            myList.go();
+          },
+          refresh: function() {
+            this.$['my-list'].refreshContent();
+          },
+          goToFeed: function() {
+            this.$.activityPages.selected = Page.FEED;
+          },
+          goToSettings: function() {
+            this.$.activityPages.selected = Page.SETTINGS;
+          },
+          goToPerf: function() {
+            window.document.getElementById('perfBox').openPopup();
+          },
+        });
+
+        })(window);
+      </script>
+    </polymer-element>

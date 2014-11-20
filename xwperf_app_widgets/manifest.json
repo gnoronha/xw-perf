@@ -1,6 +1,6 @@
 {
   "name": "xwperf_app_widgets",
-  "start_url": "index.html",
+  "start_url": "main.html",
   "icons": [{
     "src": "icon.png",
     "type": "image/png"

@@ -42,7 +42,7 @@ java: $(JAVA_APKS)
 .PHONY: java
 
 # no real dependency tracking yet so use "always"
-tmp-%/index.js: always
+tmp-%/main.js: always
 	rm -fr build-$*/
 	mkdir build-$*/
 	rm -fr tmp-$*/
@@ -50,11 +50,25 @@ tmp-%/index.js: always
 	cp -a avatars build-$*/
 	cp -a $*/manifest.json build-$*/
 	cp -a LICENSE.txt build-$*/
-	cd $* && vulcanize --csp --inline --strip -o ../tmp-$*/index.html \
-		index.html
-	mv tmp-$*/index.html build-$*/index.html
-	uglifyjs tmp-$*/index.js --screw-ie8 --compress --mangle \
-		--output build-$*/index.js
+	cd $* && vulcanize --csp --inline --strip -o ../tmp-$*/main.html \
+		main.html
+	mv tmp-$*/main.html build-$*/main.html
+	uglifyjs tmp-$*/main.js --screw-ie8 --compress --mangle \
+		--output build-$*/main.js
+	if [ -e $*/index.html ]; then \
+		set -e; \
+		cp $*/index.html build-$*/; \
+		mkdir -p build-$*/bower_components/my-utils/; \
+		cp my-utils/my-perf* \
+			build-$*/bower_components/my-utils/; \
+	fi
+	if [ -e $*/index.js ]; then \
+		uglifyjs $*/index.html --screw-ie8 --compress --mangle \
+			--output build-$*/index.js; \
+	fi
+	if [ -e $*/index.css ]; then \
+		cssmin < $*/index.css > build-$*/index.css; \
+	fi
 
 define build_apk =
 	test -d dist || mkdir dist
@@ -68,13 +82,13 @@ define build_apk =
 	mv tmp-$1/*.apk $2
 endef
 
-$(filter %_x86.apk,$(XW_APKS)): dist/%_x86.apk: tmp-%/index.js
+$(filter %_x86.apk,$(XW_APKS)): dist/%_x86.apk: tmp-%/main.js
 	$(call build_apk,$*,$@,--arch=x86)
 
-$(filter %_arm.apk,$(XW_APKS)): dist/%_arm.apk: tmp-%/index.js
+$(filter %_arm.apk,$(XW_APKS)): dist/%_arm.apk: tmp-%/main.js
 	$(call build_apk,$*,$@,--arch=arm)
 
-$(filter-out %_x86.apk %_arm.apk,$(XW_APKS)): dist/%.apk: tmp-%/index.js
+$(filter-out %_x86.apk %_arm.apk,$(XW_APKS)): dist/%.apk: tmp-%/main.js
 	$(call build_apk,$*,$@,--mode=shared)
 
 $(JAVA_APKS): dist/%.apk: always
