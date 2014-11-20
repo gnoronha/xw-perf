@@ -5,38 +5,18 @@
 (function(exports){
 'use strict';
 
-var ringBuffer = new Float64Array(300);
-var frameIndex = 0;
-var firstTimeRound = true;
-var statsShowing = 0;
-
-var drawStatsNextFrame = null;
-
-exports.MyPerfBoxGlobal = { alwaysAnimate: false };
+var g = window.MyPerfBoxGlobal;
 
 function niceTime(t) {
   return (t / 1000).toFixed(6);
 }
 
 Polymer({
-  frame: function(now) {
-    ringBuffer[frameIndex] = now;
+  drawStats: function (now) {
+      g.drawStatsNextFrame = null;
+      var ringBuffer = g.ringBuffer;
+      var frameIndex = g.getFrameIndex();
 
-    if (firstTimeRound) {
-      if (frameIndex != 0)
-        performance.measure('measure_to_next_frame', 'mark_perf_frame');
-      performance.mark('mark_perf_frame');
-    }
-
-    if (exports.MyPerfBoxGlobal.alwaysAnimate) {
-      if (frameIndex % 2 == 0)
-        this.bl.backgroundColor = '#f0f';
-      else
-        this.bl.backgroundColor = '#0f0';
-    }
-
-    if (drawStatsNextFrame) {
-      drawStatsNextFrame = null;
       var nextTime = -1;
       var canvas = this.$['perf-canvas'];
       var ctx = canvas.getContext('2d');
@@ -190,15 +170,6 @@ Polymer({
           ', min = ' + minFps.toFixed(2) +
           ', max = ' + maxFps.toFixed(2),
           8, 48);
-    }
-
-    requestAnimationFrame(this.frame.bind(this));
-    frameIndex = (frameIndex + 1) % ringBuffer.length;
-    if (firstTimeRound && frameIndex == 0) {
-      performance.mark('finished doing first ' + ringBuffer.length +
-          ' frames');
-      firstTimeRound = false;
-    }
   },
 
   ready: function() {
@@ -207,12 +178,12 @@ Polymer({
     ctx.textBaseline = 'top';
     ctx.fillText('touch to update graph', 8, 10);
     performance.mark('mark_my_perf_box_ready');
-    requestAnimationFrame(this.frame.bind(this));
-    this.bl = this.$.blinkenlight.style;
+
+    this.drawStatsCallback = this.drawStats.bind(this);
   },
 
   tap: function () {
-    drawStatsNextFrame = this;
+    g.drawStatsNextFrame = this.drawStatsCallback;
   },
 
   openPopup: function () {

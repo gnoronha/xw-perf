@@ -6,6 +6,8 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 -->
 <link rel="import" href="../polymer/polymer.html" />
 
+<link rel="import" href="my-perf-collector.html" />
+
 <polymer-element name="my-perf-box" on-tap="tap">
   <template>
     <style>
@@ -18,14 +20,6 @@ License: BSD-3-clause-Intel, see LICENSE.txt
       }
       #perf-text {
         margin: 0px;
-      }
-      #blinkenlight {
-        position: absolute;
-        display: inline-block;
-        height: 64px;
-        width: 1px;
-        left: 0px;
-        top: 0px;
       }
       #perf-canvas {
         position: absolute;
@@ -76,8 +70,6 @@ License: BSD-3-clause-Intel, see LICENSE.txt
         color: blue;
       }
     </style>
-    <div id="blinkenlight">
-    </div>
     <canvas id="perf-canvas" height="64" width="400">
     </canvas>
     <div id="popup" hidden>
