@@ -16,12 +16,26 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
     <link rel="import" href="bower_components/my-utils/my-perf-collector.html" />
 
+    <style>
+      body {
+        background: yellow;
+      }
+      my-app {
+        opacity: 1;
+        transition: opacity 3000ms;
+        background: white;
+      }
+      my-app:unresolved {
+        opacity: 0;
+      }
+    </style>
+
     <link rel="import" href="main.html" />
   </head>
   <body class="polymer-ui-body-text" fullbleed layout vertical
       onLoad="performance.mark('mark_load'); performance.measure('measure_load', 'navigationStart', 'mark_load')">
 
-    <my-app flex relative>
+    <my-app flex relative unresolved>
     </my-app>
 
     <my-perf-box id="perfBox">
