@@ -312,11 +312,13 @@ Polymer('my-feed', {
           onGetFileEntryForWrite, onFileSystemFailure);
     }.bind(this);
 
+    var rfs = window.requestFileSystem || window.webkitRequestFileSystem;
+
     if (this.fileSystem) {
       onRequestFileSystem(this.fileSystem);
-    } else if (window.webkitRequestFileSystem) {
+    } else if (rfs) {
       performance.mark('mark_feed_get_file_system_begin');
-      webkitRequestFileSystem(
+      rfs(
           // our usage is actually temporary, but we're trying to exercise
           // functionality that would be used by apps wanting to save
           // persistent files, so ask for persistence - but only in Crosswalk,
