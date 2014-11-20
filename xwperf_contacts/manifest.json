@@ -4,7 +4,7 @@
   "display": "standalone",
   "app_root": ".",
   "launch_screen": {
-    "ready_when": "first-paint",
+    "ready_when": "complete",
     "landscape": {
       "background_color": "#ff0000"
     },

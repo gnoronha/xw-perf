@@ -14,32 +14,53 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json" />
 
-    <link rel="import" href="bower_components/my-utils/my-perf-collector.html" />
-
     <style>
       body {
-        background: yellow;
+        background: #ffffff;
+      }
+      #topPlaceholder {
+        position: absolute;
+        top: 0;
+        height: 64px;
+        background-color: #607d8b;
+        width: 100%;
       }
       my-app {
         opacity: 1;
-        transition: opacity 3000ms;
+        transition: opacity 300ms;
         background: white;
+        position: absolute;
+        top: 0;
+        height: calc(100% - 64px);
+        width: 100%;
+      }
+      my-perf-box {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        height: 64px;
       }
       my-app:unresolved {
         opacity: 0;
       }
     </style>
 
+    <script async src="bower_components/my-utils/my-perf-collector.js">
+    </script>
+
     <link rel="import" href="main.html" />
   </head>
-  <body class="polymer-ui-body-text" fullbleed layout vertical
+  <body class="polymer-ui-body-text"
       onLoad="performance.mark('mark_load'); performance.measure('measure_load', 'navigationStart', 'mark_load')">
 
-    <my-app flex relative unresolved>
-    </my-app>
+    <div id="topPlaceholder">
+    </div>
 
     <my-perf-box id="perfBox">
     </my-perf-box>
+
+    <my-app>
+    </my-app>
 
   </body>
 </html>

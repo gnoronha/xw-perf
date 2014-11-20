@@ -2,7 +2,7 @@
 //
 // License: BSD-3-clause-Intel, see LICENSE.txt
 
-(function(exports){
+window.MyPerfBoxGlobal || (function(exports){
 'use strict';
 
 performance.mark('mark_perf_collector_setup_begin');

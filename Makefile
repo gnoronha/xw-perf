@@ -50,7 +50,9 @@ tmp-%/main.js: always
 	cp -a avatars build-$*/
 	cp -a $*/manifest.json build-$*/
 	cp -a LICENSE.txt build-$*/
-	cd $* && vulcanize --csp --inline --strip -o ../tmp-$*/main.html \
+	cd $* && vulcanize --csp --inline --strip \
+		--config=../vulcanize.json \
+		-o ../tmp-$*/main.html \
 		main.html
 	mv tmp-$*/main.html build-$*/main.html
 	uglifyjs tmp-$*/main.js --screw-ie8 --compress --mangle \

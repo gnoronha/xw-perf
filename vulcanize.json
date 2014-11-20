@@ -1,0 +1,7 @@
+{
+  "excludes": {
+    "scripts": [
+      "/my-perf-collector\\.js$"
+    ]
+  }
+}
