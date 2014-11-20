@@ -4,12 +4,11 @@
   "display": "standalone",
   "app_root": ".",
   "launch_screen": {
-    "ready_when": "complete",
-    "landscape": {
-      "background_color": "#ff0000"
-    },
-    "portrait": {
-      "background_color": "#0000ff"
+    "ready_when": "custom",
+    "default": {
+      "background_color": "#ffffff",
+      "image": "placeholder.png",
+      "image_border": "128px 64px stretch"
     }
   }
 }

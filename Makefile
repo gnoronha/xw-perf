@@ -57,6 +57,9 @@ tmp-%/main.js: always
 	mv tmp-$*/main.html build-$*/main.html
 	uglifyjs tmp-$*/main.js --screw-ie8 --compress --mangle \
 		--output build-$*/main.js
+	if [ -e $*/placeholder.png ]; then \
+		cp $*/placeholder.png build-$*/; \
+	fi
 	if [ -e $*/index.html ]; then \
 		set -e; \
 		cp $*/index.html build-$*/; \

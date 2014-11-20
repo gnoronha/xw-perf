@@ -16,18 +16,18 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
     <style>
       body {
-        background: #ffffff;
+        background: white;
       }
       #topPlaceholder {
         position: absolute;
         top: 0;
         height: 64px;
+        color: white;
+        text-align: center;
         background-color: #607d8b;
         width: 100%;
       }
       my-app {
-        opacity: 1;
-        transition: opacity 300ms;
         background: white;
         position: absolute;
         top: 0;
@@ -40,7 +40,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         bottom: 0;
         height: 64px;
       }
-      my-app:unresolved {
+      my-app, my-perf-box {
+        transition: opacity 300ms;
+        opacity: 1;
+      }
+      my-app:unresolved, my-perf-box:unresolved {
         opacity: 0;
       }
     </style>
@@ -54,13 +58,20 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       onLoad="performance.mark('mark_load'); performance.measure('measure_load', 'navigationStart', 'mark_load')">
 
     <div id="topPlaceholder">
+      • • •
     </div>
 
-    <my-perf-box id="perfBox">
-    </my-perf-box>
+    <script>
+      performance.mark('mark_cutover_from_launch');
+      if (window.screen && window.screen.show)
+        window.screen.show();
+    </script>
 
     <my-app>
     </my-app>
+
+    <my-perf-box id="perfBox">
+    </my-perf-box>
 
   </body>
 </html>
