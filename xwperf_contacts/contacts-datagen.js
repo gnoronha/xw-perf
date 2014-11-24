@@ -201,8 +201,10 @@ Polymer({
       var email;
       if (Math.random() < 0.5) {
         email = forename.toLowerCase() + '@' + getRandomItem(emailPrefixes) + getRandomItem(domains);
-      } else {
+      } else if (Math.random() < 0.5) {
         email = forename.toLowerCase() + '.' + surname.toLowerCase().replace('\'', '').replace('í', 'i') + '@' + getRandomItem(emailPrefixes) + getRandomItem(domains);
+      } else {
+        email = '';
       }
 
       var avatar = null;
