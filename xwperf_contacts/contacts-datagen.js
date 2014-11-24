@@ -200,9 +200,11 @@ Polymer({
 
       var email;
       if (Math.random() < 0.5) {
+        // 50% of contacts are like alice@example.com
         email = forename.toLowerCase() + '@' + getRandomItem(emailPrefixes) + getRandomItem(domains);
       } else if (Math.random() < 0.5) {
-        email = forename.toLowerCase() + '.' + surname.toLowerCase().replace('\'', '').replace('í', 'i') + '@' + getRandomItem(emailPrefixes) + getRandomItem(domains);
+        // 25% of contacts are like alice.smith@example.com
+        email = forename.toLowerCase() + '.' + surname.toLowerCase().replace("'", '').replace('í', 'i') + '@' + getRandomItem(emailPrefixes) + getRandomItem(domains);
       } else {
         email = '';
       }
