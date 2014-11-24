@@ -13,10 +13,13 @@ var blinkenlightAttached = false;
 var blinkenlightStyle = blinkenlight.style;
 blinkenlightStyle.position = 'fixed';
 blinkenlightStyle.left = '0';
+blinkenlightStyle.right = '1px';
 blinkenlightStyle.top = '0';
+blinkenlightStyle.bottom = '1px';
 blinkenlightStyle.width = '1px';
 blinkenlightStyle.height = '1px';
 blinkenlightStyle.color = '#000';
+blinkenlightStyle.transform = 'translate3d(0px, 0px, 0px)';
 
 var ringBuffer = new Float64Array(300);
 var frameIndex = 0;
