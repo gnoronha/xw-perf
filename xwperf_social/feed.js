@@ -353,9 +353,9 @@ Polymer('my-feed', {
       doRequestFileSystem();
     }
 
-    if (window.webkitStorageInfo) {
+    if (navigator.webkitPersistentStorage) {
       performance.mark('mark_feed_request_quota_begin');
-      window.webkitStorageInfo.requestQuota(PERSISTENT, quota, onQuota,
+      navigator.webkitPersistentStorage.requestQuota(quota, onQuota,
           onFileSystemFailure);
     } else {
       mode = TEMPORARY;
