@@ -213,7 +213,11 @@ Polymer({
       }
 
       // https://en.wikipedia.org/wiki/Fictitious_telephone_number
-      var phone = '+44 7700 900' + Math.floor(Math.random() * 999);
+      var phone = '';
+      if (Math.random() < 0.75) {
+        phone = '+44 7700 900' + Math.floor(Math.random() * 999);
+      }
+
       var birthday = '';
       if (Math.random() < 0.2) {
         birthday = new Date();
