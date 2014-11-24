@@ -212,6 +212,14 @@ Polymer({
 
       // https://en.wikipedia.org/wiki/Fictitious_telephone_number
       var phone = '+44 7700 900' + Math.floor(Math.random() * 999);
+      var birthday = '';
+      if (Math.random() < 0.2) {
+        birthday = new Date();
+        // uniformly random between 1970-01-01 and 2000-01-01
+        birthday.setTime(Math.random() * new Date(2000, 1, 1).getTime());
+        // e.g. 1980-01-31
+        birthday = birthday.toISOString().slice(0, 10);
+      }
 
       this.data.push({
         name: forename + ' ' + surname,
@@ -220,6 +228,7 @@ Polymer({
         color: getRandomItem(possibleAvatarColors),
         phone: phone,
         favorite: (i < 10),
+        birthday: birthday,
       });
       this.data.sort(function (a, b) {
         if (a.name > b.name)

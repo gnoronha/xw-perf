@@ -65,6 +65,21 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         height: 66.666vw;
         margin: 0;
       }
+      .datePicker {
+        max-width: 20em;
+      }
+      .datePicker label {
+        display: inline-block;
+        color: #757575;
+      }
+      .datePicker span {
+        display: inline-block;
+      }
+      .datePicker input {
+        display: inline-block;
+        margin-left: auto;
+        margin-right: 0;
+      }
     </style>
 
     <core-media-query query="max-width: {{responsiveWidth}}"
@@ -111,6 +126,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               value="{{model.email}}"></paper-input>
           <paper-input label="Phone" floatingLabel type="tel"
               value="{{model.phone}}"></paper-input>
+          <p class="datePicker" layout relative horizontal>
+            <label for="birthday">Birthday </label>
+            <span flex></span>
+            <input type="date" id="birthday" value="{{model.birthday}}" />
+          </p>
 
           <paper-shadow z="{{ narrow ? 1 : 0 }}"></paper-shadow>
         </div>
