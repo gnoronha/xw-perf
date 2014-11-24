@@ -177,6 +177,7 @@ Polymer('my-feed', {
   },
 
   addFakeListData: function(numberOfItems, isRefresh) {
+    var that = this;
     var req = {
       isRefresh: isRefresh,
     }
@@ -200,35 +201,37 @@ Polymer('my-feed', {
     }
 
     var onFileSystemFailure = function (e) {
-      this.async(function() {
+      console.log(e);
+
+      that.async(function() {
         performance.mark('mark_legacy_save_begin');
         localStorage.setItem('posts', JSON.stringify(tmp));
         performance.mark('mark_legacy_save_end');
         performance.measure('measure_legacy_save', 'mark_legacy_save_begin',
             'mark_legacy_save_end');
 
-        this.async(function() {
+        that.async(function() {
           performance.mark('mark_legacy_load_begin');
-          this.loadFromJson(req, localStorage.getItem('posts'));
+          that.loadFromJson(req, localStorage.getItem('posts'));
           performance.mark('mark_legacy_load_end');
           performance.measure('measure_legacy_load', 'mark_legacy_load_begin',
               'mark_legacy_load_end');
         });
       });
-    }.bind(this);
+    }
 
     var onError = function (ev) {
       performance.mark('mark_feed_error');
       onFileSystemFailure(ev.target.error);
-    }.bind(this);
+    }
 
     var onLoadEnd = function (ev) {
       performance.mark('mark_feed_read_as_text_end');
       performance.measure('measure_feed_read_as_text',
           'mark_feed_read_as_text_begin',
           'mark_feed_read_as_text_end');
-      this.loadFromJson(req, ev.target.result);
-    }.bind(this);
+      that.loadFromJson(req, ev.target.result);
+    }
 
     var onGetFileForRead = function (f) {
       performance.mark('mark_feed_get_file_for_read_end');
@@ -240,7 +243,7 @@ Polymer('my-feed', {
       fr.addEventListener('error', onError);
       performance.mark('mark_feed_read_as_text_begin');
       fr.readAsText(f, 'utf-8');
-    }.bind(this);
+    }
 
     var onGetFileEntryForRead = function (f) {
       performance.mark('mark_feed_get_entry_for_read_end');
@@ -249,7 +252,7 @@ Polymer('my-feed', {
           'mark_feed_get_entry_for_read_end');
       performance.mark('mark_feed_get_file_for_read_begin');
       f.file(onGetFileForRead, onFileSystemFailure);
-    }.bind(this);
+    }
 
     var onWriteEnd = function (ev) {
       performance.mark('mark_feed_writeend');
@@ -278,9 +281,9 @@ Polymer('my-feed', {
           'mark_feed_write_begin', 'mark_feed_writeend');
 
       performance.mark('mark_feed_get_entry_for_read_begin');
-      this.fileSystem.root.getFile('latest.json', {}, onGetFileEntryForRead,
+      that.fileSystem.root.getFile('latest.json', {}, onGetFileEntryForRead,
           onFileSystemFailure);
-    }.bind(this);
+    }
 
     var onCreateWriter = function (w) {
       performance.mark('mark_feed_create_writer_end');
@@ -290,7 +293,7 @@ Polymer('my-feed', {
       w.addEventListener('error', onError);
       performance.mark('mark_feed_truncate_begin');
       w.truncate(0);
-    }.bind(this);
+    }
 
     var onGetFileEntryForWrite = function (f) {
       performance.mark('mark_feed_create_file_end');
@@ -298,42 +301,65 @@ Polymer('my-feed', {
           'mark_feed_create_file_begin');
       performance.mark('mark_feed_create_writer_begin');
       f.createWriter(onCreateWriter, onFileSystemFailure);
-    }.bind(this);
+    }
 
     var onRequestFileSystem = function (fs) {
-      if (!this.fileSystem) {
+      if (!that.fileSystem) {
         performance.mark('mark_feed_get_file_system_end');
         performance.measure('measure_feed_get_file_system',
             'mark_feed_get_file_system_begin', 'mark_feed_get_file_system_end');
       }
-      this.fileSystem = fs;
+      that.fileSystem = fs;
       performance.mark('mark_feed_create_file_begin');
       fs.root.getFile('latest.json', {create: true},
           onGetFileEntryForWrite, onFileSystemFailure);
-    }.bind(this);
-
-    var rfs = window.requestFileSystem || window.webkitRequestFileSystem;
-
-    if (this.fileSystem) {
-      onRequestFileSystem(this.fileSystem);
-    } else if (rfs) {
-      performance.mark('mark_feed_get_file_system_begin');
-      rfs(
-          // our usage is actually temporary, but we're trying to exercise
-          // functionality that would be used by apps wanting to save
-          // persistent files, so ask for persistence - but only in Crosswalk,
-          // because we have a persistent quota of 0 when prototyping
-          // in a normal browser
-          navigator.userAgent.indexOf('Crosswalk') > -1 ?
-            PERSISTENT :
-            TEMPORARY,
-          // according to tradition, this ought to be enough for anybody
-          640 * 1024,
-          onRequestFileSystem,
-          onFileSystemFailure);
     }
-    else {
-      onFileSystemFailure(new Error('no webkitRequestFileSystem'));
+
+    if (that.fileSystem) {
+      onRequestFileSystem(that.fileSystem);
+      return;
+    }
+
+    // according to tradition, this ought to be enough for anybody
+    var quota = 640 * 1024;
+    // we are actually only storing temporary data, but we want to instruct
+    // the engine to behave as though we were storing it permanently,
+    // because that's the functionality we're aiming to emulate
+    var mode = PERSISTENT;
+
+    var doRequestFileSystem = function () {
+      var rfs = window.requestFileSystem || window.webkitRequestFileSystem;
+
+      if (rfs) {
+        performance.mark('mark_feed_get_file_system_begin');
+        rfs(mode, quota, onRequestFileSystem,
+            onFileSystemFailure);
+      }
+      else {
+        onFileSystemFailure(new Error('no webkitRequestFileSystem'));
+      }
+    }
+
+    var onQuota = function (grantedBytes) {
+      performance.mark('mark_feed_request_quota_end');
+      performance.measure('measure_feed_request_quota',
+          'mark_feed_request_quota_begin', 'mark_feed_request_quota_end');
+      if (grantedBytes < quota) {
+        performance.mark('mark_feed_not_enough_quota');
+        console.log('only got ' + grantedBytes +
+            ' bytes of quota, falling back to temporary storage');
+        mode = TEMPORARY;
+      }
+      doRequestFileSystem();
+    }
+
+    if (window.webkitStorageInfo) {
+      performance.mark('mark_feed_request_quota_begin');
+      window.webkitStorageInfo.requestQuota(PERSISTENT, quota, onQuota,
+          onFileSystemFailure);
+    } else {
+      mode = TEMPORARY;
+      doRequestFileSystem();
     }
   },
 
