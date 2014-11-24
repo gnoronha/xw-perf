@@ -104,7 +104,7 @@ var surnames = [
   'Murphy',
   'Murray',
   'Owen',
-  'O\’Neill',
+  'O\'Neill',
   'Patel',
   'Paterson',
   'Phillips',
