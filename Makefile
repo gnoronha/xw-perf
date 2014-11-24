@@ -42,7 +42,7 @@ java: $(JAVA_APKS)
 .PHONY: java
 
 # no real dependency tracking yet so use "always"
-tmp-%/main.js: always
+tmp-%/vulcanized.js: always
 	rm -fr build-$*/
 	mkdir build-$*/
 	rm -fr tmp-$*/
@@ -50,23 +50,22 @@ tmp-%/main.js: always
 	cp -a avatars build-$*/
 	cp -a $*/manifest.json build-$*/
 	cp -a LICENSE.txt build-$*/
-	cd $* && vulcanize --csp --inline --strip \
+	cp -aL $*/* tmp-$*
+	cd tmp-$* && vulcanize --csp --inline --strip \
 		--config=../vulcanize.json \
-		-o ../tmp-$*/main.html \
+		-o vulcanized.html \
 		main.html
-	mv tmp-$*/main.html build-$*/main.html
-	uglifyjs tmp-$*/main.js --screw-ie8 --compress --mangle \
-		--output build-$*/main.js
+	mv tmp-$*/vulcanized.html build-$*/main.html
+	uglifyjs tmp-$*/vulcanized.js --screw-ie8 --compress --mangle \
+		--output build-$*/vulcanized.js
 	if [ -e $*/placeholder.png ]; then \
 		cp $*/placeholder.png build-$*/; \
 	fi
 	if [ -e $*/index.html ]; then \
-		set -e; \
 		cp $*/index.html build-$*/; \
-		mkdir -p build-$*/bower_components/my-utils/; \
-		cp my-utils/my-perf* \
-			build-$*/bower_components/my-utils/; \
 	fi
+	mkdir -p build-$*/bower_components/my-utils/
+	cp -aL my-utils/my-perf* build-$*/bower_components/my-utils/
 	if [ -e $*/index.js ]; then \
 		uglifyjs $*/index.html --screw-ie8 --compress --mangle \
 			--output build-$*/index.js; \
@@ -87,13 +86,13 @@ define build_apk =
 	mv tmp-$1/*.apk $2
 endef
 
-$(filter %_x86.apk,$(XW_APKS)): dist/%_x86.apk: tmp-%/main.js
+$(filter %_x86.apk,$(XW_APKS)): dist/%_x86.apk: tmp-%/vulcanized.js
 	$(call build_apk,$*,$@,--arch=x86)
 
-$(filter %_arm.apk,$(XW_APKS)): dist/%_arm.apk: tmp-%/main.js
+$(filter %_arm.apk,$(XW_APKS)): dist/%_arm.apk: tmp-%/vulcanized.js
 	$(call build_apk,$*,$@,--arch=arm)
 
-$(filter-out %_x86.apk %_arm.apk,$(XW_APKS)): dist/%.apk: tmp-%/main.js
+$(filter-out %_x86.apk %_arm.apk,$(XW_APKS)): dist/%.apk: tmp-%/vulcanized.js
 	$(call build_apk,$*,$@,--mode=shared)
 
 $(JAVA_APKS): dist/%.apk: always
