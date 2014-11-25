@@ -65,6 +65,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       performance.mark('mark_cutover_from_launch');
       if (window.screen && window.screen.show)
         window.screen.show();
+
+      window.addEventListener('polymer-ready', function (e) {
+        performance.mark('mark_polymer_ready');
+      });
     </script>
 
     <my-app>

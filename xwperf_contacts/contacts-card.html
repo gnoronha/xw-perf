@@ -148,6 +148,19 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
           responsiveWidth: '420px',
           narrow: { value: false, reflect: true },
         },
+
+        created: function () {
+          performance.mark('mark_contacts_card_created');
+        },
+
+        ready: function () {
+          performance.mark('mark_contacts_card_ready');
+        },
+
+        attached: function () {
+          performance.mark('mark_contacts_card_attached');
+        },
+
         queryMatchesChanged: function() {
           this.narrow = this.queryMatches;
         },

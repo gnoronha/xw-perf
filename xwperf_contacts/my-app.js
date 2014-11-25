@@ -111,7 +111,13 @@ Polymer({
   favorites: [],
   filteredData: [],
   filteredFavorites: [],
+
+  created: function () {
+    performance.mark('mark_contacts_app_created');
+  },
+
   ready: function() {
+    performance.mark('mark_contacts_app_ready');
     var data = this.$.data.data;
 
     // Ideally we'd make the core-list be directly backed by the
@@ -137,6 +143,10 @@ Polymer({
     myTabs.addEventListener('core-select', function() {
       myPages.selected = myTabs.selected;
     });
+  },
+
+  attached: function () {
+    performance.mark('mark_contacts_app_attached');
   },
 
   itemActivated: function(e) {
