@@ -9,8 +9,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 <link rel="import" href="bower_components/core-icons/core-icons.html" />
 <link rel="import" href="bower_components/paper-button/paper-button.html" />
 <link rel="import" href="bower_components/paper-focusable/paper-focusable.html" />
-<polymer-element name="contacts-item" attributes="model favicon"
-    horizontal layout center>
+<polymer-element name="contacts-item" attributes="model favicon">
   <template>
     <style>
       .avatar {
@@ -43,12 +42,19 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         color: #bbdefb;
         margin-left: 16px;
       }
+      .differentBackgrounds #fave, .differentBackgrounds #not-fave {
+        color: inherit;
+      }
       :host {
         height: 72px;
         overflow: hidden;
         display: block;
       }
     </style>
+
+    <div id="container" horizontal layout center fill
+        class="{{ { differentBackgrounds: g.differentBackgrounds } | tokenList }}"
+        style="{{ (g.differentBackgrounds ? model.color : {}) | styleObject }}">
 
     <paper-focusable layout horizontal center relative flex
         id="clickable" on-tap="{{ clickableTapped }}">
@@ -57,7 +63,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         </div>
       </template>
       <template if="{{ !model.avatar }}">
-        <div class="avatar" style="{{ model.color | styleObject }}">
+        <div class="avatar"
+            style="{{ (g.differentBackgrounds ? {} : model.color) | styleObject }}">
           {{ model.name | getInitial }}
         </div>
       </template>
@@ -77,10 +84,21 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       </paper-icon-button>
     </template>
 
+    </div>
+
   </template>
   <script>
+    (function () {
+
+    window.MyAppGlobal = (window.MyAppGlobal || {});
+    var g = window.MyAppGlobal;
+
     Polymer({
       favicon: false,
+
+      created: function () {
+        this.g = g;
+      },
 
       clickableTapped: function () {
         this.fire('activated');
@@ -93,6 +111,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         this.model.favorite = !this.model.favorite;
       },
     });
+
+    })();
   </script>
 </polymer-element>
 <!-- vim:set sw=2 sts=2 et: -->

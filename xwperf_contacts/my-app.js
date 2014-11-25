@@ -101,6 +101,12 @@ Polymer({
   toggleAlwaysAnimate: function() {
     window.MyPerfBoxGlobal.alwaysAnimate = this.$.alwaysAnimateCheck.checked;
   },
+
+  toggleDiffBackground: function () {
+    window.MyAppGlobal = (window.MyAppGlobal || {});
+    window.MyAppGlobal.differentBackgrounds = this.$.diffBackgroundCheck.checked;
+  },
+
   data: [],
   favorites: [],
   filteredData: [],
