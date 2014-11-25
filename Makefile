@@ -99,4 +99,10 @@ $(JAVA_APKS): dist/%.apk: always
 	cd $* && ant debug
 	mv $*/bin/$*-debug.apk dist/$*.apk
 
+xwperf_social/placeholder.png: placeholders.xcf Makefile
+	xcf2png -o $@ $< Social --percent 100 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 0
+
+xwperf_contacts/placeholder.png: placeholders.xcf Makefile
+	xcf2png -o $@ $< Social --percent 0 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 100
+
 .PHONY: always
