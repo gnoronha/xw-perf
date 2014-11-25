@@ -11,14 +11,15 @@ var blinkenlight = document.createElement('div');
 var blinkenlightAttached = false;
 
 var blinkenlightStyle = blinkenlight.style;
+blinkenlightStyle.zIndex = '100000';
 blinkenlightStyle.position = 'fixed';
 blinkenlightStyle.left = '0';
-blinkenlightStyle.right = '1px';
+blinkenlightStyle.right = '2px';
 blinkenlightStyle.top = '0';
-blinkenlightStyle.bottom = '1px';
-blinkenlightStyle.width = '1px';
-blinkenlightStyle.height = '1px';
-blinkenlightStyle.color = '#000';
+blinkenlightStyle.bottom = '2px';
+blinkenlightStyle.width = '2px';
+blinkenlightStyle.height = '2px';
+blinkenlightStyle.backgroundColor = '#000';
 blinkenlightStyle.transform = 'translate3d(0px, 0px, 0px)';
 
 var ringBuffer = new Float64Array(300);
