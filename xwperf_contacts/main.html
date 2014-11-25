@@ -19,6 +19,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="import" href="bower_components/paper-item/paper-item.html" />
     <link rel="import" href="bower_components/paper-shadow/paper-shadow.html" />
     <link rel="import" href="bower_components/paper-tabs/paper-tabs.html" />
+    <link rel="import" href="bower_components/paper-toast/paper-toast.html" />
 
     <link rel="import" href="bower_components/my-utils/my-boolean-setting.html" />
     <link rel="import" href="bower_components/my-utils/my-perf-box.html" />
@@ -92,22 +93,26 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         <contacts-datagen id="data">
         </contacts-datagen>
 
+        <paper-toast id="unimplementedToast" text="Not implemented"
+            on-tap="{{ hideUnimplementedToast }}">
+        </paper-toast>
+
         <core-drawer-panel id="my-drawer-panel">
           <div drawer id="my-drawer" z=2>
             <paper-shadow z="1"></paper-shadow>
-            <paper-item>
+            <paper-item on-tap="{{ showUnimplementedToast }}">
               Options
             </paper-item>
-            <paper-item>
+            <paper-item on-tap="{{ showUnimplementedToast }}">
               Settings
             </paper-item>
-            <paper-item>
+            <paper-item on-tap="{{ showUnimplementedToast }}">
               Preferences
             </paper-item>
-            <paper-item>
+            <paper-item on-tap="{{ showUnimplementedToast }}">
               Misc
             </paper-item>
-            <paper-item>
+            <paper-item on-tap="{{ showUnimplementedToast }}">
               Other
             </paper-item>
             <hr />

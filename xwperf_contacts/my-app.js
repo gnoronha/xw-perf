@@ -234,6 +234,16 @@ Polymer({
     if (this.filteredFavorites !== this.favorites)
       this.updateSearch();
   },
+
+  showUnimplementedToast: function () {
+    var toast = this.$.unimplementedToast;
+    this.async(function () { toast.show(); });
+  },
+
+  hideUnimplementedToast: function () {
+    var toast = this.$.unimplementedToast;
+    this.async(function () { toast.dismiss(); });
+  },
 });
 
 })();
