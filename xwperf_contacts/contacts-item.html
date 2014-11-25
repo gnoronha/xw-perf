@@ -109,6 +109,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       },
       toggleFavorite: function() {
         this.model.favorite = !this.model.favorite;
+        this.fire('favorite-changed', this);
       },
     });
 

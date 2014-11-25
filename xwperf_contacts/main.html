@@ -184,7 +184,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                         height="72">
                       <template>
                         <contacts-item model="{{model}}" favicon
-                          on-activated="{{itemActivated}}">
+                          on-activated="{{itemActivated}}"
+                          on-favorite-changed="{{favoriteChanged}}">
                         </contacts-item>
                       </template>
                     </core-list>
@@ -198,7 +199,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             </section>
 
             <section layout vertical>
-              <contacts-card id="card" on-done="{{backToLists}}" cross-fade>
+              <contacts-card id="card" on-done="{{backToLists}}" cross-fade
+                on-favorite-changed="{{favoriteChanged}}">
               </contacts-card>
             </section>
           </core-animated-pages>

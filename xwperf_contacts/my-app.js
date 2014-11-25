@@ -209,6 +209,31 @@ Polymer({
     this.$.allList.refresh();
     this.$.favoritesList.refresh();
   },
+
+  favoriteChanged: function (e) {
+    var model = e.detail.model;
+    var i;
+
+    if (model.favorite) {
+      i = this.favorites.indexOf(model);
+      if (i >= 0) {
+        this.favorites.splice(i, 1);
+      }
+    } else {
+      // re-filter the favorites to get them in the correct order
+      var favorites = [];
+      for (i = 0; i < this.data.length; i++) {
+        var data_i = this.data[i];
+        if (data_i.favorite) {
+          favorites.push(data_i);
+        }
+      }
+      this.favorites = favorites;
+    }
+
+    if (this.filteredFavorites !== this.favorites)
+      this.updateSearch();
+  },
 });
 
 })();
