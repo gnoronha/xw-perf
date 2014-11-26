@@ -2,7 +2,7 @@ buildscript {
     repositories {
         jcenter()
         maven {
-            url 'http://dl.bintray.com/amulyakhare/maven'
+            url 'https://dl.bintray.com/amulyakhare/maven'
         }
 
     }
