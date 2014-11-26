@@ -5,6 +5,8 @@
 (function() {
 'use strict';
 
+var N_TABS = 3;
+
 function passThroughDatabase(data, cb) {
   var db = null;
   var loadedData = [];
@@ -200,6 +202,69 @@ Polymer({
 
     if (this.filteredFavorites !== this.favorites)
       this.updateSearch();
+  },
+
+  // Based on app-dismissable-item
+  enteredView: function () {
+    var that = this;
+    var tabsContainer = this.$.tabsContainer;
+    var dragOffset = 0;
+
+    this.controller = new DismissController({
+      target: this.$.tabsViewport,
+      curve: 'ease-in-out',
+
+      onStart: function() {
+      },
+
+      onMove: function(newPos) {
+        that.moveTabs(newPos);
+      },
+
+      onCanceled: function() {
+        that.moveTabs(0);
+      },
+
+      onDismiss: function(direction) {
+        var sel = that.$.tabSelector.selected;
+
+        if (direction == 'right') {
+          sel -= 1;
+        }
+        if (direction == 'left') {
+          sel += 1;
+        }
+        if (!sel || sel <= 0)
+          sel = 0;
+        if (sel >= N_TABS - 1)
+          sel = N_TABS - 1;
+
+        that.$.tabSelector.selected = sel;
+        that.moveTabs(0);
+      },
+
+    });
+
+    this.moveTabs(0);
+  },
+
+  moveTabs: function (offset) {
+    // force numeric
+    var offs = offset || 0;
+
+    if (this.$.tabSelector.selected == 0 && offs > 0)
+      offs = 0;
+
+    if (this.$.tabSelector.selected == 2 && offs < 0)
+      offs = 0;
+
+    var position = offs - (this.$.tabSelector.selected * this.$.tabsViewport.offsetWidth);
+
+    this.$.tabsContainer.style.transform = 'translate3d(' + position + 'px,0,0)';
+  },
+
+  tabSelectorChanged: function () {
+    this.moveTabs(0);
   },
 });
 

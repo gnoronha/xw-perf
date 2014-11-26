@@ -59,4 +59,17 @@
   padding: 8px;
 }
 
+#tabsViewport {
+  width: 100%;
+  height: 100%;
+}
+
+#tabsContainer {
+  width: 300%;
+}
+
+#tabsContainer > section {
+  width: calc(100%/3);
+}
+
 /* vim:set sw=2 sts=2 et: */
