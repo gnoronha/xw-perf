@@ -1,6 +1,7 @@
 android_sdk := ${HOME}/android-sdk-linux-23.0.2
 android_ndk := ${HOME}/android-ndk-r10b
 
-export PATH := ${android_sdk}/tools:${android_sdk}/platform-tools:${android_sdk}:${PATH}
+export PATH := ${android_sdk}/tools:${android_sdk}/platform-tools:${android_sdk}:${android_sdk}/depot_tools:${HOME}/node_modules/vulcanize/bin:${PATH}
 
 export ANDROID_HOME := ${android_sdk}
+export XWALK_OS_ANDROID := 1
