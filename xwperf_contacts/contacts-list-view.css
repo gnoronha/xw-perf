@@ -1,0 +1,62 @@
+/* Copyright 2014 Intel Corporation. All rights reserved.
+ *
+ * License: BSD-3-clause-Intel, see LICENSE.txt
+ */
+
+#sideMenuButton {
+  visibility: hidden;
+}
+
+[narrow] #sideMenuButton {
+  visibility: visible;
+}
+
+#my-toolbar {
+  padding: 0px;
+}
+
+#my-toolbar-top {
+  height: 100%;
+  width: 100%;
+  padding: 0 16px;
+}
+
+#my-toolbar, #my-toolbar::shadow #topBar {
+  background-color: #388e3c;
+  color: white;
+}
+
+#my-tab-box paper-tab::shadow #ink {
+  color: #2196f3;
+}
+
+#my-tab-box paper-tabs::shadow #selectionBar {
+  background-color: #2196f3;
+}
+
+#searchBox {
+  transition: width 0.3s, padding 0.3s;
+  width: 0;
+  overflow: hidden;
+  padding: 0;
+}
+
+#searchBoxInner {
+  border-radius: 8px;
+  padding: 4px;
+  background: white;
+  color: #000;
+  width: 100%;
+}
+
+#searchInput {
+  font-size: 1rem;
+  padding: 0;
+}
+
+:host([searching]) #searchBox {
+  width: 50%;
+  padding: 8px;
+}
+
+/* vim:set sw=2 sts=2 et: */

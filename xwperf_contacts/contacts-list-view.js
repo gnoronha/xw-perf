@@ -78,7 +78,7 @@ function passThroughDatabase(data, cb) {
           performance.measure('measure_contacts_copy',
               'mark_contacts_copy_begin',
               'mark_contacts_copy_end');
-          cb(loadedData, favorites);
+          cb(data, favorites);
         }
       };
       readReq.onerror = onerror;
@@ -88,60 +88,97 @@ function passThroughDatabase(data, cb) {
 }
 
 Polymer({
-  toggleMenu: function() {
-    this.$['my-drawer-panel'].togglePanel();
-  },
-  toggleAlwaysAnimate: function() {
-    window.MyPerfBoxGlobal.alwaysAnimate = this.$.alwaysAnimateCheck.checked;
+  publish: {
+    searching: {
+      default: false,
+      reflect: true,
+    },
   },
 
-  toggleDiffBackground: function () {
-    window.MyAppGlobal = (window.MyAppGlobal || {});
-    window.MyAppGlobal.differentBackgrounds = this.$.diffBackgroundCheck.checked;
+  toggleMenu: function() {
+    this.fire('toggle-menu');
   },
+
+  data: [],
+  favorites: [],
+  filteredData: [],
+  filteredFavorites: [],
 
   created: function () {
-    performance.mark('mark_contacts_app_created');
+    performance.mark('mark_contacts_list_view_created');
   },
 
   ready: function() {
-    performance.mark('mark_contacts_app_ready');
-    var data = this.$.data.data;
+    performance.mark('mark_contacts_list_view_ready');
 
-    // Ideally we'd make the core-list be directly backed by the
-    // database rather than copying, but core-list wants to know
-    // the item count, and perform bidirection mapping between
-    // dense 0-based index and raw data.
-    // TODO: future work: fork core-list as my-db-list?
-    window.performance.mark('mark_before_db_access');
-    passThroughDatabase(data, (function (data, favorites) {
-      window.performance.mark('mark_after_db_access');
-      window.performance.measure('measure_db_access',
-          'mark_before_db_access', 'mark_after_db_access');
-      this.$.listView.setData(data, favorites);
-    }).bind(this));
+    this.$.favoritesList.scrollTarget = this.$['my-header-panel'];
+    this.$.allList.scrollTarget = this.$['my-header-panel'];
+
+    var myTabs = this.$['my-tabs'];
+  },
+
+  setData: function(data, favorites) {
+    this.data = data;
+    this.favorites = favorites;
+    this.updateSearch();
   },
 
   attached: function () {
-    performance.mark('mark_contacts_app_attached');
+    performance.mark('mark_contacts_list_view_attached');
   },
 
-  itemActivated: function(e, model) {
-    this.$.card.model = model;
-    this.$.modePages.selected = 1;
+  itemActivated: function(e) {
+    this.fire('item-activated', e.target.model);
   },
 
-  backToLists: function(e) {
-    this.$.modePages.selected = 0;
+  toggleSearch: function() {
+    if (this.searching) {
+      this.searching = false;
+      this.clearSearch();
+    } else {
+      this.searching = true;
+      this.async(function() {
+        this.$.searchInput.focus();
+      });
+    }
   },
 
-  goToPerf: function() {
-    window.document.getElementById('perfBox').openPopup();
+  clearSearch: function() {
+    this.$.searchInput.inputValue = this.$.searchInput.value = '';
+    this.$.searchInput.commit();
+    this.updateSearch();
+  },
+
+  updateSearch: function() {
+    var key = this.$.searchInput.inputValue;
+    if (this.searching && key) {
+      var filteredData = [];
+      var filteredFavorites = [];
+
+      for (var i = 0; i < this.data.length; i++) {
+        var c = this.data[i];
+
+        if (c.name.toLocaleLowerCase().indexOf(key.toLocaleLowerCase()) > -1) {
+          filteredData.push(c);
+
+          if (c.favorite)
+            filteredFavorites.push(c);
+        }
+      }
+
+      this.filteredData = filteredData;
+      this.filteredFavorites = filteredFavorites;
+    } else {
+      this.filteredData = this.data;
+      this.filteredFavorites = this.favorites;
+    }
+
+    this.$.allList.refresh();
+    this.$.favoritesList.refresh();
   },
 
   favoriteChanged: function (e) {
     var model = e.detail.model;
-
     var i;
 
     if (model.favorite) {
@@ -163,16 +200,6 @@ Polymer({
 
     if (this.filteredFavorites !== this.favorites)
       this.updateSearch();
-  },
-
-  showUnimplementedToast: function () {
-    var toast = this.$.unimplementedToast;
-    this.async(function () { toast.show(); });
-  },
-
-  hideUnimplementedToast: function () {
-    var toast = this.$.unimplementedToast;
-    this.async(function () { toast.dismiss(); });
   },
 });
 
