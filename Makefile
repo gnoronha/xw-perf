@@ -18,10 +18,14 @@ XW_DEMOS = \
 	xwperf_transition_simple \
 	$(NULL)
 
-JAVA_APPS = \
+ANT_APPS = \
 	notxw_hello_world \
 	notxw_list \
 	notxw_starter \
+	$(NULL)
+
+GRADLE_APPS = \
+	notxw_social \
 	$(NULL)
 
 # We produce standalone .apks for the apps, but only shim .apks for the
@@ -32,13 +36,14 @@ XW_APKS = \
 	$(patsubst %,dist/%_x86.apk,$(XW_APPS)) \
 	$(patsubst %,dist/%.apk,$(XW_DEMOS)) \
 	$(NULL)
-JAVA_APKS = $(patsubst %,dist/%.apk,$(JAVA_APPS))
+ANT_APKS = $(patsubst %,dist/%.apk,$(ANT_APPS))
+GRADLE_APKS = $(patsubst %,dist/%.apk,$(GRADLE_APPS))
 
 all: xw java
 .PHONY: all
 xw: $(XW_APKS)
 .PHONY: xw
-java: $(JAVA_APKS)
+java: $(ANT_APKS) $(GRADLE_APKS)
 .PHONY: java
 
 # no real dependency tracking yet so use "always"
@@ -95,9 +100,13 @@ $(filter %_arm.apk,$(XW_APKS)): dist/%_arm.apk: tmp-%/vulcanized.js
 $(filter-out %_x86.apk %_arm.apk,$(XW_APKS)): dist/%.apk: tmp-%/vulcanized.js
 	$(call build_apk,$*,$@,--mode=shared)
 
-$(JAVA_APKS): dist/%.apk: always
+$(ANT_APKS): dist/%.apk: always
 	cd $* && ant debug
 	mv $*/bin/$*-debug.apk dist/$*.apk
+
+$(GRADLE_APKS): dist/%.apk: always
+	cd $* && ./gradlew build -x lint
+	mv $*/app/build/outputs/apk/app-debug.apk dist/$*.apk
 
 xwperf_social/placeholder.png: placeholders.xcf Makefile
 	xcf2png -o $@ $< Social --percent 100 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 0
