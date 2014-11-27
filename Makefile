@@ -117,7 +117,7 @@ xwperf_contacts/placeholder.png: placeholders.xcf Makefile
 .PHONY: always
 
 INSTALLS = \
-	$(patsubst dist/%.apk,install/%.apk,$(XW_APKS)) \
+	$(patsubst %,install/%.apk,$(XW_APPS)) \
 	$(patsubst dist/%.apk,install/%.apk,$(ANT_APKS)) \
 	$(patsubst dist/%.apk,install/%.apk,$(GRADLE_APKS)) \
 	$(NULL)
