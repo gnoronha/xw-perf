@@ -17,14 +17,15 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 
 <link rel="import" href="contacts-item.html" />
 
+<script src="dynamics.js" type="text/javascript"></script>
+
 <polymer-element name="contacts-list-view" fit>
   <template>
     <link rel="stylesheet" href="contacts-list-view.css" />
 
-    <core-header-panel mode="waterfall-tall" tallClass="medium-tall"
-        id="my-header-panel" fit>
+    <div id="outer">
 
-      <core-toolbar id="my-toolbar">
+      <core-toolbar id="my-toolbar" class="medium-tall">
         <paper-icon-button icon="menu" on-tap="{{ toggleMenu }}"
             id="sideMenuButton">
         </paper-icon-button>
@@ -45,7 +46,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         <paper-icon-button icon="search" on-tap="{{ toggleSearch }}">
         </paper-icon-button>
 
-        <paper-tabs class="bottom fit" selected="0" flex id="my-tabs">
+        <paper-tabs class="bottom fit" selected="{{ $.tabSelector.selected }}" flex id="my-tabs"
+            on-core-select="{{ tabSelectorChanged }}">
           <paper-tab>
             <paper-icon-button icon="favorite">
             </paper-icon-button>
@@ -64,38 +66,47 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         </paper-tabs>
       </core-toolbar>
 
-      <core-animated-pages transitions="slide-from-right" id="my-pages"
-        selected="0" layout>
+      <core-selector id="tabSelector"
+        selected="0" target="{{$.tabsContainer}}"
+        excludedLocalNames="div">
+      </core-selector>
 
-        <section layout>
-          <core-list data="{{filteredFavorites}}" id="favoritesList"
-              height="72">
-            <template>
-              <contacts-item model="{{model}}"
-                on-activated="{{itemActivated}}">
-              </contacts-item>
-            </template>
-          </core-list>
-        </section>
+      <div id="tabsViewport">
 
-        <section layout>
-          <core-list data="{{filteredData}}" id="allList"
-              height="72">
-            <template>
-              <contacts-item model="{{model}}" favicon
-                on-activated="{{itemActivated}}"
-                on-favorite-changed="{{favoriteChanged}}">
-              </contacts-item>
-            </template>
-          </core-list>
-        </section>
+        <div id="tabsContainer">
+          <div id="tabsClickBarrier" hidden>
+          </div>
 
-        <section layout>
-          <div style="margin: 1em">groups are not yet implemented</div>
-        </section>
+          <section>
+            <core-list data="{{filteredFavorites}}" id="favoritesList"
+                height="72">
+              <template>
+                <contacts-item model="{{model}}"
+                  on-activated="{{itemActivated}}">
+                </contacts-item>
+              </template>
+            </core-list>
+          </section>
 
-      </core-animated-pages>
-    </core-header-panel>
+          <section>
+            <core-list data="{{filteredData}}" id="allList"
+                height="72">
+              <template>
+                <contacts-item model="{{model}}" favicon
+                  on-activated="{{itemActivated}}"
+                  on-favorite-changed="{{favoriteChanged}}">
+                </contacts-item>
+              </template>
+            </core-list>
+          </section>
+
+          <section>
+            <div style="margin: 1em">groups are not yet implemented</div>
+          </section>
+
+        </div>
+      </div>
+    </div>
   </template>
 
   <script src="contacts-list-view.js" type="text/javascript">

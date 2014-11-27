@@ -5,6 +5,9 @@
 (function() {
 'use strict';
 
+var N_TABS = 3;
+var MIN_DRAG = 8; // px
+
 function passThroughDatabase(data, cb) {
   var db = null;
   var loadedData = [];
@@ -111,9 +114,6 @@ Polymer({
   ready: function() {
     performance.mark('mark_contacts_list_view_ready');
 
-    this.$.favoritesList.scrollTarget = this.$['my-header-panel'];
-    this.$.allList.scrollTarget = this.$['my-header-panel'];
-
     var myTabs = this.$['my-tabs'];
   },
 
@@ -200,6 +200,88 @@ Polymer({
 
     if (this.filteredFavorites !== this.favorites)
       this.updateSearch();
+  },
+
+  // Based on app-dismissable-item
+  enteredView: function () {
+    var that = this;
+    var tabsContainer = this.$.tabsContainer;
+    var dragOffset = 0;
+
+    this.controller = new DismissController({
+      target: this.$.tabsViewport,
+      curve: 'ease-in-out',
+
+      onStart: function() {
+      },
+
+      onMove: function(newPos) {
+        that.moveTabs(newPos, true);
+      },
+
+      onCanceled: function() {
+        that.moveTabs(0, false);
+      },
+
+      onDismiss: function(direction) {
+        var sel = that.$.tabSelector.selected;
+
+        if (direction == 'right') {
+          sel -= 1;
+        }
+        if (direction == 'left') {
+          sel += 1;
+        }
+        if (!sel || sel <= 0)
+          sel = 0;
+        if (sel >= N_TABS - 1)
+          sel = N_TABS - 1;
+
+        that.changingTab = true;
+        that.$.tabSelector.selected = sel;
+        that.moveTabs(0, false);
+        that.changingTab = false;
+      },
+
+    });
+
+    this.moveTabs(0, false);
+  },
+
+  moveTabs: function (offset, isMoving) {
+    // force numeric
+    var offs = offset || 0;
+
+    if (this.$.tabSelector.selected == 0 && offs > 0)
+      offs = 0;
+
+    if (this.$.tabSelector.selected == 2 && offs < 0)
+      offs = 0;
+
+    var position = offs - (this.$.tabSelector.selected * this.$.tabsViewport.offsetWidth);
+
+    if (isMoving && (offs > MIN_DRAG || offs < -MIN_DRAG)) {
+      this.$.tabsClickBarrier.hidden = false;
+    } else if (!isMoving) {
+      this.$.tabsClickBarrier.hidden = true;
+    }
+
+    this.$.tabsContainer.style.transform = 'translate3d(' + position + 'px,0,0)';
+  },
+
+  changingTab: false,
+
+  tabSelectorChanged: function () {
+    if (this.changingTab)
+      return;
+
+    this.changingTab = true;
+    this.$.tabsContainer.classList.toggle('tabbing', true);
+    this.moveTabs(0, false);
+    this.async(function () {
+      this.$.tabsContainer.classList.toggle('tabbing', false);
+    }.bind(this), null, 200);
+    this.changingTab = false;
   },
 });
 
