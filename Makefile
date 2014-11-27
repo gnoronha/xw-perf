@@ -115,3 +115,35 @@ xwperf_contacts/placeholder.png: placeholders.xcf Makefile
 	xcf2png -o $@ $< Social --percent 0 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 100
 
 .PHONY: always
+
+INSTALLS = \
+	$(patsubst dist/%.apk,install/%.apk,$(XW_APKS)) \
+	$(patsubst dist/%.apk,install/%.apk,$(ANT_APKS)) \
+	$(patsubst dist/%.apk,install/%.apk,$(GRADLE_APKS)) \
+	$(NULL)
+
+install: $(INSTALLS)
+
+$(INSTALLS): install/%.apk:
+	adb install -r dist/$*.apk
+
+.PHONY: install $(INSTALLS)
+
+UPLOADS = \
+	$(patsubst dist/%.apk,upload/%.apk,$(XW_APKS)) \
+	$(patsubst dist/%.apk,upload/%.apk,$(ANT_APKS)) \
+	$(patsubst dist/%.apk,upload/%.apk,$(GRADLE_APKS)) \
+	$(NULL)
+
+upload: $(UPLOADS) upload/demo
+
+$(UPLOADS): upload/%.apk:
+	rsync -avzP --chmod=a+r dist/$*.apk \
+		people.collabora.com:public_html/xw-perf/
+
+upload/demo:
+	ssh people.collabora.com 'cd public_html/xw-perf/demo && git pull'
+	ssh people.collabora.com 'cd public_html/xw-perf/demo && git submodule init'
+	ssh people.collabora.com 'cd public_html/xw-perf/demo && git submodule update'
+
+.PHONY: upload upload/demo $(UPLOADS)
