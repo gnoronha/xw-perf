@@ -96,6 +96,10 @@ Polymer({
       default: false,
       reflect: true,
     },
+    narrow: {
+      default: false,
+      reflect: true,
+    },
   },
 
   toggleMenu: function() {

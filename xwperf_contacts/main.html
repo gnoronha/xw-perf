@@ -47,7 +47,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             on-tap="{{ hideUnimplementedToast }}">
         </paper-toast>
 
-        <core-drawer-panel id="my-drawer-panel">
+        <core-drawer-panel id="drawerPanel">
           <div drawer id="my-drawer" z=2>
             <paper-shadow z="1"></paper-shadow>
             <paper-item on-tap="{{ showUnimplementedToast }}">
@@ -85,6 +85,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
               <contacts-list-view cross-fade id="listView"
                   on-toggle-menu="{{ toggleMenu }}"
                   on-item-activated="{{ itemActivated }}"
+                  narrow="{{$.drawerPanel.narrow}}"
                   >
               </contacts-list-view>
             </section>

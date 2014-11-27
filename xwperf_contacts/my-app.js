@@ -88,9 +88,10 @@ function passThroughDatabase(data, cb) {
 }
 
 Polymer({
-  toggleMenu: function() {
-    this.$['my-drawer-panel'].togglePanel();
+  toggleMenu: function () {
+    this.$.drawerPanel.togglePanel();
   },
+
   toggleAlwaysAnimate: function() {
     window.MyPerfBoxGlobal.alwaysAnimate = this.$.alwaysAnimateCheck.checked;
   },
