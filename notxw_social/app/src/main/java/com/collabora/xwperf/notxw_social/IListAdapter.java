@@ -4,4 +4,6 @@ import java.util.ArrayList;
 
 public interface IListAdapter {
     public void addTweetModels(ArrayList<TweetModel> tweetModels, boolean addToTop);
+
+    public int getCount();
 }

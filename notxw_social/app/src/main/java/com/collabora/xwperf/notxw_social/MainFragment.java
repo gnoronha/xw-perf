@@ -3,6 +3,7 @@ package com.collabora.xwperf.notxw_social;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.internal.widget.ListViewCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +23,7 @@ import org.androidannotations.annotations.UiThread;
 import java.util.ArrayList;
 
 @EFragment
-public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
+public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     private static final String TAG = MainFragment.class.getSimpleName();
     private final boolean USE_NEW = true;
 
@@ -35,8 +36,11 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     private ListView feedListView;
     private IListAdapter adapter;
     private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
+    private LinearLayoutManager layoutManager;
     private FeedGenerator feedGenerator;
+    //endless scroll recycleview
+    private int visibleThreshold = 5;
+    int firstVisibleItem, visibleItemCount, totalItemCount;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -53,6 +57,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             adapter = new RecyclerAdapter(getActivity());
             recyclerView.setAdapter((RecyclerAdapter) adapter);
             recyclerView.setItemAnimator(new DefaultItemAnimator());
+            setScrollListener(recyclerView);
         } else {
             rootView = inflater.inflate(R.layout.fragment_main, container, false);
             feedListView = (ListView) rootView.findViewById(R.id.feed_list_view);
@@ -63,6 +68,24 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         swipeToRefreshLayout.setOnRefreshListener(this);
         generateData();
         return rootView;
+    }
+
+    private void setScrollListener(RecyclerView recyclerView) {
+        recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                visibleItemCount = recyclerView.getChildCount();
+                totalItemCount = layoutManager.getItemCount();
+                firstVisibleItem = layoutManager.findFirstVisibleItemPosition();
+                if (!swipeToRefreshLayout.isRefreshing() && (totalItemCount - visibleItemCount)
+                        <= (firstVisibleItem + visibleThreshold)) {
+                    swipeToRefreshLayout.setRefreshing(true);
+                    generateLoadMore();
+                }
+            }
+        });
     }
 
     @Background
@@ -84,6 +107,11 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     void populateAdapter(ArrayList<TweetModel> tweets, boolean addToTop) {
         adapter.addTweetModels(tweets, addToTop);
         swipeToRefreshLayout.setRefreshing(false);
+//        if (USE_NEW) {
+//            recyclerView.smoothScrollToPosition(adapter.getCount());
+//        } else {
+//            feedListView.smoothScrollToPosition(adapter.getCount());
+//        }
     }
 
     @Override

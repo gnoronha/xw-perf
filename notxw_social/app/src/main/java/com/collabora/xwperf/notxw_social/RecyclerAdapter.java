@@ -3,9 +3,10 @@ package com.collabora.xwperf.notxw_social;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,10 +14,11 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> implements IListAdapter{
+public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> implements IListAdapter {
     private ArrayList<TweetModel> tweetModels;
 
     private Context context;
@@ -53,18 +55,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.login.setText(currentItem.getUserModel().getLogin());
         holder.dateStamp.setText(itemTimeFormat.format(currentItem.getTimestamp()));
         if (currentItem.getUserModel().getAvatar() > 0) {
-            Bitmap avatarBitmap = BitmapFactory.decodeResource(context.getResources(), currentItem.getUserModel().getAvatar());
-            holder.avatar.setImageDrawable(new RoundedAvatarDrawable(avatarBitmap));
-            holder.avatar.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            loadBitmap(currentItem.getUserModel().getAvatar(), holder.avatar);
         } else {
             //generate avatar here
             holder.avatar.setImageDrawable(TextDrawable.builder().buildRound(login.substring(0, 1), generator.getColor(login)));
         }
     }
 
+    public void loadBitmap(int resId, ImageView imageView) {
+        BitmapWorkerTask task = new BitmapWorkerTask(imageView);
+        task.execute(resId);
+    }
+
     @Override
     public int getItemCount() {
         return tweetModels.size();
+    }
+
+    @Override
+    public int getCount() {
+        return getItemCount();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -81,6 +91,31 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             message = (TextView) rootView.findViewById(R.id.message);
             dateStamp = (TextView) rootView.findViewById(R.id.date);
             avatar = (ImageView) rootView.findViewById(R.id.avatar);
+        }
+    }
+
+    private class BitmapWorkerTask extends AsyncTask<Integer, Void, Drawable> {
+        private final WeakReference<ImageView> imageViewReference;
+
+        public BitmapWorkerTask(ImageView imageView) {
+            // Use a WeakReference to ensure the ImageView can be garbage collected
+            imageViewReference = new WeakReference<>(imageView);
+        }
+
+        @Override
+        protected Drawable doInBackground(Integer... params) {
+            Bitmap avatarBitmap = BitmapFactory.decodeResource(context.getResources(), params[0]);
+            return new RoundedAvatarDrawable(avatarBitmap);
+        }
+
+        @Override
+        protected void onPostExecute(Drawable drawable) {
+            if (imageViewReference != null && drawable != null) {
+                final ImageView imageView = imageViewReference.get();
+                if (imageView != null) {
+                    imageView.setImageDrawable(drawable);
+                }
+            }
         }
     }
 }
