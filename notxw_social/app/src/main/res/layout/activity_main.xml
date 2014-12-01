@@ -24,4 +24,9 @@
         android:layout_below="@id/toolbar_widget"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+    <com.collabora.xwperf.notxw_social.FpsGraphView
+        android:id="@+id/fps_graph_view"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_height="120dp" />
 </RelativeLayout>

@@ -1,6 +1,5 @@
 package com.collabora.xwperf.notxw_social;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -13,49 +12,47 @@ import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
 
 public class RoundedAvatarDrawable extends Drawable {
-    private final Bitmap mBitmap;
-    private final Paint mPaint;
-    private final RectF mRectF;
-    private final int mBitmapWidth;
-    private final int mBitmapHeight;
+    private final Bitmap bmp;
+    private final Paint paint;
+    private final RectF rectF;
+    private final int bmpW;
+    private final int bmpH;
 
     public RoundedAvatarDrawable(Bitmap bitmap) {
-        mBitmap = bitmap;
-        mRectF = new RectF();
-        mPaint = new Paint();
-        mPaint.setAntiAlias(true);
-        mPaint.setDither(true);
+        this.bmp = bitmap;
+        rectF = new RectF();
+        paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setDither(true);
         final BitmapShader shader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        mPaint.setShader(shader);
-
+        paint.setShader(shader);
         // NOTE: we assume bitmap is properly scaled to current density
-        mBitmapWidth = mBitmap.getWidth();
-        mBitmapHeight = mBitmap.getHeight();
+        bmpW = this.bmp.getWidth();
+        bmpH = this.bmp.getHeight();
     }
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawOval(mRectF, mPaint);
+        canvas.drawOval(rectF, paint);
     }
 
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
-
-        mRectF.set(bounds);
+        rectF.set(bounds);
     }
 
     @Override
     public void setAlpha(int alpha) {
-        if (mPaint.getAlpha() != alpha) {
-            mPaint.setAlpha(alpha);
+        if (paint.getAlpha() != alpha) {
+            paint.setAlpha(alpha);
             invalidateSelf();
         }
     }
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-        mPaint.setColorFilter(cf);
+        paint.setColorFilter(cf);
     }
 
     @Override
@@ -65,32 +62,23 @@ public class RoundedAvatarDrawable extends Drawable {
 
     @Override
     public int getIntrinsicWidth() {
-        return mBitmapWidth;
+        return bmpW;
     }
 
     @Override
     public int getIntrinsicHeight() {
-        return mBitmapHeight;
-    }
-
-    public void setAntiAlias(boolean aa) {
-        mPaint.setAntiAlias(aa);
-        invalidateSelf();
+        return bmpH;
     }
 
     @Override
     public void setFilterBitmap(boolean filter) {
-        mPaint.setFilterBitmap(filter);
+        paint.setFilterBitmap(filter);
         invalidateSelf();
     }
 
     @Override
     public void setDither(boolean dither) {
-        mPaint.setDither(dither);
+        paint.setDither(dither);
         invalidateSelf();
-    }
-
-    public Bitmap getBitmap() {
-        return mBitmap;
     }
 }

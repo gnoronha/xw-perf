@@ -3,26 +3,25 @@ package com.collabora.xwperf.notxw_social;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 
 import org.androidannotations.annotations.EActivity;
 
 @EActivity
-public class MainActivity extends ActionBarActivity {
-
-    private static final String TAG = "Social";
+public class MainActivity extends ActionBarActivity implements View.OnClickListener {
     private FpsMeterView fpsMeter;
+    private FpsGraphView fpsGraph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         fpsMeter = (FpsMeterView) findViewById(R.id.fps_meter);
+        fpsGraph = (FpsGraphView) findViewById(R.id.fps_graph_view);
+        fpsGraph.setOnClickListener(this);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_widget);
         setSupportActionBar(toolbar);
         if (savedInstanceState == null) {
-            //first time
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, MainFragment.newInstance())
                     .commit();
@@ -35,8 +34,7 @@ public class MainActivity extends ActionBarActivity {
         fpsMeter.setFpsListener(new IFpsListener() {
             @Override
             public void onFpsCount(int fps) {
-//                Log.d(TAG, "You have " + fps + " fps");
-
+                fpsGraph.addValue(fps);
             }
         });
     }
@@ -47,4 +45,10 @@ public class MainActivity extends ActionBarActivity {
         fpsMeter.removeFpsListener();
     }
 
+    @Override
+    public void onClick(View v) {
+        if (v == fpsGraph) {
+            v.postInvalidate();
+        }
+    }
 }
