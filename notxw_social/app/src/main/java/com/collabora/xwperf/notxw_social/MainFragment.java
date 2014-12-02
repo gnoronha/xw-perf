@@ -1,5 +1,6 @@
 package com.collabora.xwperf.notxw_social;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -65,7 +66,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
         setScrollListener();
         swipeToRefreshLayout = (SwipeRefreshLayout) rootView;
         swipeToRefreshLayout.setOnRefreshListener(this);
-        generateData(savedInstanceState==null);
+        generateData(savedInstanceState == null);
         return rootView;
     }
 
@@ -145,6 +146,8 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.action_settings) {
+            Intent intent = new Intent(getActivity(), SettingsActivity_.class);
+            startActivity(intent);
             return true;
         } else if (id == R.id.action_performance) {
             return true;

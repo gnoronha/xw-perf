@@ -1,9 +1,11 @@
 package com.collabora.xwperf.notxw_social;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -17,7 +19,6 @@ public class FpsMeterView extends View {
     public FpsMeterView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
-        paint.setAntiAlias(true);
     }
 
     @Override
@@ -38,7 +39,7 @@ public class FpsMeterView extends View {
 
         super.draw(canvas);
         paint.setColor(counter % 2 == 0 ? 0xFFFF00FF : 0xFF00FF00);
-        canvas.drawLine(0, 0, 1, 1, paint);
+        canvas.drawRect(0, 0, canvas.getWidth(), canvas.getHeight(), paint);
 
         if (delay > 1000l) {
             startTime = now;
