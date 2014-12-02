@@ -119,6 +119,10 @@ Polymer({
     this.$.allList.scrollTarget = this.$['my-header-panel'];
 
     var myTabs = this.$['my-tabs'];
+    var myPages = this.$['my-pages'];
+    myTabs.addEventListener('core-select', function() {
+      myPages.selected = myTabs.selected;
+    });
   },
 
   setData: function(data, favorites) {
