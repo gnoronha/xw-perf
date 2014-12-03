@@ -89,8 +89,9 @@ Polymer({
         else
           ctx.fillRect(x, HEIGHT - 60, w, 60 - fps + 1);
 
-        // Don't go off the left-hand end of the graph
-        if (x < 0)
+        // Discard samples older than 5 seconds for graphing and
+        // statistics purposes
+        if ((now - thisTime) > 5000)
           break;
       }
 
@@ -124,6 +125,9 @@ Polymer({
           if (fps > maxFps)
             maxFps = fps;
         }
+
+        if ((now - thisTime) > 5000)
+          break;
 
         nextTime = thisTime;
       }
