@@ -116,7 +116,9 @@ license that can be found in the LICENSE.txt file.
         (this.scrollTarget || this).addEventListener('scroll',
             scrollHandler.bind(this), false);
         this.data = this.feed.data;
-        this.refreshContent();
+        this.$.refreshBox.hidden = false;
+        this.$.refreshBox.style.height = '0px';
+        this.feed.refresh();
       },
     });
   </script>
