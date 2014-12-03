@@ -60,30 +60,18 @@ Polymer({
         if (fps < 28) {
           lt28++;
           ctx.fillStyle = "#f00";
-        } else if (fps < 29) {
-          lt30++;
-          ctx.fillStyle = "#f40";
         } else if (fps < 30) {
           lt30++;
           ctx.fillStyle = "#f80";
-        } else if (fps < 31) {
-          lt32++;
-          ctx.fillStyle = "#fb0";
         } else if (fps < 32) {
           lt32++;
           ctx.fillStyle = "#ff0";
         } else if (fps < 58) {
           lt58++;
           ctx.fillStyle = "#bf0";
-        } else if (fps < 59) {
-          lt60++;
-          ctx.fillStyle = "#8f0";
         } else if (fps < 60) {
           lt60++;
-          ctx.fillStyle = "#4f0";
-        } else if (fps < 61) {
-          lt62++;
-          ctx.fillStyle = "#0f0";
+          ctx.fillStyle = "#8f0";
         } else if (fps < 62) {
           lt62++;
           ctx.fillStyle = "#0f8";
