@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -67,10 +68,11 @@ public class StarterActivity extends Activity
         if (selectedApp > -1) {
             try {
                 logView.append(String.format("starting %s (%s) at " +
-                            "%s ms past the minute\n",
+                            "%s ms past the minute / %s ms since boot\n",
                             appLabels[selectedApp],
                             appNames[selectedApp],
-                            (new Date()).getTime() % (60 * 1000)));
+                            (new Date()).getTime() % (60 * 1000),
+                            SystemClock.elapsedRealtime()));
                 startApp(appNames[selectedApp]);
                 logView.append("... done\n");
             } catch (Exception e) {
