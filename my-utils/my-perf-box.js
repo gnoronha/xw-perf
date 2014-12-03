@@ -57,10 +57,6 @@ Polymer({
 
         nextTime = thisTime;
 
-        var fps = Infinity;
-        if (dt != 0)
-          fps = 1000 / dt;
-
         if (fps < 28) {
           lt28++;
           ctx.fillStyle = "#f00";
