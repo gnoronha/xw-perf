@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_widget"
         android:layout_width="match_parent"
@@ -14,14 +14,21 @@
 
     <com.collabora.xwperf.notxw_social.FpsMeterView
         android:id="@+id/fps_meter"
-        android:layout_alignParentBottom="true"
-        android:layout_width="1dp"
-        android:indeterminate="true"
-        android:layout_height="1dp" />
+        android:layout_width="@dimen/fps_meter_dot_size"
+        android:layout_height="@dimen/fps_meter_dot_size"
+        android:layout_below="@id/toolbar_widget" />
 
-    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/container"
-        android:layout_below="@id/toolbar_widget"
+
+    <com.collabora.xwperf.notxw_social.FpsGraphView
+        android:id="@+id/fps_graph_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true" />
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fps_graph_view"
+        android:layout_below="@id/toolbar_widget" />
 </RelativeLayout>

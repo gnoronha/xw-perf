@@ -9,5 +9,28 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_performance">Performance</string>
     <string name="description_avatar">Users avatar</string>
+    <string name="fps_graph_label_more" >%1$s ≥ %2$s fps </string>
+    <string name="fps_graph_label_less" >%1$s \u003C %2$s fps</string>
+    <string name="touch_to_update">Touch to update graph</string>
+    <string name="max_tweets_reached">Max number of posts reached</string>
 
+    <string name="pref_update_key">Update graph</string>
+    <string name="pref_animate_key">Always animate</string>
+
+    <!--Preference screen-->
+    <string name="settings_screen_title">Settings</string>
+    <string name="notify_mentioned">notify_mentioned</string>
+    <string name="settings_notifications_category_title">Notifications</string>
+    <string name="notify_when_mentioned_title">Notify when mentioned by @name</string>
+    <string name="notify_when_friends_title">Notify when friends say something</string>
+    <string name="notify_when_t_o_s_change_title">Notify when terms of service change</string>
+    <string name="notify_when_t_o_s_change_key">notify_when_t_o_s_change</string>
+    <string name="notify_when_friends_key">notify_when_friends</string>
+    <string name="notify_when_mentioned_key">notify_when_mentioned</string>
+    <string name="settings_privacy_category_title">Privacy</string>
+    <string name="show_location_title">Show location to</string>
+    <string name="show_location_key">show_location</string>
+    <string name="settings_info_title">These settings don\'t actually do anything except demonstrating some UI widgets</string>
+    <string name="encrypt_messages_key">encrypt_messages</string>
+    <string name="encrypt_messages_title">Encrypt messages</string>
 </resources>

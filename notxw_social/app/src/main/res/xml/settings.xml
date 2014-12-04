@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/settings_screen_title">
+    <Preference android:widgetLayout="@layout/settings_info" android:selectable="false" />
+    <PreferenceCategory android:title="@string/settings_notifications_category_title">
+        <CheckBoxPreference
+            android:key="@string/notify_when_mentioned_key"
+            android:title="@string/notify_when_mentioned_title" />
+
+        <CheckBoxPreference
+            android:key="@string/notify_when_friends_key"
+            android:title="@string/notify_when_friends_title" />
+
+        <CheckBoxPreference
+            android:key="@string/notify_when_t_o_s_change_key"
+            android:title="@string/notify_when_t_o_s_change_title" />
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/settings_privacy_category_title">
+        <SwitchPreference
+            android:key="@string/encrypt_messages_key"
+            android:title="@string/encrypt_messages_title" />
+        <ListPreference
+            android:entries="@array/visibilityEntries"
+            android:entryValues="@array/visibilityEntries"
+            android:key="@string/show_location_key"
+            android:title="@string/show_location_title" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

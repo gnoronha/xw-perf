@@ -6,7 +6,10 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,6 +43,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         notifyItemRangeInserted(addToTop ? 0 : initCount, tweetModels.size());
     }
 
+    public void remove(int position){
+        tweetModels.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewGroup v = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(R.layout.social_list_item, parent, false);
@@ -47,9 +55,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         TweetModel currentItem = tweetModels.get(position);
         String login = currentItem.getUserModel().getUserName();
+        holder.itemView.setVisibility(View.VISIBLE);
         holder.message.setText(currentItem.getMessage());
         holder.username.setText(login);
         holder.login.setText(currentItem.getUserModel().getLogin());
@@ -92,6 +101,39 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             dateStamp = (TextView) rootView.findViewById(R.id.date);
             avatar = (ImageView) rootView.findViewById(R.id.avatar);
         }
+    }
+
+    public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
+        private OnItemClickListener listener;
+
+        GestureDetector gestureDetector;
+
+        public RecyclerItemClickListener(Context context, OnItemClickListener listener) {
+            this.listener = listener;
+            gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return true;
+                }
+            });
+        }
+
+        @Override
+        public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
+            View childView = view.findChildViewUnder(e.getX(), e.getY());
+            if (childView != null && listener != null && gestureDetector.onTouchEvent(e)) {
+                listener.onItemClick(childView, view.getChildPosition(childView));
+            }
+            return false;
+        }
+
+        @Override
+        public void onTouchEvent(RecyclerView view, MotionEvent motionEvent) {
+        }
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
     }
 
     private class BitmapWorkerTask extends AsyncTask<Integer, Void, Drawable> {

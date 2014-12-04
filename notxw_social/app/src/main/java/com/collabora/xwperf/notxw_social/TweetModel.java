@@ -1,10 +1,13 @@
 package com.collabora.xwperf.notxw_social;
 
+import android.text.Html;
+import android.text.Spanned;
+
 import java.util.Date;
 
 public class TweetModel {
     private UserModel userModel;
-    private CharSequence message;
+    private Spanned message;
     private Date timestamp;
 
     public UserModel getUserModel() {
@@ -15,12 +18,12 @@ public class TweetModel {
         this.userModel = userModel;
     }
 
-    public CharSequence getMessage() {
+    public Spanned getMessage() {
         return message;
     }
 
-    public void setMessage(CharSequence message) {
-        this.message = message;
+    public void setMessage(String message) {
+        this.message = Html.fromHtml(message);
     }
 
     public Date getTimestamp() {

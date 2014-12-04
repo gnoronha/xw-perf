@@ -8,8 +8,8 @@ import android.util.AttributeSet;
 import android.view.View;
 
 public class FpsMeterView extends View {
-    private long startTime = -1;
     private int counter;
+    private boolean animateAlways = true;
 
     private final Paint paint;
     private IFpsListener fpsListener;
@@ -17,7 +17,6 @@ public class FpsMeterView extends View {
     public FpsMeterView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
-        paint.setAntiAlias(true);
     }
 
     @Override
@@ -28,26 +27,14 @@ public class FpsMeterView extends View {
 
     @Override
     public void draw(Canvas canvas) {
-        if (startTime == -1) {
-            startTime = SystemClock.elapsedRealtime();
-            counter = 0;
-        }
-
-        long now = SystemClock.elapsedRealtime();
-        long delay = now - startTime;
-
         super.draw(canvas);
-        paint.setColor(counter % 2 == 0 ? 0xFFFF00FF : 0xFF00FF00);
-        canvas.drawLine(0, 0, 1, 1, paint);
-
-        if (delay > 1000l) {
-            startTime = now;
-            if (fpsListener != null) {
-                fpsListener.onFpsCount(counter);
-            }
-            counter = 0;
+        if (animateAlways) {
+            paint.setColor(counter++ % 2 == 0 ? 0xFFFF00FF : 0xFF00FF00);
+            canvas.drawRect(0, 0, getWidth(), getHeight(), paint);
         }
-        counter++;
+        if (fpsListener != null) {
+            fpsListener.onFpsCount(SystemClock.elapsedRealtime());
+        }
     }
 
     public void setFpsListener(IFpsListener fpsListener) {
@@ -58,4 +45,11 @@ public class FpsMeterView extends View {
         fpsListener = null;
     }
 
+    public boolean isAnimateAlways() {
+        return animateAlways;
+    }
+
+    public void setAnimateAlways(boolean animateAlways) {
+        this.animateAlways = animateAlways;
+    }
 }
