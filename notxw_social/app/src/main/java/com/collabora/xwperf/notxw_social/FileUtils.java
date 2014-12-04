@@ -1,6 +1,7 @@
 package com.collabora.xwperf.notxw_social;
 
 import android.content.Context;
+import android.text.Html;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
@@ -78,7 +79,7 @@ public class FileUtils {
         writer.name(USERNAME).value(tweetModel.getUserModel().getUserName());
         writer.name(LOGIN).value(tweetModel.getUserModel().getLogin());
         writer.name(AVATAR).value(tweetModel.getUserModel().getAvatar());
-        writer.name(MESSAGE).value(tweetModel.getMessage().toString());
+        writer.name(MESSAGE).value(Html.toHtml(tweetModel.getMessage()));
         writer.name(TIMESTAMP).value(tweetModel.getTimestamp().getTime());
         writer.endObject();
     }

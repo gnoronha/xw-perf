@@ -58,7 +58,6 @@
         android:layout_marginTop="8dp"
         android:layout_toEndOf="@id/avatar"
         android:linksClickable="true"
-        android:textColorLink="@color/accent_material_light"
         android:textSize="14sp"
         tools:text="message asdfsadas as dsa d" />
 

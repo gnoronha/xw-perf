@@ -64,10 +64,50 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             feedListView.setAdapter((ListAdapter) adapter);
         }
         setScrollListener();
+        setDismissListener();
         swipeToRefreshLayout = (SwipeRefreshLayout) rootView;
         swipeToRefreshLayout.setOnRefreshListener(this);
         generateData(savedInstanceState == null);
         return rootView;
+    }
+
+    private void setDismissListener() {
+        if (USE_NEW) {
+            SwipeDismissRecyclerViewTouchListener touchListener =
+                    new SwipeDismissRecyclerViewTouchListener(
+                            recyclerView,
+                            new SwipeDismissRecyclerViewTouchListener.DismissCallbacks() {
+                                @Override
+                                public boolean canDismiss(int position) {
+                                    return true;
+                                }
+
+                                @Override
+                                public void onDismiss(RecyclerView recyclerView, int[] reverseSortedPositions) {
+                                    ((RecyclerAdapter) adapter).remove(reverseSortedPositions[0]);
+                                }
+                            });
+            recyclerView.setOnTouchListener(touchListener);
+        } else {
+            SwipeDismissListViewTouchListener touchListener =
+                    new SwipeDismissListViewTouchListener(
+                            feedListView,
+                            new SwipeDismissListViewTouchListener.DismissCallbacks() {
+                                @Override
+                                public boolean canDismiss(int position) {
+                                    return true;
+                                }
+
+                                @Override
+                                public void onDismiss(ListView listView, int[] reverseSortedPositions) {
+                                    for (int position : reverseSortedPositions) {
+                                        ((ListAdapter) adapter).remove(((ListAdapter) adapter).getItem(position));
+                                    }
+                                    ((ListAdapter) adapter).notifyDataSetChanged();
+                                }
+                            });
+            feedListView.setOnTouchListener(touchListener);
+        }
     }
 
     private void setScrollListener() {
@@ -118,7 +158,6 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
     @Background
     void generateLoadMore() {
         populateAdapter(feedGenerator.loadMore(), false);
-
     }
 
     @UiThread

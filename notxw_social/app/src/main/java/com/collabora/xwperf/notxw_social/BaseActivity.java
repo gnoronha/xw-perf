@@ -1,7 +1,6 @@
 package com.collabora.xwperf.notxw_social;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -33,7 +32,7 @@ public abstract class BaseActivity extends ActionBarActivity implements View.OnC
         super.onResume();
         fpsMeter.setFpsListener(new IFpsListener() {
             @Override
-            public void onFpsCount(int fps) {
+            public void onFpsCount(long fps) {
                 fpsGraph.addValue(fps);
             }
         });

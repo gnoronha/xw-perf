@@ -3,20 +3,17 @@ package com.collabora.xwperf.notxw_social;
 import android.support.annotation.NonNull;
 
 import java.util.Collection;
+import java.lang.Float;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
 
-/**
- * Fixed size queue, first element will be removed If you add something to queue
- * @param <T>
- */
-public class FifoQueue<T> implements Queue<T>, Iterable<T> {
+public class FifoFloatQueue implements Queue<Float>, Iterable<Float>, Cloneable {
 
     private final int limit;
-    private final LinkedList<T> list = new LinkedList<>();
+    private final LinkedList<Float> list = new LinkedList<>();
 
-    public FifoQueue(int limit) {
+    public FifoFloatQueue(int limit) {
         this.limit = limit;
     }
 
@@ -29,10 +26,26 @@ public class FifoQueue<T> implements Queue<T>, Iterable<T> {
     }
 
     @Override
-    public boolean add(T o) {
+    public boolean add(Float o) {
         boolean changed = list.add(o);
         boolean trimmed = trim();
         return changed || trimmed;
+    }
+
+    public float getTotal() {
+        float result = 0;
+        for (float value : list) {
+            result += value;
+        }
+        return result;
+    }
+
+    public static FifoFloatQueue clone(FifoFloatQueue original) {
+        FifoFloatQueue cloned = new FifoFloatQueue(original.limit);
+        for (float value : original) {
+            cloned.add(value);
+        }
+        return cloned;
     }
 
     @Override
@@ -52,7 +65,7 @@ public class FifoQueue<T> implements Queue<T>, Iterable<T> {
 
     @NonNull
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<Float> iterator() {
         return list.iterator();
     }
 
@@ -79,7 +92,7 @@ public class FifoQueue<T> implements Queue<T>, Iterable<T> {
     }
 
     @Override
-    public boolean addAll(Collection<? extends T> c) {
+    public boolean addAll(Collection<? extends Float> c) {
         boolean changed = list.addAll(c);
         boolean trimmed = trim();
         return changed || trimmed;
@@ -101,29 +114,29 @@ public class FifoQueue<T> implements Queue<T>, Iterable<T> {
     }
 
     @Override
-    public boolean offer(T e) {
+    public boolean offer(Float e) {
         boolean changed = list.offer(e);
         boolean trimmed = trim();
         return changed || trimmed;
     }
 
     @Override
-    public T remove() {
+    public Float remove() {
         return list.remove();
     }
 
     @Override
-    public T poll() {
+    public Float poll() {
         return list.poll();
     }
 
     @Override
-    public T element() {
+    public Float element() {
         return list.element();
     }
 
     @Override
-    public T peek() {
+    public Float peek() {
         return list.peek();
     }
 }

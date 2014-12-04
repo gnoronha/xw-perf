@@ -51,7 +51,6 @@ dependencies {
     compile 'com.github.hamsterksu:android-annotatedsql-api:1.10.3'
     apt 'org.androidannotations:androidannotations:3.1'
     compile "org.androidannotations:androidannotations-api:3.1"
-    compile 'com.squareup.picasso:picasso:2.3.+'
 }
 
 apt {

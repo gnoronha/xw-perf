@@ -1,29 +1,28 @@
 package com.collabora.xwperf.notxw_social;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.preference.PreferenceManager;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class FpsGraphView extends View {
-    private static final int HIGH_FPS = 60;
-    private static final int MEDIUM_FPS = 50;
-    private static final int LOW_FPS = 24;
-    private static final int UPDATE_TIMEOUT = 5;
 
-    private FifoQueue<Integer> fpsHistory;
+public class FpsGraphView extends View {
+
+    private static final int MAGIC_NUMBER = 300;
+    private final int graphWidth;
+
+    private long startTime = 0;
+    private long lastTime;
+
+    private FifoFloatQueue fpsHistory;
     private Paint paint;
     private int[] colors;
-    private boolean refresh;
     private final float textSize;
-    private final int legendWidth;
     private final int strokeWidth;
-    private int updateTimer = 0;
 
     public FpsGraphView(Context context) {
         this(context, null);
@@ -36,17 +35,14 @@ public class FpsGraphView extends View {
     public FpsGraphView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs);
         textSize = context.getResources().getDimension(R.dimen.fps_graph_textsize);
-        legendWidth = (int) context.getResources().getDimension(R.dimen.fps_graph_legend_width);
         strokeWidth = (int) context.getResources().getDimension(R.dimen.fps_graph_stroke_width);
+        graphWidth = (int) context.getResources().getDimension(R.dimen.fps_graph_width);
+        fpsHistory = new FifoFloatQueue(MAGIC_NUMBER);
+
         paint = new Paint();
-        colors = new int[]{
-                0xFFCC0000,//red
-                0xFFFF8A00,//orange
-                0xFF669900,//green
-                0xFF0099CC //blue
-        };
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        refresh = prefs.getBoolean(context.getString(R.string.pref_update_key), false);
+        colors = context.getResources().getIntArray(R.array.graphColors);
+
+        startTime = SystemClock.elapsedRealtime();
     }
 
     @Override
@@ -59,58 +55,97 @@ public class FpsGraphView extends View {
 
     @Override
     public void draw(@NonNull Canvas canvas) {
-        int maxWidth = canvas.getWidth() - legendWidth;
-        if (fpsHistory == null) {
-            fpsHistory = new FifoQueue<>(maxWidth / strokeWidth);
-        }
-        canvas.drawColor(Color.BLACK);
+        FifoFloatQueue buffer = FifoFloatQueue.clone(fpsHistory);
+        canvas.drawColor(Color.BLACK); //clear
         paint.reset();
         paint.setTextSize(textSize);
-        int yOffset = canvas.getHeight() - (int) textSize;
-        if (fpsHistory.size() == 0) {
-            paint.setColor(Color.WHITE);
-            canvas.drawText(getContext().getString(R.string.touch_to_update), textSize, textSize * 2, paint);
-            return;
-        }
-        float multiplier = (canvas.getHeight() - textSize) / HIGH_FPS;
-        paint.setStrokeWidth(1);
-        paint.setColor(colors[3]);
-        canvas.drawLine(0, yOffset, maxWidth, yOffset, paint);
-        paint.setStrokeWidth(strokeWidth);
-        int xOffset = 0, high = 0, middle = 0, low = 0, critical = 0;
-        for (Integer current : fpsHistory) {
-            if (current >= HIGH_FPS) {
-                paint.setColor(colors[3]);
-                high++;
-            } else if (current >= MEDIUM_FPS) {
-                paint.setColor(colors[2]);
-                middle++;
-            } else if (current >= LOW_FPS) {
-                paint.setColor(colors[1]);
-                low++;
-            } else {
+        int xOffset = 0;
+        int yOffset = 4 * strokeWidth;
+        int lt28 = 0;
+        int lt30 = 0;
+        int lt32 = 0;
+        int lt58 = 0;
+        int lt60 = 0;
+        int lt62 = 0;
+        int ge62 = 0;
+
+        float mean = buffer.getTotal() / buffer.size();
+        float squareDiffs = 0;
+        float minFps = 10000;
+        float maxFps = 0;
+
+        for (float fpsValue : buffer) {
+            if (fpsValue < 28) {
+                lt28++;
                 paint.setColor(colors[0]);
-                critical++;
+            } else if (fpsValue < 30) {
+                lt30++;
+                paint.setColor(colors[1]);
+            } else if (fpsValue < 32) {
+                lt32++;
+                paint.setColor(colors[2]);
+            } else if (fpsValue < 58) {
+                lt58++;
+                paint.setColor(colors[3]);
+            } else if (fpsValue < 59) {
+                lt60++;
+                paint.setColor(colors[4]);
+            } else if (fpsValue < 62) {
+                lt62++;
+                paint.setColor(colors[5]);
+            } else {
+                ge62++;
+                paint.setColor(colors[6]);
+            }
+
+            if (fpsValue >= 59) {
+                canvas.drawRect(xOffset, yOffset - (fpsValue - 60), xOffset + strokeWidth, yOffset, paint);
+            } else {
+                canvas.drawRect(xOffset, yOffset, xOffset + strokeWidth, yOffset + (60 - fpsValue) * strokeWidth, paint);
             }
             xOffset += strokeWidth;
-            canvas.drawLine(xOffset, yOffset, xOffset, yOffset - (HIGH_FPS - current) * multiplier, paint);
+            squareDiffs += (fpsValue - mean) * (fpsValue - mean);
+            if (fpsValue < minFps)
+                minFps = fpsValue;
+            if (fpsValue > maxFps)
+                maxFps = fpsValue;
         }
-
-        maxWidth += 8;
-        //draw legend
-        paint.setColor(colors[3]);
-        canvas.drawText(String.format(getContext().getString(R.string.fps_graph_label_more), high, HIGH_FPS), maxWidth, textSize, paint);
-        paint.setColor(colors[2]);
-        canvas.drawText(String.format(getContext().getString(R.string.fps_graph_label_more), middle, MEDIUM_FPS), maxWidth, textSize * 2, paint);
-        paint.setColor(colors[1]);
-        canvas.drawText(String.format(getContext().getString(R.string.fps_graph_label_more), low, LOW_FPS), maxWidth, textSize * 3, paint);
+        double stdDev = Math.sqrt(squareDiffs / buffer.size());
+        int legendStartPos = graphWidth + 12;
         paint.setColor(colors[0]);
-        canvas.drawText(String.format(getContext().getString(R.string.fps_graph_label_less), critical, LOW_FPS), maxWidth, textSize * 4, paint);
+        canvas.drawText("" + lt28 + "<28fps", legendStartPos, textSize * 7, paint);
+        paint.setColor(colors[1]);
+        canvas.drawText("" + lt30 + "<30fps", legendStartPos, textSize * 6, paint);
+        paint.setColor(colors[2]);
+        canvas.drawText("" + lt32 + "<32fps", legendStartPos, textSize * 5, paint);
+        paint.setColor(colors[3]);
+        canvas.drawText("" + lt58 + "<58fps", legendStartPos, textSize * 4, paint);
+        paint.setColor(colors[4]);
+        canvas.drawText("" + lt60 + "<60fps", legendStartPos, textSize * 3, paint);
+        paint.setColor(colors[5]);
+        canvas.drawText("" + lt62 + "<62fps", legendStartPos, textSize * 2, paint);
+        paint.setColor(colors[6]);
+        canvas.drawText("" + ge62 + "≥62fps", legendStartPos, textSize, paint);
+
+        paint.setColor(Color.WHITE);
+        canvas.drawText("µ = " + String.format("%.2f", mean) +
+                ", σ = " + String.format("%.2f", stdDev) +
+                ", min = " + String.format("%.2f", minFps) +
+                ", max = " + String.format("%.2f", maxFps),
+                8, textSize * 7, paint);
     }
 
-    public void addValue(int fps) {
-        fpsHistory.add(fps);
-        if (refresh || (++updateTimer % UPDATE_TIMEOUT == 0))
+    public void addValue(long frameTimestamp) {
+        if (lastTime == 0)
+            lastTime = startTime;
+
+        float value = 1000f / (frameTimestamp - lastTime);
+        lastTime = frameTimestamp;
+        fpsHistory.add(value);
+        if (lastTime - startTime > 5000) {
             postInvalidate();
+            startTime = lastTime;//show every 5 seconds
+        }
     }
+
 }

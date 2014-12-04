@@ -6,17 +6,19 @@ import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
 
 import org.androidannotations.annotations.EFragment;
 
 @EFragment
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String TAG = SettingsFragment.class.getSimpleName();
-    private Preference visibilityPref;
 
     public static SettingsFragment newInstance() {
-        return new SettingsFragment();
+        return SettingsFragment_.builder().build();
     }
+
+    private Preference visibilityPref;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -1,7 +1,5 @@
 package com.collabora.xwperf.notxw_social;
 
-import android.text.Html;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
@@ -79,7 +77,7 @@ public class FeedGenerator {
         }
     }
 
-    private CharSequence generateMessage() {
+    private String generateMessage() {
         // Used to generate gibberish. Deliberately omit the vowels
         // to minimize the chance that we generate something offensive.
         String possibleLetters = "qwrtyzxcvbnmsdfghjkl";
@@ -112,7 +110,7 @@ public class FeedGenerator {
             }
             sb.append("</a>");
         }
-        return Html.fromHtml(sb.toString());
+        return sb.toString();
     }
 
     private String getRandomItem(String[] strings) {
