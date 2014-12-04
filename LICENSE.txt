@@ -51,6 +51,12 @@ License: CC-0
  .
  http://creativecommons.org/publicdomain/zero/1.0/
 
+Files:
+ notxw_social/app/src/main/java/com/collabora/xwperf/notxw_social/SwipeDismiss*
+Copyright:
+ © 2013 Google Inc.
+License: Apache-2.0
+
 License: BSD-3-clause-Intel
  Redistribution and use in source and binary forms, with or without
  modification, are permitted provided that the following conditions are
