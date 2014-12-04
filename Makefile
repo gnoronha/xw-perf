@@ -19,8 +19,6 @@ XW_DEMOS = \
 	$(NULL)
 
 ANT_APPS = \
-	notxw_hello_world \
-	notxw_list \
 	notxw_starter \
 	$(NULL)
 
