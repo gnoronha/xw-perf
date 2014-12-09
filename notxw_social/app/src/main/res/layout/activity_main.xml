@@ -12,14 +12,13 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <com.collabora.xwperf.notxw_social.FpsMeterView
+    <com.collabora.xwperf.fps_measure_module.FpsMeterView
         android:id="@+id/fps_meter"
         android:layout_width="@dimen/fps_meter_dot_size"
         android:layout_height="@dimen/fps_meter_dot_size"
         android:layout_below="@id/toolbar_widget" />
 
-
-    <com.collabora.xwperf.notxw_social.FpsGraphView
+    <com.collabora.xwperf.fps_measure_module.FpsGraphView
         android:id="@+id/fps_graph_view"
         android:layout_width="match_parent"
         android:layout_height="64dp"

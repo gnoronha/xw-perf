@@ -25,6 +25,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity_" />
         </activity>
+        <activity android:name=".PerformanceActivity" />
     </application>
 
 </manifest>

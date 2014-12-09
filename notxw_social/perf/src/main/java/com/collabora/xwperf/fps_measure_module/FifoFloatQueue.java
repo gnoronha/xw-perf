@@ -1,9 +1,6 @@
-package com.collabora.xwperf.notxw_social;
-
-import android.support.annotation.NonNull;
+package com.collabora.xwperf.fps_measure_module;
 
 import java.util.Collection;
-import java.lang.Float;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -63,21 +60,18 @@ public class FifoFloatQueue implements Queue<Float>, Iterable<Float>, Cloneable 
         return list.contains(o);
     }
 
-    @NonNull
     @Override
     public Iterator<Float> iterator() {
         return list.iterator();
     }
 
-    @NonNull
     @Override
     public Object[] toArray() {
         return list.toArray();
     }
 
-    @NonNull
     @Override
-    public <T> T[] toArray(@NonNull T[] a) {
+    public <T> T[] toArray(T[] a) {
         return list.toArray(a);
     }
 
@@ -87,7 +81,7 @@ public class FifoFloatQueue implements Queue<Float>, Iterable<Float>, Cloneable 
     }
 
     @Override
-    public boolean containsAll(@NonNull Collection<?> c) {
+    public boolean containsAll(Collection<?> c) {
         return list.containsAll(c);
     }
 
@@ -99,12 +93,12 @@ public class FifoFloatQueue implements Queue<Float>, Iterable<Float>, Cloneable 
     }
 
     @Override
-    public boolean removeAll(@NonNull Collection<?> c) {
+    public boolean removeAll(Collection<?> c) {
         return list.removeAll(c);
     }
 
     @Override
-    public boolean retainAll(@NonNull Collection<?> c) {
+    public boolean retainAll(Collection<?> c) {
         return list.retainAll(c);
     }
 

@@ -9,9 +9,6 @@
     <string name="action_refresh">Refresh</string>
     <string name="action_performance">Performance</string>
     <string name="description_avatar">Users avatar</string>
-    <string name="fps_graph_label_more" >%1$s ≥ %2$s fps </string>
-    <string name="fps_graph_label_less" >%1$s \u003C %2$s fps</string>
-    <string name="touch_to_update">Touch to update graph</string>
     <string name="max_tweets_reached">Max number of posts reached</string>
 
     <string name="pref_update_key">Update graph</string>

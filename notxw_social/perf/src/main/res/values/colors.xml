@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="graph_red">#f00</color>
+    <color name="graph_orange">#f80</color>
+    <color name="graph_yellow">#ff0</color>
+    <color name="graph_lime">#bf0</color>
+    <color name="graph_green">#8f0</color>
+    <color name="graph_greener">#0f8</color>
+    <color name="graph_blue">#0ff</color>
+</resources>

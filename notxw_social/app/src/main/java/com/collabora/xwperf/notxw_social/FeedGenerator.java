@@ -1,10 +1,16 @@
 package com.collabora.xwperf.notxw_social;
 
+import android.os.SystemClock;
+
+import com.collabora.xwperf.fps_measure_module.MeasurementLogger;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
 public class FeedGenerator {
+    private MeasurementLogger logger = MeasurementLogger.getInstance();
+
     public static final int MAX_ITEMS = 1000;
     private static final int INITIAL_ITEMS_BATCH = 50;
     private static final int EXTRA_ITEMS_BATCH = 20;
@@ -50,7 +56,8 @@ public class FeedGenerator {
     }
 
     private ArrayList<TweetModel> generateFeed(int numberOfItems) {
-        long dateStamp = new Date().getTime();
+        long startGenerate = SystemClock.elapsedRealtime();
+        long dateStamp = startGenerate;
         ArrayList<TweetModel> tweetModels = new ArrayList<>(numberOfItems);
         for (int i = 0; i < numberOfItems; i++) {
             TweetModel model = new TweetModel();
@@ -60,6 +67,7 @@ public class FeedGenerator {
             tweetModels.add(model);
             dateStamp += 42000;//every 42 seconds
         }
+        logger.addMeasure(startGenerate, SystemClock.elapsedRealtime() - startGenerate, MeasurementLogger.PerformanceMarks.MEASURE_FEED_LOAD + numberOfItems);
         return tweetModels;
     }
 
