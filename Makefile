@@ -23,6 +23,7 @@ ANT_APPS = \
 	$(NULL)
 
 GRADLE_APPS = \
+	notxw_contacts \
 	notxw_social \
 	$(NULL)
 

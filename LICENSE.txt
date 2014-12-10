@@ -26,8 +26,18 @@ Copyright:
  © 2012 Yusuke Suzuki
  © 2012 Arpad Borsos
  © 2012 Twitter, Inc
+ © 2011-2013 The Android Open Source Project
+ © 2012 readyState Software Ltd
 License: BSD-3-clause-Google and Apache-2.0 and Expat and BSD-2-clause
 Comment: The Expat license is also known as the MIT license
+
+Files:
+ notxw_*/gradlew
+ notxw_*/gradlew.bat
+ notxw_*/gradle/wrapper/*
+Copyright:
+ © 2007-2014 "the original author or authors"
+License: Apache-2.0
 
 Files:
  avatars/*
