@@ -31,7 +31,7 @@ Comment: The Expat license is also known as the MIT license
 
 Files:
  avatars/*
- xwperf_social/avatars/*
+ notxw_*/app/src/main/res/drawable-hdpi/avatar_*.jpg
 Copyright: none
 License: CC-0
  I, the owner of Picdrome.com, dedicate the work presented on this website
