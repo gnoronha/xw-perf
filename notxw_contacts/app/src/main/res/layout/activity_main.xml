@@ -1,0 +1,58 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.collabora.xwperf.fps_measure_module.FpsMeterView
+        android:id="@+id/fps_meter"
+        android:layout_width="@dimen/fps_meter_dot_size"
+        android:layout_height="@dimen/fps_meter_dot_size"
+        android:layout_alignParentTop="true" />
+
+    <com.collabora.xwperf.fps_measure_module.FpsGraphView
+        android:id="@+id/fps_graph_view"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true" />
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fps_graph_view"
+        android:fitsSystemWindows="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar_widget"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+
+            <FrameLayout
+                android:id="@+id/container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <fragment
+            android:id="@+id/navigation_fragment"
+            android:name="com.collabora.xwperf.notxw_contacts.fragments.NavigationFragment_"
+            android:layout_width="300dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            tools:layout="@layout/fragment_nav_drawer" />
+    </android.support.v4.widget.DrawerLayout>
+
+
+</RelativeLayout>

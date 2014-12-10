@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="material_green_100">#ffb7e1cd</color>
+    <color name="material_green_300">#ff57bb8a</color>
+    <color name="material_green_500">#ff0f9d58</color>
+    <color name="material_green_700">#ff0b8043</color>
+    <color name="material_green_A200">#ff69f0ae</color>
+    <color name="material_green_A400">#ff00e676</color>
+</resources>
