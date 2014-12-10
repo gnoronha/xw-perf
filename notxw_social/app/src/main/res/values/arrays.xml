@@ -6,13 +6,4 @@
         <item>Friends</item>
         <item>Nobody</item>
     </string-array>
-    <array name="graphColors">
-        <item>@color/graph_red</item>
-        <item>@color/graph_orange</item>
-        <item>@color/graph_yellow</item>
-        <item>@color/graph_lime</item>
-        <item>@color/graph_green</item>
-        <item>@color/graph_greener</item>
-        <item>@color/graph_blue</item>
-    </array>
 </resources>

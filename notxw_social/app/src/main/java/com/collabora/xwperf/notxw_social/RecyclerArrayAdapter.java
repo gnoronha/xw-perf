@@ -1,10 +1,6 @@
 package com.collabora.xwperf.notxw_social;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
@@ -16,19 +12,19 @@ import android.widget.TextView;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.squareup.picasso.Picasso;
 
-import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> implements IListAdapter {
+public class RecyclerArrayAdapter extends RecyclerView.Adapter<RecyclerArrayAdapter.ViewHolder> {
     private ArrayList<TweetModel> tweetModels;
 
     private Context context;
     private SimpleDateFormat itemTimeFormat = new SimpleDateFormat("hh:mm:ss a");
     private ColorGenerator generator = ColorGenerator.DEFAULT;
 
-    public RecyclerAdapter(Context context) {
+    public RecyclerArrayAdapter(Context context) {
         tweetModels = new ArrayList<>();
         this.context = context;
     }
@@ -43,13 +39,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         notifyItemRangeInserted(addToTop ? 0 : initCount, tweetModels.size());
     }
 
-    public void remove(int position){
+    public void remove(int position) {
         tweetModels.remove(position);
         notifyItemRemoved(position);
     }
 
     @Override
-    public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerArrayAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewGroup v = (ViewGroup) LayoutInflater.from(parent.getContext()).inflate(R.layout.social_list_item, parent, false);
         return new ViewHolder(v);
     }
@@ -64,26 +60,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         holder.login.setText(currentItem.getUserModel().getLogin());
         holder.dateStamp.setText(itemTimeFormat.format(currentItem.getTimestamp()));
         if (currentItem.getUserModel().getAvatar() > 0) {
-            loadBitmap(currentItem.getUserModel().getAvatar(), holder.avatar);
+            Picasso.with(context).load(currentItem.getUserModel().getAvatar()).transform(new CircleTransform()).noFade()
+                    .into(holder.avatar);
         } else {
             //generate avatar here
             holder.avatar.setImageDrawable(TextDrawable.builder().buildRound(login.substring(0, 1), generator.getColor(login)));
         }
     }
 
-    public void loadBitmap(int resId, ImageView imageView) {
-        BitmapWorkerTask task = new BitmapWorkerTask(imageView);
-        task.execute(resId);
-    }
 
     @Override
     public int getItemCount() {
         return tweetModels.size();
-    }
-
-    @Override
-    public int getCount() {
-        return getItemCount();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -136,28 +124,5 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         public void onItemClick(View view, int position);
     }
 
-    private class BitmapWorkerTask extends AsyncTask<Integer, Void, Drawable> {
-        private final WeakReference<ImageView> imageViewReference;
 
-        public BitmapWorkerTask(ImageView imageView) {
-            // Use a WeakReference to ensure the ImageView can be garbage collected
-            imageViewReference = new WeakReference<>(imageView);
-        }
-
-        @Override
-        protected Drawable doInBackground(Integer... params) {
-            Bitmap avatarBitmap = BitmapFactory.decodeResource(context.getResources(), params[0]);
-            return new RoundedAvatarDrawable(avatarBitmap);
-        }
-
-        @Override
-        protected void onPostExecute(Drawable drawable) {
-            if (imageViewReference != null && drawable != null) {
-                final ImageView imageView = imageViewReference.get();
-                if (imageView != null) {
-                    imageView.setImageDrawable(drawable);
-                }
-            }
-        }
-    }
 }

@@ -1,19 +1,20 @@
-package com.collabora.xwperf.notxw_social;
+package com.collabora.xwperf.fps_measure_module;
 
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 
 
 public class FpsGraphView extends View {
-
-    private static final int MAGIC_NUMBER = 300;
+    private MeasurementLogger logger = MeasurementLogger.getInstance();
+    private static final int NUMBER_OF_SAMPLES = 300;
     private final int graphWidth;
+    private final int legendWidth;
+    private final int desiredHeight;
 
     private long startTime = 0;
     private long lastTime;
@@ -23,6 +24,7 @@ public class FpsGraphView extends View {
     private int[] colors;
     private final float textSize;
     private final int strokeWidth;
+
 
     public FpsGraphView(Context context) {
         this(context, null);
@@ -34,27 +36,62 @@ public class FpsGraphView extends View {
 
     public FpsGraphView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs);
+        logger.addMark(MeasurementLogger.PerformanceMarks.MARK_PERF_COLLECTOR_SETUP_START);
         textSize = context.getResources().getDimension(R.dimen.fps_graph_textsize);
         strokeWidth = (int) context.getResources().getDimension(R.dimen.fps_graph_stroke_width);
         graphWidth = (int) context.getResources().getDimension(R.dimen.fps_graph_width);
-        fpsHistory = new FifoFloatQueue(MAGIC_NUMBER);
+        legendWidth = (int) context.getResources().getDimension(R.dimen.fps_legend_width);
+        desiredHeight = (int) context.getResources().getDimension(R.dimen.fps_desired_height);
+        fpsHistory = new FifoFloatQueue(NUMBER_OF_SAMPLES);
 
         paint = new Paint();
         colors = context.getResources().getIntArray(R.array.graphColors);
 
         startTime = SystemClock.elapsedRealtime();
+        logger.addMark(MeasurementLogger.PerformanceMarks.MARK_PERF_COLLECTOR_SETUP_END);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        if (heightMeasureSpec < textSize * (colors.length + 1)) {
-            heightMeasureSpec = (int) (textSize * (colors.length + 1));
+        int desiredWidth = graphWidth + legendWidth;
+
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+
+        int width;
+        int height;
+
+        //Measure Width
+        if (widthMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            width = widthSize;
+        } else if (widthMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            width = Math.min(desiredWidth, widthSize);
+        } else {
+            //Be whatever you want
+            width = desiredWidth;
         }
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+
+        //Measure Height
+        if (heightMode == MeasureSpec.EXACTLY) {
+            //Must be this size
+            height = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            //Can't be bigger than...
+            height = Math.min(desiredHeight, heightSize);
+        } else {
+            //Be whatever you want
+            height = desiredHeight;
+        }
+
+        setMeasuredDimension(width, height);
     }
 
     @Override
-    public void draw(@NonNull Canvas canvas) {
+    public void draw(Canvas canvas) {
         FifoFloatQueue buffer = FifoFloatQueue.clone(fpsHistory);
         canvas.drawColor(Color.BLACK); //clear
         paint.reset();
@@ -113,25 +150,25 @@ public class FpsGraphView extends View {
         double stdDev = Math.sqrt(squareDiffs / buffer.size());
         int legendStartPos = graphWidth + 12;
         paint.setColor(colors[0]);
-        canvas.drawText("" + lt28 + "<28fps", legendStartPos, textSize * 7, paint);
+        canvas.drawText(String.format(getResources().getString(R.string.fps_graph_label_less), lt28, 28), legendStartPos, textSize * 7, paint);
         paint.setColor(colors[1]);
-        canvas.drawText("" + lt30 + "<30fps", legendStartPos, textSize * 6, paint);
+        canvas.drawText(String.format(getResources().getString(R.string.fps_graph_label_less), lt30, 30), legendStartPos, textSize * 6, paint);
         paint.setColor(colors[2]);
-        canvas.drawText("" + lt32 + "<32fps", legendStartPos, textSize * 5, paint);
+        canvas.drawText(String.format(getResources().getString(R.string.fps_graph_label_less), lt32, 32), legendStartPos, textSize * 5, paint);
         paint.setColor(colors[3]);
-        canvas.drawText("" + lt58 + "<58fps", legendStartPos, textSize * 4, paint);
+        canvas.drawText(String.format(getResources().getString(R.string.fps_graph_label_less), lt58, 58), legendStartPos, textSize * 4, paint);
         paint.setColor(colors[4]);
-        canvas.drawText("" + lt60 + "<60fps", legendStartPos, textSize * 3, paint);
+        canvas.drawText(String.format(getResources().getString(R.string.fps_graph_label_less), lt60, 60), legendStartPos, textSize * 3, paint);
         paint.setColor(colors[5]);
-        canvas.drawText("" + lt62 + "<62fps", legendStartPos, textSize * 2, paint);
+        canvas.drawText(String.format(getResources().getString(R.string.fps_graph_label_less), lt62, 62), legendStartPos, textSize * 2, paint);
         paint.setColor(colors[6]);
-        canvas.drawText("" + ge62 + "≥62fps", legendStartPos, textSize, paint);
+        canvas.drawText(String.format(getResources().getString(R.string.fps_graph_label_more), ge62, 62), legendStartPos, textSize, paint);
 
         paint.setColor(Color.WHITE);
         canvas.drawText("µ = " + String.format("%.2f", mean) +
-                ", σ = " + String.format("%.2f", stdDev) +
-                ", min = " + String.format("%.2f", minFps) +
-                ", max = " + String.format("%.2f", maxFps),
+                        ", σ = " + String.format("%.2f", stdDev) +
+                        ", min = " + String.format("%.2f", minFps) +
+                        ", max = " + String.format("%.2f", maxFps),
                 8, textSize * 7, paint);
     }
 
@@ -140,12 +177,10 @@ public class FpsGraphView extends View {
             lastTime = startTime;
 
         float value = 1000f / (frameTimestamp - lastTime);
-        lastTime = frameTimestamp;
         fpsHistory.add(value);
-        if (lastTime - startTime > 5000) {
-            postInvalidate();
-            startTime = lastTime;//show every 5 seconds
-        }
-    }
+        if (fpsHistory.size() < NUMBER_OF_SAMPLES)
+            logger.addMeasure(frameTimestamp, frameTimestamp - lastTime, MeasurementLogger.PerformanceMarks.MEASURE_TO_NEXT_FRAME);
+        lastTime = frameTimestamp;
 
+    }
 }

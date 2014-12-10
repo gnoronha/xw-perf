@@ -1,12 +1,14 @@
 package com.collabora.xwperf.notxw_social;
 
 import android.content.Context;
+import android.os.SystemClock;
 import android.text.Html;
 import android.util.JsonReader;
 import android.util.JsonWriter;
 import android.util.Log;
 
-import java.io.File;
+import com.collabora.xwperf.fps_measure_module.MeasurementLogger;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -16,6 +18,7 @@ import java.util.Date;
 
 public class FileUtils {
     private static final String TAG = FileUtils.class.getSimpleName();
+    private MeasurementLogger logger = MeasurementLogger.getInstance();
 
     private static final String FEED_FILE_NAME = "tweets.json";
 
@@ -29,13 +32,10 @@ public class FileUtils {
 
     public FileUtils(Context context) {
         this.context = context;
-        File jsonFile = new File(FEED_FILE_NAME);
-        if (!jsonFile.exists()) {
-            Log.d(TAG, "Not yet created");
-        }
     }
 
     public ArrayList<TweetModel> readFeed() {
+        long readStartTime = SystemClock.elapsedRealtime();
         ArrayList<TweetModel> feed = new ArrayList<>();
         try {
             JsonReader reader = new JsonReader(new InputStreamReader(context.openFileInput(FEED_FILE_NAME)));
@@ -49,10 +49,12 @@ public class FileUtils {
         } catch (IOException e) {
             Log.e(TAG, "IO", e);
         }
+        logger.addMeasure(readStartTime, SystemClock.elapsedRealtime() - readStartTime, MeasurementLogger.PerformanceMarks.MEASURE_FILE_READ);
         return feed;
     }
 
     public void writeFeed(ArrayList<TweetModel> feed) {
+        long writeStartTime = SystemClock.elapsedRealtime();
         JsonWriter writer;
         try {
             writer = new JsonWriter(new OutputStreamWriter(context.openFileOutput(FEED_FILE_NAME, Context.MODE_PRIVATE)));
@@ -64,6 +66,7 @@ public class FileUtils {
         } catch (IOException e) {
             Log.e(TAG, "IO", e);
         }
+        logger.addMeasure(writeStartTime, SystemClock.elapsedRealtime() - writeStartTime, MeasurementLogger.PerformanceMarks.MEASURE_FILE_READ);
     }
 
     private void writeFeedArray(JsonWriter writer, ArrayList<TweetModel> feed) throws IOException {

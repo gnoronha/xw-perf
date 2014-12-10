@@ -38,7 +38,7 @@ import android.widget.ListView;
  * (i.e. you're using
  * {@link ListView#setOnItemClickListener(AdapterView.OnItemClickListener)}
  * or an equivalent listener on {@link ListActivity} or
- * {@link ListFragment}, use {@link SwipeDismissListViewTouchListener} instead.</em></p>
+ * {@link ListFragment}, use {@link com.collabora.xwperf.notxw_social.SwipeDismissRecyclerViewTouchListener} instead.</em></p>
  * <p/>
  * <p>Example usage:</p>
  * <p/>
@@ -56,7 +56,7 @@ import android.widget.ListView;
  * <p>This class Requires API level 12 or later due to use of {@link
  * android.view.ViewPropertyAnimator}.</p>
  *
- * @see SwipeDismissListViewTouchListener
+ * @see com.collabora.xwperf.notxw_social.SwipeDismissRecyclerViewTouchListener
  */
 public class SwipeDismissTouchListener implements View.OnTouchListener {
     // Cached ViewConfiguration and system-wide constant values

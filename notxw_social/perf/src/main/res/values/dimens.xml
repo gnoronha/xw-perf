@@ -1,0 +1,7 @@
+<resources>
+    <dimen name="fps_graph_textsize">9sp</dimen>
+    <dimen name="fps_graph_stroke_width">1dp</dimen>
+    <dimen name="fps_graph_width">300dp</dimen>
+    <dimen name="fps_legend_width">100dp</dimen>
+    <dimen name="fps_desired_height">64dp</dimen>
+</resources>

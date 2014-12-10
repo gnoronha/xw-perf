@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Social.iml" filepath="$PROJECT_DIR$/Social.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/notxw_social.iml" filepath="$PROJECT_DIR$/notxw_social.iml" />
+      <module fileurl="file://$PROJECT_DIR$/perf/perf.iml" filepath="$PROJECT_DIR$/perf/perf.iml" />
     </modules>
   </component>
 </project>

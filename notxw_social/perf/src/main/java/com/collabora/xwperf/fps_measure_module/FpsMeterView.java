@@ -1,4 +1,4 @@
-package com.collabora.xwperf.notxw_social;
+package com.collabora.xwperf.fps_measure_module;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,6 +10,7 @@ import android.view.View;
 public class FpsMeterView extends View {
     private int counter;
     private boolean animateAlways = true;
+    private MeasurementLogger logger = MeasurementLogger.getInstance();
 
     private final Paint paint;
     private IFpsListener fpsListener;
@@ -17,6 +18,7 @@ public class FpsMeterView extends View {
     public FpsMeterView(Context context, AttributeSet attrs) {
         super(context, attrs);
         paint = new Paint();
+        logger.addMark(MeasurementLogger.PerformanceMarks.MARK_PERF_COLLECTOR_ATTACH_BLINKENLIGHT);
     }
 
     @Override
