@@ -334,10 +334,10 @@ class FrameStats(object):
         print('min/median/max %.3f/%.3f/%.3f sec = %.3f/%.3f/%.3f vsyncs' % (
             min_(self.frame_latency_s),
             median(self.frame_latency_s),
-            max(self.frame_latency_s),
+            max_(self.frame_latency_s),
             min_(self.frame_latency_vsyncs),
             median(self.frame_latency_vsyncs),
-            max(self.frame_latency_vsyncs),
+            max_(self.frame_latency_vsyncs),
             ))
         print()
 
@@ -380,7 +380,7 @@ class FrameStats(object):
         print('min/median/max %.3f/%.3f/%.3f fps' % (
             min_(self.visible_frame_fps),
             median(self.visible_frame_fps),
-            max(self.visible_frame_fps),
+            max_(self.visible_frame_fps),
             ))
         print('number of frames drawn but never shown: %d' %
                 self.invisible_frames)
