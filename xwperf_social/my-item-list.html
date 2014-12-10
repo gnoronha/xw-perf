@@ -71,20 +71,12 @@ license that can be found in the LICENSE.txt file.
           target.scrollTop + target.offsetHeight >=
             this.$.progressBox.offsetTop) {
         this.$.progress.hidden = false;
+        // stub: we don't actually display real progress
+        this.$.progress.value = 23;
 
-        for (var i = 0; i < 10; i++) {
-          setTimeout((function(i){
-            this.$.progress.value = 10 * i;
-          }).bind(this, i), NETWORK_LAG_MS * i / 10);
-        }
-
-        setTimeout((function(){
-          this.feed.loadMore();
-          this.data = this.feed.data;
-          console.log('now have ' + this.data.length + ' items');
-          this.refresh();
+        this.feed.loadMore(function () {
           this.$.progress.hidden = true;
-        }).bind(this), NETWORK_LAG_MS);
+        }.bind(this));
       }
     }
 
@@ -95,30 +87,22 @@ license that can be found in the LICENSE.txt file.
       _myItemListScrollTop: null,
       /* slightly awkward naming because core-list already has a refresh() */
       refreshContent: function() {
-        console.log('refreshing');
         this.$.refreshBox.hidden = false;
         this.$.refreshBox.style.height = '32px';
         this.$.pullToRefresh.hidden = true;
         this.$.refreshProgress.hidden = false;
+        // stub: we don't actually display real progress
+        this.$.refreshProgress.value = 42;
 
-        for (var i = 0; i < 10; i++) {
-          setTimeout((function(i){
-            this.$.refreshProgress.value = 10 * i;
-          }).bind(this, i), NETWORK_LAG_MS * i / 10);
-        }
-
-        setTimeout((function(){
-          this.feed.refresh();
+        this.feed.refresh(function () {
           this.$.refreshBox.hidden = true;
-        }).bind(this), NETWORK_LAG_MS);
+        }.bind(this));
       },
       go: function() {
         (this.scrollTarget || this).addEventListener('scroll',
             scrollHandler.bind(this), false);
         this.data = this.feed.data;
-        this.$.refreshBox.hidden = false;
-        this.$.refreshBox.style.height = '0px';
-        this.feed.refresh();
+        this.refreshContent();
       },
     });
   </script>
