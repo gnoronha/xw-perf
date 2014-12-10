@@ -356,15 +356,6 @@ class FrameStats(object):
             median(self.vsync_to_vsync),
             max_(self.vsync_to_vsync),
             ))
-        print('equivalent fps')
-        mu = mean(self.vsync_to_vsync_fps)
-        print('  µ %.3f fps' % mu)
-        print('  σ %.3f fps' % pstdev(self.vsync_to_vsync_fps, mu))
-        print('min/median/max %.3f/%.3f/%.3f fps' % (
-            min_(self.vsync_to_vsync_fps),
-            median(self.vsync_to_vsync_fps),
-            max(self.vsync_to_vsync_fps),
-            ))
         print()
 
         print('user-visible frame times (vsyncs with new content)')
