@@ -1,5 +1,4 @@
 body {
-  -webkit-user-select: none;
   font-family: "RobotoDraft",Helvetica,Arial,sans-serif;
   font-weight: 300;
   line-height: 24px;
@@ -7,6 +6,10 @@ body {
   width: 100%;
   padding: 0px;
   margin: 0px;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+  -webkit-touch-callout: none;
 }
 
 /* vim:set sw=2 sts=2 et: */
