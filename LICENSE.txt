@@ -14,7 +14,7 @@ Copyright:
  © 2005-2012 jQuery Foundation, Inc. and other contributors
  © 2011-2014 Christopher Jeffrey
  © 2011-2014 TJ Holowaychuk
- © 2012-2014 Google.Inc.
+ © 2012-2014 Google Inc.
  © 2012-2013 The Polymer Authors
  © 2013-2014 The Polymer Project Authors
  © Ivan Sagalaev
@@ -26,10 +26,11 @@ Copyright:
  © 2012 Yusuke Suzuki
  © 2012 Arpad Borsos
  © 2012 Twitter, Inc
- © 2011-2013 The Android Open Source Project
- © 2012 readyState Software Ltd
 License: BSD-3-clause-Google and Apache-2.0 and Expat and BSD-2-clause
-Comment: The Expat license is also known as the MIT license
+Comment:
+ Taken from https://github.com/Polymer and https://github.com/abarth/app-widgets
+ .
+ The Expat license is also known as the MIT or MIT/X11 license.
 
 Files:
  notxw_*/gradlew
@@ -62,10 +63,15 @@ License: CC-0
  http://creativecommons.org/publicdomain/zero/1.0/
 
 Files:
- notxw_social/app/src/main/java/com/collabora/xwperf/notxw_social/SwipeDismiss*
+ notxw_contacts/app/src/main/java/com/collabora/xwperf/notxw_contacts/adapters/ContactsFilterAdapter.java
+ notxw_contacts/app/src/main/res/drawable/tab_indicator_ab_example.xml
+ notxw_social/app/src/main/java/com/collabora/xwperf/notxw_social/SwipeDismiss*.java
 Copyright:
- © 2013 Google Inc.
+ © 2011-2013 The Android Open Source Project
+ © 2012 readyState Software Ltd
+ © 2013 Google Inc
 License: Apache-2.0
+Comment: various smaller third-party components
 
 License: BSD-3-clause-Intel
  Redistribution and use in source and binary forms, with or without
