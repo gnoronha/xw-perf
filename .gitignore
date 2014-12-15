@@ -3,7 +3,7 @@
 /android-paths.mk
 /build/
 /build-*/
-/dist/
+/dist
 /java_*/bin/
 /java_*/gen/
 /notxw_*/bin/
