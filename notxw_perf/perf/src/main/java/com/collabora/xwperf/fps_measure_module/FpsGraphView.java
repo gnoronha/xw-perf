@@ -10,7 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.view.View;import com.collabora.xwperf.fps_measure_module.R;import java.lang.Math;import java.lang.Override;import java.lang.String;
+import android.view.View;
 
 
 public class FpsGraphView extends View {

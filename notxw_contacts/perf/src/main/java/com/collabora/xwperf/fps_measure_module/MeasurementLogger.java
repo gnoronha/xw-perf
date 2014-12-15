@@ -6,7 +6,7 @@ package com.collabora.xwperf.fps_measure_module;
 
 import android.os.SystemClock;
 
-import java.lang.String;import java.lang.StringBuilder;import java.util.ArrayList;
+import java.util.ArrayList;
 
 public class MeasurementLogger {
 

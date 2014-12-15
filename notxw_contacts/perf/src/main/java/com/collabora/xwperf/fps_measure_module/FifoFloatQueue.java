@@ -4,7 +4,7 @@
  */
 package com.collabora.xwperf.fps_measure_module;
 
-import java.lang.Cloneable;import java.lang.Float;import java.lang.Iterable;import java.lang.Object;import java.lang.Override;import java.util.Collection;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
