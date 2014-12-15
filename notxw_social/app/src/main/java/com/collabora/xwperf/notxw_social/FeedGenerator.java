@@ -62,6 +62,7 @@ public class FeedGenerator {
 
     private ArrayList<TweetModel> generateFeed(int numberOfItems) {
         long startGenerate = SystemClock.elapsedRealtime();
+        logger.addMark(startGenerate, MeasurementLogger.PerformanceMarks.MARK_FEED_LOAD_BEGIN + numberOfItems);
         long dateStamp = startGenerate;
         ArrayList<TweetModel> tweetModels = new ArrayList<>(numberOfItems);
         for (int i = 0; i < numberOfItems; i++) {
@@ -72,7 +73,9 @@ public class FeedGenerator {
             tweetModels.add(model);
             dateStamp += 42000;//every 42 seconds
         }
-        logger.addMeasure(startGenerate, SystemClock.elapsedRealtime() - startGenerate, MeasurementLogger.PerformanceMarks.MEASURE_FEED_LOAD + numberOfItems);
+        long endGenerate = SystemClock.elapsedRealtime();
+        logger.addMark(endGenerate, MeasurementLogger.PerformanceMarks.MARK_FEED_LOAD_END + numberOfItems);
+        logger.addMeasure(startGenerate, endGenerate - startGenerate, MeasurementLogger.PerformanceMarks.MEASURE_FEED_LOAD + numberOfItems);
         return tweetModels;
     }
 
