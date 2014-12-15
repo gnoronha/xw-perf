@@ -1,3 +1,7 @@
+/*
+ * Copyright 2014 Intel Corporation. All rights reserved.
+ * License: BSD-3-clause-Intel, see LICENSE.txt
+ */
 package com.collabora.xwperf.fps_measure_module;
 
 import java.lang.Cloneable;import java.lang.Float;import java.lang.Iterable;import java.lang.Object;import java.lang.Override;import java.util.Collection;
