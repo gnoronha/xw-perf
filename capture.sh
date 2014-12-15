@@ -8,7 +8,7 @@ CURDIR="$(dirname "$0")"
 [ -n "${CURDIR}" ] || CURDIR="."
 
 usage () {
-	echo "usage: ${CURDIR}/capture.sh [x|n] [s|c] [test-case]" >&2
+	echo "usage: ${CURDIR}/capture.sh [x|n] [s|c] [m7|n5|n7|z5] [test-case]" >&2
 }
 
 runtime=
@@ -42,7 +42,8 @@ case "$1" in
 		;;
 esac
 
-test="$3"
+device="$3"
+test="$4"
 
 echo "You should have opened ${runtime}_${app} already."
 echo "Start doing whatever the test case is..."
@@ -52,12 +53,12 @@ echo "Starting to collect stats..."
 "$CURDIR"/get_stats.py \
 	--time=5 \
 	--surface="${surface}" \
-	--output="$CURDIR"/results/${runtime}_${app}_${test}.log \
-	> "$CURDIR"/results/${runtime}_${app}_${test}.orig.txt
+	--output="$CURDIR"/results/${runtime}_${app}_${device}_${test}.log \
+	> "$CURDIR"/results/${runtime}_${app}_${device}_${test}.orig.txt
 echo "OK, you can stop now"
 beep || printf '\a'
 
 "$CURDIR"/get_stats.py \
-	--input="$CURDIR"/results/${runtime}_${app}_${test}.log \
-	--graph="$CURDIR"/results/${runtime}_${app}_${test}.svg \
-	> "$CURDIR"/results/${runtime}_${app}_${test}.txt
+	--input="$CURDIR"/results/${runtime}_${app}_${device}_${test}.log \
+	--graph="$CURDIR"/results/${runtime}_${app}_${device}_${test}.svg \
+	> "$CURDIR"/results/${runtime}_${app}_${device}_${test}.txt
