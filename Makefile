@@ -149,3 +149,15 @@ upload/demo:
 	ssh people.collabora.com 'cd public_html/xw-perf/demo && git submodule update'
 
 .PHONY: upload upload/demo $(UPLOADS)
+
+init:
+	cp android-paths.mk.example android-paths.mk
+	@echo "==== Looking for build tools... ===="
+	which ant || echo "*** sudo apt-get install ant"
+	which cssmin || echo "*** sudo apt-get install cssmin"
+	which uglifyjs || npm install uglifyjs
+	which vulcanize || npm install vulcanize
+	which xcf2png || echo "~~~ optional: apt-get install xcf2png"
+	@echo "*** you should probably edit android-paths.mk"
+
+.PHONY: init
