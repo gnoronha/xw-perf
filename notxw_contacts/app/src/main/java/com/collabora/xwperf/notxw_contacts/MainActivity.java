@@ -12,7 +12,6 @@ import android.view.View;
 import com.collabora.xwperf.fps_measure_module.FpsGraphView;
 import com.collabora.xwperf.fps_measure_module.FpsMeterView;
 import com.collabora.xwperf.fps_measure_module.IFpsListener;
-import com.collabora.xwperf.notxw_contacts.fragments.AllContactsFragment;
 import com.collabora.xwperf.notxw_contacts.fragments.MainFragment;
 import com.collabora.xwperf.notxw_contacts.fragments.NavigationFragment;
 
@@ -80,6 +79,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (toggle != null && toggle.onOptionsItemSelected(item))
@@ -100,5 +100,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         if (toggle != null)
             toggle.onConfigurationChanged(newConfig);
     }
+
 }
 

@@ -4,8 +4,14 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
@@ -22,7 +28,7 @@ import org.androidannotations.annotations.ViewById;
 import static android.support.v7.widget.RecyclerView.OnScrollListener;
 
 @EFragment(R.layout.fragment_main)
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements SearchView.OnQueryTextListener {
     private static final String TAG = MainFragment.class.getSimpleName();
 
     //Holder for our tabs
@@ -44,28 +50,25 @@ public class MainFragment extends Fragment {
     @ViewById(android.R.id.tabs)
     TabWidget tabView;
 
-    private OnScrollListener scrollListener;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        scrollListener = new OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            }
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                Object o = tabView.getTag(KEY_ANIMATION);
-                int oldDy = o == null ? 0 : (int) o;
-                oldDy += dy;
-                tabView.setTranslationY(-1 * oldDy);
-                tabView.setTag(KEY_ANIMATION, oldDy);
-            }
-        };
         if (savedInstanceState != null)
             currentTabTag = savedInstanceState.getString(CURRENT_TAB);
         return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu, menu);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
     }
 
     @AfterViews
@@ -101,6 +104,7 @@ public class MainFragment extends Fragment {
                     .replace(getContainerViewId(tabId), getFragmentForTab(tabId), tabId)
                     .commit();
         }
+        currentTabTag = tabId;
     }
 
     private Fragment getFragmentForTab(String tabId) {
@@ -117,7 +121,21 @@ public class MainFragment extends Fragment {
                 break;
         }
         if (fragment != null) {
-            ((ITabScrollHider) fragment).setScrollListener(scrollListener);
+            ((ITabScrollHider) fragment).setScrollListener(new OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                }
+
+                @Override
+                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                    super.onScrolled(recyclerView, dx, dy);
+                    Object o = tabView.getTag(KEY_ANIMATION);
+                    int oldDy = o == null ? 0 : (int) o;
+                    oldDy += dy;
+                    tabView.setTranslationY(-1 * oldDy);
+                    tabView.setTag(KEY_ANIMATION, oldDy);
+                }
+            });
         }
         return fragment;
     }
@@ -145,5 +163,18 @@ public class MainFragment extends Fragment {
         return tabSpec;
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        //we will filter everything beforehand
+        return true;
+    }
 
+    @Override
+    public boolean onQueryTextChange(String s) {
+        FragmentManager fm = getChildFragmentManager();
+        ITabScrollHider fragment = (ITabScrollHider) fm.findFragmentByTag(currentTabTag);
+        fragment.setSearchTerm(s);
+        Log.d(TAG, "we are searching for: " + s);
+        return true;
+    }
 }

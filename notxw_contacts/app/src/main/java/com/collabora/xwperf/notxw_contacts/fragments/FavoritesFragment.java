@@ -10,6 +10,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.FilterQueryProvider;
 
 import com.collabora.xwperf.notxw_contacts.R;
 import com.collabora.xwperf.notxw_contacts.adapters.ContactsAdapter;
@@ -29,7 +30,6 @@ public class FavoritesFragment extends Fragment implements ITabScrollHider {
         return FavoritesFragment_.builder().build();
     }
 
-    private LinearLayoutManager layoutManager;
     private ContactsAdapter adapter;
 
     @ViewById(R.id.recycler_view)
@@ -39,36 +39,25 @@ public class FavoritesFragment extends Fragment implements ITabScrollHider {
     void init() {
         //init loader
         recyclerView.setHasFixedSize(false);
-        layoutManager = new LinearLayoutManager(getActivity());
-        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         adapter = new ContactsAdapter(getActivity(), null);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setOnScrollListener(scrollListener);
-        Log.d(TAG," on view created");
         getActivity().getSupportLoaderManager().restartLoader(13, null, favLoader);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        Log.d(TAG," on resume");
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Log.d(TAG," on create");
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> favLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
 
         @Override
         public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-
-            String select = ContactsStore.ContactTable.FAVORITE + " = ? ";
-            String[] selectArgs = new String[]{String.valueOf(1)};
-            return new CursorLoader(getActivity(), ContactsContentProvider.contentUri(ContactsStore.ContactTable.CONTENT_URI), null, select, selectArgs, ContactsStore.ContactTable.NAME);
+            String select = ContactsStore.ContactTable.FAVORITE + " = 1 ";
+            if (bundle != null) {
+                String searchTerm = bundle.getString(SEARCH_TERM, "");
+                select += " AND " + ContactsStore.ContactTable.NAME;
+                select += " LIKE \'%" + searchTerm + "%\'";
+            }
+            return new CursorLoader(getActivity(), ContactsContentProvider.contentUri(ContactsStore.ContactTable.CONTENT_URI), null, select, null, ContactsStore.ContactTable.NAME);
         }
 
         @Override
@@ -85,5 +74,12 @@ public class FavoritesFragment extends Fragment implements ITabScrollHider {
     @Override
     public void setScrollListener(RecyclerView.OnScrollListener scrollListener) {
         this.scrollListener = scrollListener;
+    }
+
+    @Override
+    public void setSearchTerm(String searchTerm) {
+        Bundle bundle = new Bundle();
+        bundle.putString(SEARCH_TERM, searchTerm);
+        getLoaderManager().restartLoader(13, bundle, favLoader);
     }
 }

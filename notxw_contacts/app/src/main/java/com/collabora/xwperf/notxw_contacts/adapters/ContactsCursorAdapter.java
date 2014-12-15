@@ -20,9 +20,6 @@ import android.database.Cursor;
 import android.database.DataSetObserver;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
-import android.widget.Filter;
-import android.widget.FilterQueryProvider;
-import android.widget.Filterable;
 
 /**
  * Provide a {@link android.support.v7.widget.RecyclerView.Adapter} implementation with cursor
@@ -40,19 +37,16 @@ import android.widget.Filterable;
  * @see android.widget.CursorAdapter
  * @see android.widget.Filterable
  */
-public abstract class ContactsFilterAdapter<VH
-        extends android.support.v7.widget.RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>
-        implements Filterable, CursorFilter.CursorFilterClient {
+public abstract class ContactsCursorAdapter<VH
+        extends android.support.v7.widget.RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH> {
 
     private boolean mDataValid;
     private int mRowIDColumn;
     private Cursor mCursor;
     private ChangeObserver mChangeObserver;
     private DataSetObserver mDataSetObserver;
-    private CursorFilter mCursorFilter;
-    private FilterQueryProvider mFilterQueryProvider;
 
-    public ContactsFilterAdapter(Cursor cursor) {
+    public ContactsCursorAdapter(Cursor cursor) {
         init(cursor);
     }
 
@@ -193,70 +187,6 @@ public abstract class ContactsFilterAdapter<VH
         return cursor == null ? "" : cursor.toString();
     }
 
-    /**
-     * Runs a query with the specified constraint. This query is requested
-     * by the filter attached to this adapter.
-     * <p/>
-     * The query is provided by a
-     * {@link android.widget.FilterQueryProvider}.
-     * If no provider is specified, the current cursor is not filtered and returned.
-     * <p/>
-     * After this method returns the resulting cursor is passed to {@link #changeCursor(Cursor)}
-     * and the previous cursor is closed.
-     * <p/>
-     * This method is always executed on a background thread, not on the
-     * application's main thread (or UI thread.)
-     * <p/>
-     * Contract: when constraint is null or empty, the original results,
-     * prior to any filtering, must be returned.
-     *
-     * @param constraint the constraint with which the query must be filtered
-     * @return a Cursor representing the results of the new query
-     * @see #getFilter()
-     * @see #getFilterQueryProvider()
-     * @see #setFilterQueryProvider(android.widget.FilterQueryProvider)
-     */
-    public Cursor runQueryOnBackgroundThread(CharSequence constraint) {
-        if (mFilterQueryProvider != null) {
-            return mFilterQueryProvider.runQuery(constraint);
-        }
-
-        return mCursor;
-    }
-
-    public Filter getFilter() {
-        if (mCursorFilter == null) {
-            mCursorFilter = new CursorFilter(this);
-        }
-        return mCursorFilter;
-    }
-
-    /**
-     * Returns the query filter provider used for filtering. When the
-     * provider is null, no filtering occurs.
-     *
-     * @return the current filter query provider or null if it does not exist
-     * @see #setFilterQueryProvider(android.widget.FilterQueryProvider)
-     * @see #runQueryOnBackgroundThread(CharSequence)
-     */
-    public FilterQueryProvider getFilterQueryProvider() {
-        return mFilterQueryProvider;
-    }
-
-    /**
-     * Sets the query filter provider used to filter the current Cursor.
-     * The provider's
-     * {@link android.widget.FilterQueryProvider#runQuery(CharSequence)}
-     * method is invoked when filtering is requested by a client of
-     * this adapter.
-     *
-     * @param filterQueryProvider the filter query provider or null to remove it
-     * @see #getFilterQueryProvider()
-     * @see #runQueryOnBackgroundThread(CharSequence)
-     */
-    public void setFilterQueryProvider(FilterQueryProvider filterQueryProvider) {
-        mFilterQueryProvider = filterQueryProvider;
-    }
 
     /**
      * Called when the {@link ContentObserver} on the cursor receives a change notification.
@@ -294,7 +224,6 @@ public abstract class ContactsFilterAdapter<VH
         @Override
         public void onInvalidated() {
             mDataValid = false;
-            // notifyDataSetInvalidated();
             notifyItemRangeRemoved(0, getItemCount());
         }
     }

@@ -31,7 +31,6 @@
                 android:paddingTop="@dimen/tab_widget_height"
                 android:layout_height="match_parent" />
 
-
         </FrameLayout>
 
         <TabWidget

@@ -20,5 +20,6 @@
     <string name="favorites">Favorites</string>
     <string name="all">All</string>
     <string name="groups">Groups</string>
+    <string name="action_search">Search</string>
 
 </resources>
