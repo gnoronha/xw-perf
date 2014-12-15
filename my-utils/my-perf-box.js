@@ -204,6 +204,38 @@ Polymer({
     this.$.popup.setAttribute('hidden', '');
     this.$.popupResults.innerHTML = '';
   },
+
+  fiveSecondTest: function () {
+    var that = this;
+    var canvas = this.$['perf-canvas'];
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = "#800";
+    ctx.fillRect(0, 0, 400, 64);
+
+    ctx.fillStyle = "#fff";
+    ctx.fillText('you have 5 seconds to reach the initial state', 8, 10);
+
+    setTimeout(function () {
+      ctx.fillStyle = "#880";
+      ctx.fillRect(0, 0, 400, 64);
+
+      ctx.fillStyle = "#fff";
+      ctx.fillText('start testing now, you have 1 second', 8, 10);
+
+      setTimeout(function () {
+        ctx.fillStyle = "#0f0";
+        ctx.fillRect(0, 0, 400, 64);
+
+        ctx.fillStyle = "#000";
+        ctx.fillText('testing... you can stop when the graph appears', 8, 10);
+
+        setTimeout(function () {
+          g.drawStatsNextFrame = that.drawStatsCallback;
+        }, 5000);
+      }, 1000);
+    }, 3000);
+  },
 });
 
 })(window);

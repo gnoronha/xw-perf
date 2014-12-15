@@ -175,6 +175,10 @@ Polymer({
     var toast = this.$.unimplementedToast;
     this.async(function () { toast.dismiss(); });
   },
+
+  fiveSecondTest: function () {
+    window.document.getElementById('perfBox').fiveSecondTest();
+  },
 });
 
 })();

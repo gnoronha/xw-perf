@@ -70,12 +70,16 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
                 label="Always animate"
                 on-core-change="{{toggleAlwaysAnimate}}">
             </my-boolean-setting>
-            <paper-item on-tap="{{goToPerf}}">
-              Performance
-            </paper-item>
             <my-boolean-setting id="diffBackgroundCheck"
                 label="Rainbow backgrounds"
                 on-core-change="{{toggleDiffBackground}}">
+            </my-boolean-setting>
+            <paper-item on-tap="{{goToPerf}}">
+              Performance
+            </paper-item>
+            <paper-item on-tap="{{fiveSecondTest}}">
+              5-second test
+            </paper-item>
           </div>
 
           <core-animated-pages main id="modePages" selected="0"
