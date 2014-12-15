@@ -71,7 +71,7 @@ public class FileUtils {
         } catch (IOException e) {
             Log.e(TAG, "IO", e);
         }
-        logger.addMeasure(writeStartTime, SystemClock.elapsedRealtime() - writeStartTime, MeasurementLogger.PerformanceMarks.MEASURE_FILE_READ);
+        logger.addMeasure(writeStartTime, SystemClock.elapsedRealtime() - writeStartTime, MeasurementLogger.PerformanceMarks.MEASURE_FILE_WRITE);
     }
 
     private void writeFeedArray(JsonWriter writer, ArrayList<TweetModel> feed) throws IOException {
