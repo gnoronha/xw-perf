@@ -46,57 +46,59 @@ java: $(ANT_APKS) $(GRADLE_APKS)
 .PHONY: java
 
 # no real dependency tracking yet so use "always"
-tmp-%/vulcanized.js: always
-	rm -fr build-$*/
-	mkdir build-$*/
-	rm -fr tmp-$*/
-	mkdir tmp-$*/
-	cp -a avatars build-$*/
-	cp -a $*/manifest.json build-$*/
-	cp -a LICENSE.txt build-$*/
-	cp -aL $*/* tmp-$*
-	cd tmp-$* && vulcanize --csp --inline --strip \
-		--config=../vulcanize.json \
+tmp/%/vulcanized.js: always
+	test -d build || mkdir build
+	test -d tmp || mkdir tmp
+	rm -fr build/$*/
+	mkdir build/$*/
+	rm -fr tmp/$*/
+	mkdir tmp/$*/
+	cp -a avatars build/$*/
+	cp -a $*/manifest.json build/$*/
+	cp -a LICENSE.txt build/$*/
+	cp -aL $*/* tmp/$*
+	cd tmp/$* && vulcanize --csp --inline --strip \
+		--config=../../vulcanize.json \
 		-o vulcanized.html \
 		main.html
-	mv tmp-$*/vulcanized.html build-$*/main.html
-	uglifyjs tmp-$*/vulcanized.js --screw-ie8 --compress --mangle \
-		--output build-$*/vulcanized.js
+	mv tmp/$*/vulcanized.html build/$*/main.html
+	uglifyjs tmp/$*/vulcanized.js --screw-ie8 --compress --mangle \
+		--output build/$*/vulcanized.js
 	if [ -e $*/placeholder.png ]; then \
-		cp $*/placeholder.png build-$*/; \
+		cp $*/placeholder.png build/$*/; \
 	fi
 	if [ -e $*/index.html ]; then \
-		cp $*/index.html build-$*/; \
+		cp $*/index.html build/$*/; \
 	fi
-	mkdir -p build-$*/bower_components/my-utils/
-	cp -aL my-utils/my-perf* build-$*/bower_components/my-utils/
+	mkdir -p build/$*/bower_components/my-utils/
+	cp -aL my-utils/my-perf* build/$*/bower_components/my-utils/
 	if [ -e $*/index.js ]; then \
 		uglifyjs $*/index.html --screw-ie8 --compress --mangle \
-			--output build-$*/index.js; \
+			--output build/$*/index.js; \
 	fi
 	if [ -e $*/index.css ]; then \
-		cssmin < $*/index.css > build-$*/index.css; \
+		cssmin < $*/index.css > build/$*/index.css; \
 	fi
 
 define build_apk =
 	test -d dist || mkdir dist
 	cd crosswalk && python ./make_apk.py \
 		--package=com.collabora.xwperf.$1 \
-		--manifest=$(CURDIR)/build-$1/manifest.json \
+		--manifest=$(CURDIR)/build/$1/manifest.json \
 		--enable-remote-debugging \
-		--target-dir=$(CURDIR)/tmp-$1 \
+		--target-dir=$(CURDIR)/tmp/$1 \
 		$3 \
 		$(NULL)
-	mv tmp-$1/*.apk $2
+	mv tmp/$1/*.apk $2
 endef
 
-$(filter %_x86.apk,$(XW_APKS)): dist/%_x86.apk: tmp-%/vulcanized.js
+$(filter %_x86.apk,$(XW_APKS)): dist/%_x86.apk: tmp/%/vulcanized.js
 	$(call build_apk,$*,$@,--arch=x86)
 
-$(filter %_arm.apk,$(XW_APKS)): dist/%_arm.apk: tmp-%/vulcanized.js
+$(filter %_arm.apk,$(XW_APKS)): dist/%_arm.apk: tmp/%/vulcanized.js
 	$(call build_apk,$*,$@,--arch=arm)
 
-$(filter-out %_x86.apk %_arm.apk,$(XW_APKS)): dist/%.apk: tmp-%/vulcanized.js
+$(filter-out %_x86.apk %_arm.apk,$(XW_APKS)): dist/%.apk: tmp/%/vulcanized.js
 	$(call build_apk,$*,$@,--mode=shared)
 
 $(ANT_APKS): dist/%.apk: always
