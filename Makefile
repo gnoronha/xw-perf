@@ -151,7 +151,8 @@ upload/demo:
 .PHONY: upload upload/demo $(UPLOADS)
 
 init:
-	cp android-paths.mk.example android-paths.mk
+	test -e polymer/bower.json || git submodule init
+	git submodule update
 	@echo "==== Looking for build tools... ===="
 	which ant || echo "*** sudo apt-get install ant"
 	which bower || npm install bower
@@ -159,6 +160,7 @@ init:
 	which uglifyjs || npm install uglifyjs
 	which vulcanize || npm install vulcanize
 	which xcf2png || echo "~~~ optional: apt-get install xcf2png"
+	cp android-paths.mk.example android-paths.mk
 	@echo "*** you should probably edit android-paths.mk"
 
 .PHONY: init

@@ -1,4 +1,4 @@
-android_sdk := ${HOME}/android-sdk-linux-23.0.2
+android_sdk := ${HOME}/android-sdk_r24.0.1-linux
 
 export PATH := ${android_sdk}/tools:${android_sdk}/platform-tools:${android_sdk}:${android_sdk}/depot_tools:${CURDIR}/node_modules/.bin:${PATH}
 
