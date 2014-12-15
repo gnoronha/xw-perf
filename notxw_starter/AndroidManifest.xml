@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2014 Intel Corporation. All rights reserved.
+License: BSD-3-clause-Intel, see LICENSE.txt
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.collabora.xwperf.notxw_starter"
       android:versionCode="1"

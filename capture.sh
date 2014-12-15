@@ -1,4 +1,6 @@
 #!/bin/sh
+# Copyright 2014 Intel Corporation. All rights reserved.
+# License: BSD-3-clause-Intel, see LICENSE.txt
 
 set -e
 

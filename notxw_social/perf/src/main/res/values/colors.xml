@@ -1,3 +1,7 @@
+<!--
+Copyright 2014 Intel Corporation. All rights reserved.
+License: BSD-3-clause-Intel, see LICENSE.txt
+-->
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="graph_red">#f00</color>
