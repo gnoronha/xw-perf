@@ -154,6 +154,7 @@ init:
 	cp android-paths.mk.example android-paths.mk
 	@echo "==== Looking for build tools... ===="
 	which ant || echo "*** sudo apt-get install ant"
+	which bower || npm install bower
 	which cssmin || echo "*** sudo apt-get install cssmin"
 	which uglifyjs || npm install uglifyjs
 	which vulcanize || npm install vulcanize
