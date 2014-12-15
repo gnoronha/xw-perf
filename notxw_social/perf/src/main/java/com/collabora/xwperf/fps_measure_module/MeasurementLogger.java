@@ -26,7 +26,10 @@ public class MeasurementLogger {
     }
 
     public void addMark(String eventDescription) {
-        long timestamp = SystemClock.elapsedRealtime();
+        addMark(SystemClock.elapsedRealtime(), eventDescription);
+    }
+
+    public void addMark(long timestamp, String eventDescription) {
         logs.add(String.valueOf(timestamp) + "\t\t\t\t\t" + "Mark: " + eventDescription);
     }
 
