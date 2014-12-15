@@ -1,5 +1,6 @@
 package com.collabora.xwperf.notxw_contacts.fragments;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,11 +10,14 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.collabora.xwperf.notxw_contacts.R;
 import com.collabora.xwperf.notxw_contacts.adapters.ContactsAdapter;
 import com.collabora.xwperf.notxw_contacts.data.ContactsContentProvider;
 import com.collabora.xwperf.notxw_contacts.data.ContactsStore;
+import com.github.ksoichiro.android.observablescrollview.ObservableRecyclerView;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.EFragment;
@@ -21,12 +25,16 @@ import org.androidannotations.annotations.ViewById;
 
 @EFragment(R.layout.fragment_contacts)
 public class AllContactsFragment extends Fragment implements ITabScrollHider {
-    private LinearLayoutManager layoutManager;
-    private ContactsAdapter adapter;
+    private static final String TAG = AllContactsFragment.class.getSimpleName();
+    private RecyclerView.OnScrollListener scrollListener;
 
     public static Fragment newInstance() {
         return AllContactsFragment_.builder().build();
     }
+
+    private LinearLayoutManager layoutManager;
+    private ContactsAdapter adapter;
+
 
     @ViewById(R.id.recycler_view)
     RecyclerView recyclerView;
@@ -34,13 +42,19 @@ public class AllContactsFragment extends Fragment implements ITabScrollHider {
     @AfterViews
     void init() {
         //init loader
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ContactsAdapter(getActivity(), null);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        getLoaderManager().initLoader(11, null, contactsLoader);
+        recyclerView.setOnScrollListener(scrollListener);
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        getLoaderManager().restartLoader(11, null, contactsLoader);
     }
 
     private LoaderManager.LoaderCallbacks<Cursor> contactsLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
@@ -63,6 +77,6 @@ public class AllContactsFragment extends Fragment implements ITabScrollHider {
 
     @Override
     public void setScrollListener(RecyclerView.OnScrollListener scrollListener) {
-
+        this.scrollListener = scrollListener;
     }
 }

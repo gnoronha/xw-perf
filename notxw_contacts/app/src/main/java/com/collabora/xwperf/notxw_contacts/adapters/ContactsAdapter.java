@@ -26,6 +26,9 @@ public class ContactsAdapter extends ContactsFilterAdapter<RecyclerView.ViewHold
     private static final int KEY_OLD_VALUE = R.id.username;
     private static final int KEY_POSITION = R.id.favorite_star;
 
+    private static final int TYPE_OFFSET = 123;
+
+
     private ColorGenerator generator = ColorGenerator.DEFAULT;
     private LayoutInflater layoutInflater;
 
@@ -55,8 +58,30 @@ public class ContactsAdapter extends ContactsFilterAdapter<RecyclerView.ViewHold
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = layoutInflater.inflate(R.layout.view_contact_item, parent, false);
-        return new ContactsViewHolder(view);
+        return viewType == TYPE_OFFSET ?
+                new OffsetViewHolder(layoutInflater.inflate(R.layout.view_offset, parent, false)) :
+                new ContactsViewHolder(layoutInflater.inflate(R.layout.view_contact_item, parent, false));
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return position == 0 ? TYPE_OFFSET : super.getItemViewType(position);
+    }
+
+    @Override
+    public int getItemCount() {
+        return super.getItemCount() + 1;
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (position > 0)
+            super.onBindViewHolder(holder, position - 1);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position == 0 ? 0 : super.getItemId(position + 1);
     }
 
     @Override
@@ -65,7 +90,6 @@ public class ContactsAdapter extends ContactsFilterAdapter<RecyclerView.ViewHold
         boolean isFavorite = cursor.getInt(favoriteId) == 1;
         int itemId = cursor.getInt(0);
         int avatarResId = cursor.getInt(avatarId);
-
         ContactsViewHolder local = ((ContactsViewHolder) viewHolder);
         local.usernameTextView.setText(name);
         local.favoriteStar.setChecked(isFavorite);
@@ -102,6 +126,12 @@ public class ContactsAdapter extends ContactsFilterAdapter<RecyclerView.ViewHold
             avatarImageView = (ImageView) rootView.findViewById(R.id.avatar);
             usernameTextView = (TextView) rootView.findViewById(R.id.username);
             favoriteStar = (CheckBox) rootView.findViewById(R.id.favorite_star);
+        }
+    }
+
+    public static class OffsetViewHolder extends RecyclerView.ViewHolder {
+        public OffsetViewHolder(View rootView) {
+            super(rootView);
         }
     }
 

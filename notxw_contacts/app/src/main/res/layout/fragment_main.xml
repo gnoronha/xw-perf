@@ -5,43 +5,41 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TabWidget
-            android:id="@android:id/tabs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"></TabWidget>
 
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/tab_fav"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:layout_height="match_parent" />
 
-            </LinearLayout>
-
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/tab_all"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal" />
+                android:layout_height="match_parent" />
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/tab_groups"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal" />
+                android:paddingTop="@dimen/tab_widget_height"
+                android:layout_height="match_parent" />
+
 
         </FrameLayout>
 
-    </LinearLayout>
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/tab_widget_height"
+            android:divider="@null" />
+
+    </RelativeLayout>
 
 </TabHost>
