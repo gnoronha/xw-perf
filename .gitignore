@@ -6,6 +6,7 @@
 /dist
 /java_*/bin/
 /java_*/gen/
+/node_modules/
 /notxw_*/bin/
 /notxw_*/gen/
 /notxw_*/local.properties
