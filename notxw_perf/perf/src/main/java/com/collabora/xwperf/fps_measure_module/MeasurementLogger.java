@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public class MeasurementLogger {
 
     private ArrayList<String> logs;
-    private long startTime;
     private static MeasurementLogger ourInstance = new MeasurementLogger();
 
     public static MeasurementLogger getInstance() {
@@ -20,32 +19,22 @@ public class MeasurementLogger {
 
     private MeasurementLogger() {
         logs = new ArrayList<>();
-        startTime = SystemClock.elapsedRealtime();
     }
 
-    public ArrayList<String> getLogs(){
+    public ArrayList<String> getLogs() {
         return logs;
     }
 
-    public void addMark(String eventDescription){
-        long timestamp = SystemClock.elapsedRealtime();
-        StringBuilder sb = new StringBuilder();
-        sb.append(timestamp);
-        sb.append("\t\t\t\t\t");
-        sb.append("Mark: ");
-        sb.append(eventDescription);
-        logs.add(sb.toString());
+    public void addMark(String eventDescription) {
+        addMark(SystemClock.elapsedRealtime(), eventDescription);
     }
 
-    public void addMeasure(long timestamp, long duration, String eventDescription){
-        StringBuilder sb = new StringBuilder();
-        sb.append(timestamp);
-        sb.append("\t\t");
-        sb.append(duration);
-        sb.append("\t\t");
-        sb.append("Measure: ");
-        sb.append(eventDescription);
-        logs.add(sb.toString());
+    public void addMark(long timestamp, String eventDescription) {
+        logs.add(String.valueOf(timestamp) + "\t\t\t\t\t" + "Mark: " + eventDescription);
+    }
+
+    public void addMeasure(long timestamp, long duration, String eventDescription) {
+        logs.add(String.valueOf(timestamp) + "\t\t" + duration + "\t\t" + "Measure: " + eventDescription);
     }
 
     public class PerformanceMarks {
@@ -56,8 +45,11 @@ public class MeasurementLogger {
         public static final String MARK_PERF_COLLECTOR_ATTACH_BLINKENLIGHT = "mark_perf_collector_attach_blinkenlight";
         public static final String MARK_PERF_COLLECTOR_SETUP_END = "mark_perf_collector_setup_end";
         public static final String MARK_PERF_COLLECTOR_SETUP_START = "mark_perf_collector_setup_start";
+        public static final String MARK_FEED_LOAD_BEGIN = "measure_feed_load_begin_";
+        public static final String MARK_FEED_LOAD_END = "measure_feed_load_end_";
         public static final String MEASURE_FEED_LOAD = "measure_feed_load_";
         public static final String MEASURE_FILE_READ = "measure_file_read";
+        public static final String MEASURE_FILE_WRITE = "measure_file_write";
     }
 
 }
