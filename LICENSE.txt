@@ -63,15 +63,18 @@ License: CC-0
  http://creativecommons.org/publicdomain/zero/1.0/
 
 Files:
- notxw_contacts/app/src/main/java/com/collabora/xwperf/notxw_contacts/adapters/ContactsFilterAdapter.java
- notxw_contacts/app/src/main/res/drawable/tab_indicator_ab_example.xml
+ notxw_contacts/app/src/main/java/com/collabora/xwperf/notxw_contacts/adapters/ContactsCursorAdapter.java
+Copyright:
+ © 2013 The Android Open Source Project
+ © 2014 Intel Corporation
+License: Apache-2.0
+Comment: modified AOSP code
+
+Files:
  notxw_social/app/src/main/java/com/collabora/xwperf/notxw_social/SwipeDismiss*.java
 Copyright:
- © 2011-2013 The Android Open Source Project
- © 2012 readyState Software Ltd
  © 2013 Google Inc
 License: Apache-2.0
-Comment: various smaller third-party components
 
 License: BSD-3-clause-Intel
  Redistribution and use in source and binary forms, with or without
