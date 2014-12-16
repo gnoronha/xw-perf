@@ -76,6 +76,4 @@ public class DetailsFragment extends Fragment {
     private void showItem(ContactModel contactModel) {
         //show
     }
-
-
 }

@@ -26,7 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import static android.view.View.OnClickListener;
 
-public class ContactsAdapter extends ContactsFilterAdapter<RecyclerView.ViewHolder> {
+public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHolder> {
     private static final int KEY_ITEM_ID = R.id.avatar;
     private static final int KEY_OLD_VALUE = R.id.username;
     private static final int KEY_POSITION = R.id.favorite_star;

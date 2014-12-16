@@ -35,7 +35,6 @@ License: BSD-3-clause-Intel, see LICENSE.txt
                 android:paddingTop="@dimen/tab_widget_height"
                 android:layout_height="match_parent" />
 
-
         </FrameLayout>
 
         <TabWidget

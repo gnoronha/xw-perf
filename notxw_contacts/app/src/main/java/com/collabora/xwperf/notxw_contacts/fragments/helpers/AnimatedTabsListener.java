@@ -1,5 +1,10 @@
 package com.collabora.xwperf.notxw_contacts.fragments.helpers;
 
+/*
+ * Copyright 2014 Intel Corporation. All rights reserved.
+ * License: BSD-3-clause-Intel, see LICENSE.txt
+ */
+
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;

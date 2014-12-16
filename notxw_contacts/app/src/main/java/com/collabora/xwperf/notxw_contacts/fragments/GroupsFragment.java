@@ -25,4 +25,9 @@ public class GroupsFragment extends Fragment implements ITabScrollHider {
     public void setScrollListener(RecyclerView.OnScrollListener scrollListener) {
         //nothing
     }
+
+    @Override
+    public void setSearchTerm(String searchTerm) {
+        //nothing
+    }
 }
