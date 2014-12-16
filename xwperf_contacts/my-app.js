@@ -78,7 +78,7 @@ function passThroughDatabase(data, cb) {
           performance.measure('measure_contacts_copy',
               'mark_contacts_copy_begin',
               'mark_contacts_copy_end');
-          cb(data, favorites);
+          cb(loadedData, favorites);
         }
       };
       readReq.onerror = onerror;
@@ -88,16 +88,10 @@ function passThroughDatabase(data, cb) {
 }
 
 Polymer({
-  publish: {
-    searching: {
-      default: false,
-      reflect: true,
-    },
+  toggleMenu: function () {
+    this.$.drawerPanel.togglePanel();
   },
 
-  toggleMenu: function() {
-    this.$['my-drawer-panel'].togglePanel();
-  },
   toggleAlwaysAnimate: function() {
     window.MyPerfBoxGlobal.alwaysAnimate = this.$.alwaysAnimateCheck.checked;
   },
@@ -106,11 +100,6 @@ Polymer({
     window.MyAppGlobal = (window.MyAppGlobal || {});
     window.MyAppGlobal.differentBackgrounds = this.$.diffBackgroundCheck.checked;
   },
-
-  data: [],
-  favorites: [],
-  filteredData: [],
-  filteredFavorites: [],
 
   created: function () {
     performance.mark('mark_contacts_app_created');
@@ -130,88 +119,30 @@ Polymer({
       window.performance.mark('mark_after_db_access');
       window.performance.measure('measure_db_access',
           'mark_before_db_access', 'mark_after_db_access');
-      this.data = data;
-      this.favorites = favorites;
-      this.updateSearch();
+      this.$.listView.setData(data, favorites);
     }).bind(this));
-
-    this.$.favoritesList.scrollTarget = this.$['my-header-panel'];
-    this.$.allList.scrollTarget = this.$['my-header-panel'];
-
-    var myTabs = this.$['my-tabs'];
-    var myPages = this.$['my-pages'];
-    myTabs.addEventListener('core-select', function() {
-      myPages.selected = myTabs.selected;
-    });
   },
 
   attached: function () {
     performance.mark('mark_contacts_app_attached');
   },
 
-  itemActivated: function(e) {
-    this.$.card.model = e.target.model;
+  itemActivated: function(e, model) {
+    this.$.card.model = model;
     this.$.modePages.selected = 1;
   },
 
   backToLists: function(e) {
     this.$.modePages.selected = 0;
   },
-  settingsActivated: function(e) {
-  },
 
   goToPerf: function() {
     window.document.getElementById('perfBox').openPopup();
   },
 
-  toggleSearch: function() {
-    if (this.searching) {
-      this.searching = false;
-      this.clearSearch();
-    } else {
-      this.searching = true;
-      this.async(function() {
-        this.$.searchInput.focus();
-      });
-    }
-  },
-
-  clearSearch: function() {
-    this.$.searchInput.inputValue = this.$.searchInput.value = '';
-    this.$.searchInput.commit();
-    this.updateSearch();
-  },
-
-  updateSearch: function() {
-    var key = this.$.searchInput.inputValue;
-    if (this.searching && key) {
-      var filteredData = [];
-      var filteredFavorites = [];
-
-      for (var i = 0; i < this.data.length; i++) {
-        var c = this.data[i];
-
-        if (c.name.toLocaleLowerCase().indexOf(key.toLocaleLowerCase()) > -1) {
-          filteredData.push(c);
-
-          if (c.favorite)
-            filteredFavorites.push(c);
-        }
-      }
-
-      this.filteredData = filteredData;
-      this.filteredFavorites = filteredFavorites;
-    } else {
-      this.filteredData = this.data;
-      this.filteredFavorites = this.favorites;
-    }
-
-    this.$.allList.refresh();
-    this.$.favoritesList.refresh();
-  },
-
   favoriteChanged: function (e) {
     var model = e.detail.model;
+
     var i;
 
     if (model.favorite) {
@@ -243,6 +174,10 @@ Polymer({
   hideUnimplementedToast: function () {
     var toast = this.$.unimplementedToast;
     this.async(function () { toast.dismiss(); });
+  },
+
+  fiveSecondTest: function () {
+    window.document.getElementById('perfBox').fiveSecondTest();
   },
 });
 

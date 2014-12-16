@@ -1,3 +1,7 @@
+/*
+ * Copyright 2014 Intel Corporation. All rights reserved.
+ * License: BSD-3-clause-Intel, see LICENSE.txt
+ */
 package com.collabora.xwperf.fps_measure_module;
 
 import android.content.Context;
@@ -5,7 +9,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.SystemClock;
 import android.util.AttributeSet;
-import android.view.View;import java.lang.Override;
+import android.view.View;
 
 public class FpsMeterView extends View {
     private int counter;

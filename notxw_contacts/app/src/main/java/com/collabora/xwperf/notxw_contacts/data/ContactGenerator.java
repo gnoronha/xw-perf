@@ -1,5 +1,10 @@
 package com.collabora.xwperf.notxw_contacts.data;
 
+/*
+ * Copyright 2014 Intel Corporation. All rights reserved.
+ * License: BSD-3-clause-Intel, see LICENSE.txt
+ */
+
 import android.os.SystemClock;
 
 import com.collabora.xwperf.fps_measure_module.MeasurementLogger;
@@ -53,6 +58,7 @@ public class ContactGenerator {
         MeasurementLogger logger = MeasurementLogger.getInstance();
         Random random = new Random();
         long startGenerate = SystemClock.elapsedRealtime();
+        logger.addMark(startGenerate, MeasurementLogger.PerformanceMarks.MARK_FEED_LOAD_BEGIN + MAX_ITEMS);
         ArrayList<ContactModel> contacts = new ArrayList<>(MAX_ITEMS);
 
         for (int i = 0; i < MAX_ITEMS; i++) {
@@ -87,7 +93,9 @@ public class ContactGenerator {
             contact.setFavorite(i < 10);
             contacts.add(contact);
         }
-        logger.addMeasure(startGenerate, SystemClock.elapsedRealtime() - startGenerate, MeasurementLogger.PerformanceMarks.MEASURE_FEED_LOAD + MAX_ITEMS);
+        long endGenerate = SystemClock.elapsedRealtime();
+        logger.addMark(endGenerate, MeasurementLogger.PerformanceMarks.MARK_FEED_LOAD_END + MAX_ITEMS);
+        logger.addMeasure(startGenerate, endGenerate - startGenerate, MeasurementLogger.PerformanceMarks.MEASURE_FEED_LOAD + MAX_ITEMS);
         return contacts;
     }
 

@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2014 Intel Corporation. All rights reserved.
+License: BSD-3-clause-Intel, see LICENSE.txt
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
       package="com.collabora.xwperf.notxw_starter"
       android:versionCode="1"
       android:versionName="1.0">
-    <uses-sdk android:minSdkVersion="19" android:targetSdkVersion="19"/>
+    <uses-sdk android:minSdkVersion="18" android:targetSdkVersion="21"/>
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <activity android:name="StarterActivity"
                   android:label="@string/app_name">

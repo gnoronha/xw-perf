@@ -1,5 +1,10 @@
 package com.collabora.xwperf.notxw_social;
 
+/*
+ * Copyright 2014 Intel Corporation. All rights reserved.
+ * License: BSD-3-clause-Intel, see LICENSE.txt
+ */
+
 import android.content.Context;
 import android.os.SystemClock;
 import android.text.Html;
@@ -66,7 +71,7 @@ public class FileUtils {
         } catch (IOException e) {
             Log.e(TAG, "IO", e);
         }
-        logger.addMeasure(writeStartTime, SystemClock.elapsedRealtime() - writeStartTime, MeasurementLogger.PerformanceMarks.MEASURE_FILE_READ);
+        logger.addMeasure(writeStartTime, SystemClock.elapsedRealtime() - writeStartTime, MeasurementLogger.PerformanceMarks.MEASURE_FILE_WRITE);
     }
 
     private void writeFeedArray(JsonWriter writer, ArrayList<TweetModel> feed) throws IOException {

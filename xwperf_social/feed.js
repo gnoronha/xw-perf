@@ -165,18 +165,20 @@ Polymer('my-feed', {
     this.data = [];
   },
 
-  loadMore: function () {
-    this.addFakeListData(EXTRA_ITEMS_BATCH);
+  loadMore: function (callback) {
+    this.addFakeListData(EXTRA_ITEMS_BATCH, false, false, callback);
   },
 
-  refresh: function () {
+  refresh: function (callback) {
     this.addFakeListData(
         this.startedInitialLoad ? REFRESH_BATCH : INITIAL_ITEMS_BATCH,
-        true);
+        !this.startedInitialLoad,
+        true,
+        callback);
     this.startedInitialLoad = true;
   },
 
-  addFakeListData: function(numberOfItems, isRefresh) {
+  addFakeListData: function(numberOfItems, useFiles, isRefresh, callback) {
     var that = this;
     var req = {
       isRefresh: isRefresh,
@@ -200,6 +202,11 @@ Polymer('my-feed', {
       };
     }
 
+    if (!useFiles) {
+      that.loadFromList(req, tmp, callback);
+      return;
+    }
+
     var onFileSystemFailure = function (e) {
       console.log(e);
 
@@ -212,7 +219,7 @@ Polymer('my-feed', {
 
         that.async(function() {
           performance.mark('mark_legacy_load_begin');
-          that.loadFromJson(req, localStorage.getItem('posts'));
+          that.loadFromJson(req, localStorage.getItem('posts'), callback);
           performance.mark('mark_legacy_load_end');
           performance.measure('measure_legacy_load', 'mark_legacy_load_begin',
               'mark_legacy_load_end');
@@ -230,7 +237,7 @@ Polymer('my-feed', {
       performance.measure('measure_feed_read_as_text',
           'mark_feed_read_as_text_begin',
           'mark_feed_read_as_text_end');
-      that.loadFromJson(req, ev.target.result);
+      that.loadFromJson(req, ev.target.result, callback);
     }
 
     var onGetFileForRead = function (f) {
@@ -363,22 +370,27 @@ Polymer('my-feed', {
     }
   },
 
-  loadFromJson: function(req, json) {
-    var tmp = JSON.parse(json);
-    performance.mark('mark_feed_load_end_' + tmp.length);
-    performance.measure('measure_feed_load_' + tmp.length,
-        'mark_feed_load_begin_' + tmp.length,
-        'mark_feed_load_end_' + tmp.length);
+  loadFromJson: function(req, json, callback) {
+    this.loadFromList(req, JSON.parse(json), callback);
+  },
 
-    for (var i = 0; i < tmp.length; i++) {
+  loadFromList: function(req, list, callback) {
+    performance.mark('mark_feed_load_end_' + list.length);
+    performance.measure('measure_feed_load_' + list.length,
+        'mark_feed_load_begin_' + list.length,
+        'mark_feed_load_end_' + list.length);
+
+    for (var i = 0; i < list.length; i++) {
       if (this.data.length > MAX_ITEMS)
         break;
 
       if (req.isRefresh)
-        this.data.unshift(tmp[tmp.length - i - 1]);
+        this.data.unshift(list[list.length - i - 1]);
       else
-        this.data.push(tmp[i]);
+        this.data.push(list[i]);
     }
+
+    this.async(callback);
   },
 });
 

@@ -57,37 +57,21 @@ Polymer({
 
         nextTime = thisTime;
 
-        var fps = Infinity;
-        if (dt != 0)
-          fps = 1000 / dt;
-
         if (fps < 28) {
           lt28++;
           ctx.fillStyle = "#f00";
-        } else if (fps < 29) {
-          lt30++;
-          ctx.fillStyle = "#f40";
         } else if (fps < 30) {
           lt30++;
           ctx.fillStyle = "#f80";
-        } else if (fps < 31) {
-          lt32++;
-          ctx.fillStyle = "#fb0";
         } else if (fps < 32) {
           lt32++;
           ctx.fillStyle = "#ff0";
         } else if (fps < 58) {
           lt58++;
           ctx.fillStyle = "#bf0";
-        } else if (fps < 59) {
-          lt60++;
-          ctx.fillStyle = "#8f0";
         } else if (fps < 60) {
           lt60++;
-          ctx.fillStyle = "#4f0";
-        } else if (fps < 61) {
-          lt62++;
-          ctx.fillStyle = "#0f0";
+          ctx.fillStyle = "#8f0";
         } else if (fps < 62) {
           lt62++;
           ctx.fillStyle = "#0f8";
@@ -105,8 +89,9 @@ Polymer({
         else
           ctx.fillRect(x, HEIGHT - 60, w, 60 - fps + 1);
 
-        // Don't go off the left-hand end of the graph
-        if (x < 0)
+        // Discard samples older than 5 seconds for graphing and
+        // statistics purposes
+        if ((now - thisTime) > 5000)
           break;
       }
 
@@ -140,6 +125,9 @@ Polymer({
           if (fps > maxFps)
             maxFps = fps;
         }
+
+        if ((now - thisTime) > 5000)
+          break;
 
         nextTime = thisTime;
       }
@@ -215,6 +203,38 @@ Polymer({
   closePopup: function() {
     this.$.popup.setAttribute('hidden', '');
     this.$.popupResults.innerHTML = '';
+  },
+
+  fiveSecondTest: function () {
+    var that = this;
+    var canvas = this.$['perf-canvas'];
+    var ctx = canvas.getContext('2d');
+
+    ctx.fillStyle = "#800";
+    ctx.fillRect(0, 0, 400, 64);
+
+    ctx.fillStyle = "#fff";
+    ctx.fillText('you have 5 seconds to reach the initial state', 8, 10);
+
+    setTimeout(function () {
+      ctx.fillStyle = "#880";
+      ctx.fillRect(0, 0, 400, 64);
+
+      ctx.fillStyle = "#fff";
+      ctx.fillText('start testing now, you have 1 second', 8, 10);
+
+      setTimeout(function () {
+        ctx.fillStyle = "#0f0";
+        ctx.fillRect(0, 0, 400, 64);
+
+        ctx.fillStyle = "#000";
+        ctx.fillText('testing... you can stop when the graph appears', 8, 10);
+
+        setTimeout(function () {
+          g.drawStatsNextFrame = that.drawStatsCallback;
+        }, 5000);
+      }, 1000);
+    }, 3000);
   },
 });
 

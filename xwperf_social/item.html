@@ -45,6 +45,7 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         font-weight: bold;
       }
       .who > .login {
+        padding-left: 8px;
         color: rgba(0, 0, 0, 0.54);
       }
       .when {
@@ -74,15 +75,12 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       #content {
         background-color: white;
       }
-      #content, #clickBarrier, #undo-dismissal {
+      #content {
         position: absolute;
         top: 0;
         left: 0;
         height: 100%;
         width: 100%;
-      }
-      #undo-dismissal core-icon {
-        margin-right: 8px;
       }
       #content.moving {
         box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
@@ -113,13 +111,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         </div>
       </div>
     </div>
-    <div id="clickBarrier" hidden>
-    </div>
-    <paper-button id="undo-dismissal" flex on-tap="{{ undoDismissTap }}"
-        hidden?="{{!model.dismissed}}" layout horizontal center>
-      <core-icon icon="undo"></core-icon>
-      <span flex>Undo</span>
-    </paper-button>
   </template>
   <script>
     Polymer({
@@ -135,8 +126,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
       },
       ready: function() {
         this.content = this.$.content;
-        this.clickBarrier = this.$.clickBarrier;
-        this.undoDismissal = this.$['undo-dismissal'];
         this.async(this.updateHtml);
       },
       formatTime: function(value) {
@@ -148,22 +137,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         if (this.controller) {
           this.controller.setActive(true);
         }
-      },
-      undoDismissTap: function(e, detail, sender) {
-        this.clickBarrier.removeAttribute('hidden');
-        e.preventDefault();
-        this.model.dismissed = false;
-        this.backToNormal();
-        this.content.style.opacity = 0.0;
-        this.content.style.transition = 'opacity 1s';
-        var dad = this.parentElement;
-        if (dad.lastDismissedIndex == this.index) {
-          dad.lastDismissedIndex = null;
-        }
-        this.async(function() {
-          this.content.style.opacity = 1.0;
-          this.clickBarrier.setAttribute('hidden', '');
-        }.bind(this));
       },
       // Based on app-dismissable-item
       enteredView: function() {
@@ -185,20 +158,10 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
           onDismiss: function(direction) {
             var dad = this.parentElement;
             var data = dad.data;
-            var i = dad.lastDismissedIndex;
 
-            this.model.dismissed = true;
-            dad.lastDismissedIndex = this.index;
-            this.controller.setActive(false);
-
-            if (i !== null) {
-              this.async(function() {
-                data.splice(i, 1);
-                if (dad.lastDismissedIndex > i) {
-                  dad.lastDismissedIndex--;
-                }
-              });
-            }
+            this.async(function() {
+              data.splice(this.index, 1);
+            });
           },
         });
         this.backToNormal();

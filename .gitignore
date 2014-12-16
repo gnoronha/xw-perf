@@ -1,10 +1,12 @@
 *.sw?
 /*.apk
 /android-paths.mk
+/build/
 /build-*/
-/dist/
+/dist
 /java_*/bin/
 /java_*/gen/
+/node_modules/
 /notxw_*/bin/
 /notxw_*/gen/
 /notxw_*/local.properties
@@ -12,4 +14,6 @@
 /notxw_*/.project
 /notxw_*/.settings
 /notxw_*/lint.xml
+/results/
+/tmp/
 /tmp-*/

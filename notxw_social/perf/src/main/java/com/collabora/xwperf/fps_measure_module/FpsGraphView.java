@@ -1,3 +1,7 @@
+/*
+ * Copyright 2014 Intel Corporation. All rights reserved.
+ * License: BSD-3-clause-Intel, see LICENSE.txt
+ */
 package com.collabora.xwperf.fps_measure_module;
 
 import android.content.Context;
@@ -178,8 +182,10 @@ public class FpsGraphView extends View {
 
         float value = 1000f / (frameTimestamp - lastTime);
         fpsHistory.add(value);
-        if (fpsHistory.size() < NUMBER_OF_SAMPLES)
-            logger.addMeasure(frameTimestamp, frameTimestamp - lastTime, MeasurementLogger.PerformanceMarks.MEASURE_TO_NEXT_FRAME);
+        if (fpsHistory.size() < NUMBER_OF_SAMPLES) {
+            logger.addMeasure(lastTime, frameTimestamp - lastTime, MeasurementLogger.PerformanceMarks.MEASURE_TO_NEXT_FRAME);
+            logger.addMark(frameTimestamp, MeasurementLogger.PerformanceMarks.MARK_PERF_FRAME);
+        }
         lastTime = frameTimestamp;
 
     }

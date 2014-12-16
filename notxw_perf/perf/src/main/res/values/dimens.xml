@@ -1,3 +1,7 @@
+<!--
+Copyright 2014 Intel Corporation. All rights reserved.
+License: BSD-3-clause-Intel, see LICENSE.txt
+-->
 <resources>
     <dimen name="fps_graph_textsize">9sp</dimen>
     <dimen name="fps_graph_stroke_width">1dp</dimen>

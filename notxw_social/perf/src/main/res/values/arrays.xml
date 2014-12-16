@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2014 Intel Corporation. All rights reserved.
+License: BSD-3-clause-Intel, see LICENSE.txt
+-->
 <resources>
     <array name="graphColors">
         <item>@color/graph_red</item>
