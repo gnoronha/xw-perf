@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -165,7 +164,8 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        //we will filter everything beforehand
+        //for search button
+        onQueryTextChange(s);
         return true;
     }
 
@@ -174,7 +174,6 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
         FragmentManager fm = getChildFragmentManager();
         ITabScrollHider fragment = (ITabScrollHider) fm.findFragmentByTag(currentTabTag);
         fragment.setSearchTerm(s);
-        Log.d(TAG, "we are searching for: " + s);
         return true;
     }
 }

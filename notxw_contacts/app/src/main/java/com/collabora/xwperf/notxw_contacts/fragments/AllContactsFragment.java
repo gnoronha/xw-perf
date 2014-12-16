@@ -39,7 +39,7 @@ public class AllContactsFragment extends Fragment implements ITabScrollHider {
         recyclerView.setHasFixedSize(false);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new ContactsAdapter(getActivity(), null);
+        adapter = new ContactsAdapter(getActivity(), null, true);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setOnScrollListener(scrollListener);
