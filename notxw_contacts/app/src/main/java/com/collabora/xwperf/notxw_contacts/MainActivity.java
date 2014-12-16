@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, AllContactsFragment.newInstance())
+                    .add(R.id.container, MainFragment.newInstance())
                     .commit();
         }
     }

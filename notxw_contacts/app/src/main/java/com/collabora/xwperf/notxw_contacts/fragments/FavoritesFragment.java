@@ -14,6 +14,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 
 import com.collabora.xwperf.notxw_contacts.R;
 import com.collabora.xwperf.notxw_contacts.adapters.ContactsAdapter;
@@ -26,6 +27,9 @@ import org.androidannotations.annotations.ViewById;
 
 @EFragment(R.layout.fragment_contacts)
 public class FavoritesFragment extends Fragment implements ITabScrollHider {
+    private static final String TAG = FavoritesFragment.class.getSimpleName();
+    private RecyclerView.OnScrollListener scrollListener;
+
     public static Fragment newInstance() {
         return FavoritesFragment_.builder().build();
     }
@@ -39,21 +43,37 @@ public class FavoritesFragment extends Fragment implements ITabScrollHider {
     @AfterViews
     void init() {
         //init loader
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ContactsAdapter(getActivity(), null);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        getLoaderManager().initLoader(11, null, contactsLoader);
+        recyclerView.setOnScrollListener(scrollListener);
+        Log.d(TAG," on view created");
+        getActivity().getSupportLoaderManager().restartLoader(13, null, favLoader);
     }
 
-    private LoaderManager.LoaderCallbacks<Cursor> contactsLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG," on resume");
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG," on create");
+    }
+
+    private LoaderManager.LoaderCallbacks<Cursor> favLoader = new LoaderManager.LoaderCallbacks<Cursor>() {
 
         @Override
         public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-            String select = ContactsStore.ContactTable.FAVORITE + " = 1";//favorites only
-            return new CursorLoader(getActivity(), ContactsContentProvider.contentUri(ContactsStore.ContactTable.CONTENT_URI), null, select, null, ContactsStore.ContactTable.NAME);
+
+            String select = ContactsStore.ContactTable.FAVORITE + " = ? ";
+            String[] selectArgs = new String[]{String.valueOf(1)};
+            return new CursorLoader(getActivity(), ContactsContentProvider.contentUri(ContactsStore.ContactTable.CONTENT_URI), null, select, selectArgs, ContactsStore.ContactTable.NAME);
         }
 
         @Override
@@ -69,6 +89,6 @@ public class FavoritesFragment extends Fragment implements ITabScrollHider {
 
     @Override
     public void setScrollListener(RecyclerView.OnScrollListener scrollListener) {
-
+        this.scrollListener = scrollListener;
     }
 }

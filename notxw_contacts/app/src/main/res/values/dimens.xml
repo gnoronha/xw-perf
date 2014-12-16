@@ -7,5 +7,5 @@
     <dimen name="fps_meter_dot_size">2dp</dimen>
     <dimen name="navigation_drawer_width">240dp</dimen>
     <dimen name="label_margin">8dp</dimen>
-
+    <dimen name="tab_widget_height">54dp</dimen>
 </resources>

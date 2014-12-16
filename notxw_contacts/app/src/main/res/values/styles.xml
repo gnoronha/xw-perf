@@ -7,12 +7,8 @@ License: BSD-3-clause-Intel, see LICENSE.txt
     <!-- extend one of the Theme.AppCompat themes -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- customize the color palette -->
-        <item name="colorPrimary">@color/material_green_500</item>
+        <item name="colorPrimary">@color/material_green_700</item>
         <item name="colorPrimaryDark">@color/material_green_700</item>
         <item name="colorAccent">@color/material_green_A200</item>
-        <item name="actionBarTabStyle">@style/ActionBarTabStyle.Example</item>
-    </style>
-    <style name="ActionBarTabStyle.Example" parent="@style/Widget.AppCompat.ActionBar.TabView">
-        <item name="android:background">@drawable/tab_indicator_ab_example</item>
     </style>
 </resources>
