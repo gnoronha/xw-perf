@@ -9,6 +9,6 @@ License: BSD-3-clause-Intel, see LICENSE.txt
         <!-- customize the color palette -->
         <item name="colorPrimary">@color/material_green_700</item>
         <item name="colorPrimaryDark">@color/material_green_700</item>
-        <item name="colorAccent">@color/material_green_A200</item>
+        <item name="colorAccent">@color/material_yellow_800</item>
     </style>
 </resources>

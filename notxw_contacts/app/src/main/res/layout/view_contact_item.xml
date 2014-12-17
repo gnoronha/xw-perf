@@ -6,6 +6,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="?android:attr/selectableItemBackground"
     android:layout_height="?attr/listPreferredItemHeightLarge">
 
     <ImageView

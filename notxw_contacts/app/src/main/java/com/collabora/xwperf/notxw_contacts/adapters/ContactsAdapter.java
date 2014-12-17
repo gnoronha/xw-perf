@@ -32,7 +32,7 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
     private static final int KEY_POSITION = R.id.favorite_star;
 
     private static final int TYPE_OFFSET = 123;
-
+    private final boolean favAvailable;
 
     private ColorGenerator generator = ColorGenerator.DEFAULT;
     private LayoutInflater layoutInflater;
@@ -41,17 +41,17 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
 
     private Context context;
 
-    public ContactsAdapter(Context context, Cursor cursor) {
+    public ContactsAdapter(Context context, Cursor cursor, boolean favAvailable) {
         super(cursor);
+        this.favAvailable = favAvailable;
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
     public Cursor swapCursor(Cursor newCursor) {
-        if (newCursor != null) {
+        if (newCursor != null)
             populateCursorColumns(newCursor);
-        }
         return super.swapCursor(newCursor);
     }
 
@@ -65,7 +65,7 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return viewType == TYPE_OFFSET ?
                 new OffsetViewHolder(layoutInflater.inflate(R.layout.view_offset, parent, false)) :
-                new ContactsViewHolder(layoutInflater.inflate(R.layout.view_contact_item, parent, false));
+                new ContactsViewHolder(layoutInflater.inflate(R.layout.view_contact_item, parent, false), favAvailable);
     }
 
     @Override
@@ -97,27 +97,28 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
         int avatarResId = cursor.getInt(avatarId);
         ContactsViewHolder local = ((ContactsViewHolder) viewHolder);
         local.usernameTextView.setText(name);
-        local.favoriteStar.setChecked(isFavorite);
-        local.favoriteStar.setTag(KEY_ITEM_ID, itemId);
-        local.favoriteStar.setTag(KEY_OLD_VALUE, isFavorite);
-        local.favoriteStar.setTag(KEY_POSITION, cursor.getPosition());
-        local.favoriteStar.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //value has been changed
-                int itemId = (int) v.getTag(KEY_ITEM_ID);
-                boolean oldValue = (boolean) v.getTag(KEY_OLD_VALUE);
-                int position = (int) v.getTag(KEY_POSITION);
-                new FavoriteChangeTask().execute(oldValue ? 0 : 1, itemId, position);
-            }
-        });
-
         if (avatarResId > 0) {
             Picasso.with(context).load(avatarResId).transform(new CircleTransform()).noFade()
                     .into(local.avatarImageView);
         } else {
             //generate avatar here
             local.avatarImageView.setImageDrawable(TextDrawable.builder().buildRound(name.substring(0, 1), generator.getColor(name)));
+        }
+        if (favAvailable) {
+            local.favoriteStar.setChecked(isFavorite);
+            local.favoriteStar.setTag(KEY_ITEM_ID, itemId);
+            local.favoriteStar.setTag(KEY_OLD_VALUE, isFavorite);
+            local.favoriteStar.setTag(KEY_POSITION, cursor.getPosition());
+            local.favoriteStar.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //value has been changed
+                    int itemId = (int) v.getTag(KEY_ITEM_ID);
+                    boolean oldValue = (boolean) v.getTag(KEY_OLD_VALUE);
+                    int position = (int) v.getTag(KEY_POSITION);
+                    new FavoriteChangeTask().execute(oldValue ? 0 : 1, itemId, position);
+                }
+            });
         }
     }
 
@@ -126,11 +127,12 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
         private TextView usernameTextView;
         private CheckBox favoriteStar;
 
-        public ContactsViewHolder(View rootView) {
+        public ContactsViewHolder(View rootView, boolean favAvailable) {
             super(rootView);
             avatarImageView = (ImageView) rootView.findViewById(R.id.avatar);
             usernameTextView = (TextView) rootView.findViewById(R.id.username);
             favoriteStar = (CheckBox) rootView.findViewById(R.id.favorite_star);
+            favoriteStar.setVisibility(favAvailable ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -150,4 +152,6 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
             return position;
         }
     }
+
+
 }

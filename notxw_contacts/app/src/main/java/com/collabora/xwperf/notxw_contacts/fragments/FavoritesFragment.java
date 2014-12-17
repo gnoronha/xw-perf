@@ -15,7 +15,6 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.widget.FilterQueryProvider;
 
 import com.collabora.xwperf.notxw_contacts.R;
 import com.collabora.xwperf.notxw_contacts.adapters.ContactsAdapter;
@@ -30,6 +29,7 @@ import org.androidannotations.annotations.ViewById;
 public class FavoritesFragment extends Fragment implements ITabScrollHider {
     private static final String TAG = FavoritesFragment.class.getSimpleName();
     private RecyclerView.OnScrollListener scrollListener;
+    private LinearLayoutManager layoutManager;
 
     public static Fragment newInstance() {
         return FavoritesFragment_.builder().build();
@@ -44,8 +44,9 @@ public class FavoritesFragment extends Fragment implements ITabScrollHider {
     void init() {
         //init loader
         recyclerView.setHasFixedSize(false);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ContactsAdapter(getActivity(), null);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        adapter = new ContactsAdapter(getActivity(), null, false);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setOnScrollListener(scrollListener);
