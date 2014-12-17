@@ -42,7 +42,9 @@ case "$1" in
 		;;
 esac
 
+[ -n "$3" ] || { usage; exit 2; }
 device="$3"
+[ -n "$4" ] || { usage; exit 2; }
 test="$4"
 
 echo "You should have opened ${runtime}_${app} already."
@@ -62,3 +64,7 @@ beep || printf '\a'
 	--input="$CURDIR"/results/${runtime}_${app}_${device}_${test}.log \
 	--graph="$CURDIR"/results/${runtime}_${app}_${device}_${test}.svg \
 	> "$CURDIR"/results/${runtime}_${app}_${device}_${test}.txt
+
+# a convenient file to keep open in $EDITOR
+cp "$CURDIR"/results/${runtime}_${app}_${device}_${test}.txt \
+	"$CURDIR"/results/latest.txt
