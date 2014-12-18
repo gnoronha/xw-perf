@@ -8,7 +8,6 @@ package com.collabora.xwperf.notxw_contacts.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -36,6 +35,7 @@ import com.collabora.xwperf.notxw_contacts.data.DBHelper;
 import com.squareup.picasso.Picasso;
 
 import org.androidannotations.annotations.AfterViews;
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.FragmentArg;
@@ -202,19 +202,13 @@ public class DetailsFragment extends Fragment {
         }
     }
 
-    private void updateItem(ContactModel contactModel) {
-        new AsyncTask<ContactModel, Void, Void>() {
-            @Override
-            protected Void doInBackground(ContactModel... params) {
-                DBHelper.updateModel(getActivity(), params[0]);
-                return null;
-            }
-        }.execute(contactModel);
+    @Background
+    void updateItem(ContactModel contactModel) {
+        DBHelper.updateModel(getActivity(), contactModel);
     }
 
     public static void hideKeyBoard(Context context, View view) {
         InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-
 }
