@@ -21,7 +21,15 @@
             android:name=".data.ContactsContentProvider"
             android:authorities="com.collabora.xwperf.notxw_contacts.data"
             android:exported="false" />
-        <activity android:name=".PerformanceActivity" />
+
+        <activity
+            android:name=".PerformanceActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".DetailsActivity_"
+            android:exported="false"
+            android:parentActivityName=".MainActivity_" />
     </application>
 
 </manifest>

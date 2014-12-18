@@ -84,7 +84,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (toggle != null && toggle.onOptionsItemSelected(item))

@@ -26,5 +26,7 @@ License: BSD-3-clause-Intel, see LICENSE.txt
     <string name="groups">Groups</string>
     <string name="action_search">Search</string>
     <string name="not_implemented">Not implemented</string>
+    <string name="action_favorites">Add to favorites</string>
+    <string name="error_name_empty">Fill empty field</string>
 
 </resources>

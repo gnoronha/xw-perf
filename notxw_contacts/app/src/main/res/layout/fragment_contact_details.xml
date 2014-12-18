@@ -1,89 +1,97 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
 Copyright 2014 Intel Corporation. All rights reserved.
 License: BSD-3-clause-Intel, see LICENSE.txt
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="@dimen/activity_vertical_margin">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/avatar_image"
-        android:layout_width="wrap_content"
-        android:layout_height="100dp"
-        android:background="@color/material_green_100"
-        android:scaleType="center" />
-
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/label_margin"
-        android:text="@string/details_name_text"
-        android:textSize="16sp" />
+        android:orientation="vertical"
+        android:padding="@dimen/activity_vertical_margin">
 
-    <android.support.v7.internal.widget.TintEditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/details_name_text"
-        android:inputType="textPersonName"
-        android:minWidth="200dp" />
+        <ImageView
+            android:id="@+id/avatar_image"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            android:focusable="true"
+            android:scaleType="fitStart" />
 
-    <EditText
-        android:id="@+id/name_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:minWidth="200dp"
-        android:textSize="16sp" />
+        <TextView
+            android:id="@+id/name_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/label_margin"
+            android:minWidth="300dp"
+            android:text="@string/details_name_text"
+            android:textSize="16sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/label_margin"
-        android:text="@string/details_email_text"
-        android:textSize="16sp" />
+        <EditText
+            android:id="@+id/name_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textPersonName"
+            android:minWidth="300dp"
+            android:singleLine="true"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/email_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:minWidth="200dp"
-        android:textSize="16sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/label_margin"
+            android:minWidth="300dp"
+            android:singleLine="true"
+            android:text="@string/details_email_text"
+            android:textSize="16sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/label_margin"
-        android:text="@string/details_phone_text"
-        android:textSize="16sp" />
+        <EditText
+            android:id="@+id/email_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:minWidth="300dp"
+            android:singleLine="true"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/phone_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:minWidth="200dp"
-        android:textSize="16sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/label_margin"
+            android:minWidth="300dp"
+            android:singleLine="true"
+            android:text="@string/details_phone_text"
+            android:textSize="16sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/label_margin"
-        android:text="@string/details_birthaday_text"
-        android:textSize="16sp" />
+        <EditText
+            android:id="@+id/phone_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            android:minWidth="300dp"
+            android:singleLine="true"
+            android:textSize="16sp" />
 
-    <EditText
-        android:id="@+id/birthday_edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="false"
-        android:inputType="date"
-        android:minWidth="200dp"
-        android:textSize="16sp" />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/label_margin"
+            android:minWidth="300dp"
+            android:singleLine="true"
+            android:text="@string/details_birthaday_text"
+            android:textSize="16sp" />
 
+        <EditText
+            android:id="@+id/birthday_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="false"
+            android:inputType="date"
+            android:minWidth="300dp"
+            android:singleLine="true"
+            android:textSize="16sp" />
 
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

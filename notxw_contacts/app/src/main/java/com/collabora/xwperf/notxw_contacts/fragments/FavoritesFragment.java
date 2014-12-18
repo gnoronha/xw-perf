@@ -14,7 +14,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 
 import com.collabora.xwperf.notxw_contacts.R;
 import com.collabora.xwperf.notxw_contacts.adapters.ContactsAdapter;
@@ -26,11 +25,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 @EFragment(R.layout.fragment_contacts)
-public class FavoritesFragment extends Fragment implements ITabScrollHider {
-    private static final String TAG = FavoritesFragment.class.getSimpleName();
-    private RecyclerView.OnScrollListener scrollListener;
-    private LinearLayoutManager layoutManager;
-
+public class FavoritesFragment extends BaseFragment {
     public static Fragment newInstance() {
         return FavoritesFragment_.builder().build();
     }
@@ -42,14 +37,14 @@ public class FavoritesFragment extends Fragment implements ITabScrollHider {
 
     @AfterViews
     void init() {
-        //init loader
         recyclerView.setHasFixedSize(false);
-        layoutManager = new LinearLayoutManager(getActivity());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ContactsAdapter(getActivity(), null, false);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setOnScrollListener(scrollListener);
+        adapter.setOnItemClickListener(contactClickListener);
         getActivity().getSupportLoaderManager().restartLoader(13, null, favLoader);
     }
 
@@ -78,14 +73,10 @@ public class FavoritesFragment extends Fragment implements ITabScrollHider {
     };
 
     @Override
-    public void setScrollListener(RecyclerView.OnScrollListener scrollListener) {
-        this.scrollListener = scrollListener;
-    }
-
-    @Override
     public void setSearchTerm(String searchTerm) {
         Bundle bundle = new Bundle();
         bundle.putString(SEARCH_TERM, searchTerm);
         getLoaderManager().restartLoader(13, bundle, favLoader);
     }
+
 }

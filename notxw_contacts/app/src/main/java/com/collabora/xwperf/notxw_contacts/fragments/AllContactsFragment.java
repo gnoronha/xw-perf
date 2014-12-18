@@ -25,11 +25,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 @EFragment(R.layout.fragment_contacts)
-public class AllContactsFragment extends Fragment implements ITabScrollHider {
-    private static final String TAG = AllContactsFragment.class.getSimpleName();
-
-    private RecyclerView.OnScrollListener scrollListener;
-
+public class AllContactsFragment extends BaseFragment {
     public static Fragment newInstance() {
         return AllContactsFragment_.builder().build();
     }
@@ -45,6 +41,7 @@ public class AllContactsFragment extends Fragment implements ITabScrollHider {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         adapter = new ContactsAdapter(getActivity(), null, true);
+        adapter.setOnItemClickListener(contactClickListener);
         recyclerView.setAdapter(adapter);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setOnScrollListener(scrollListener);
@@ -76,14 +73,10 @@ public class AllContactsFragment extends Fragment implements ITabScrollHider {
     };
 
     @Override
-    public void setScrollListener(RecyclerView.OnScrollListener scrollListener) {
-        this.scrollListener = scrollListener;
-    }
-
-    @Override
     public void setSearchTerm(String searchTerm) {
         Bundle bundle = new Bundle();
         bundle.putString(SEARCH_TERM, searchTerm);
         getLoaderManager().restartLoader(11, bundle, contactsLoader);
     }
+
 }

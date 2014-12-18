@@ -37,18 +37,24 @@ public class DBHelper {
         Cursor cursor = context.getContentResolver().query(ContactsContentProvider.contentUri(ContactsStore.ContactTable.CONTENT_URI, itemId), null, null, null, null);
         ContactModel contactModel = null;
         if (cursor.moveToFirst()) {
-            contactModel = new ContactModel();
-            contactModel.setContactId(cursor.getInt(0));//_id is always 0
-            contactModel.setName(cursor.getString(cursor.getColumnIndex(ContactsStore.ContactTable.NAME)));
-            contactModel.setEmail(cursor.getString(cursor.getColumnIndex(ContactsStore.ContactTable.EMAIL)));
-            contactModel.setPhone(cursor.getString(cursor.getColumnIndex(ContactsStore.ContactTable.PHONE)));
-            contactModel.setFavorite(cursor.getInt(cursor.getColumnIndex(ContactsStore.ContactTable.FAVORITE)) == 1);
-            contactModel.setAvatarResId(cursor.getInt(cursor.getColumnIndex(ContactsStore.ContactTable.AVATAR)));
-            Long birthday = cursor.getLong(cursor.getColumnIndex(ContactsStore.ContactTable.BIRTHDAY));
-            if (birthday != null && birthday > 0)
-                contactModel.setBirthday(new Date(birthday));
+            contactModel = getItemFromCursor(cursor);
         }
         cursor.close();
+        return contactModel;
+    }
+
+    public static ContactModel getItemFromCursor(Cursor cursor) {
+        ContactModel contactModel = new ContactModel();
+        contactModel.setContactId(cursor.getInt(0));//_id is always 0
+        contactModel.setName(cursor.getString(cursor.getColumnIndex(ContactsStore.ContactTable.NAME)));
+        contactModel.setEmail(cursor.getString(cursor.getColumnIndex(ContactsStore.ContactTable.EMAIL)));
+        contactModel.setPhone(cursor.getString(cursor.getColumnIndex(ContactsStore.ContactTable.PHONE)));
+        contactModel.setFavorite(cursor.getInt(cursor.getColumnIndex(ContactsStore.ContactTable.FAVORITE)) == 1);
+        contactModel.setAvatarResId(cursor.getInt(cursor.getColumnIndex(ContactsStore.ContactTable.AVATAR)));
+        Long birthday = cursor.getLong(cursor.getColumnIndex(ContactsStore.ContactTable.BIRTHDAY));
+        if (birthday > 0)
+            contactModel.setBirthday(new Date(birthday));
+
         return contactModel;
     }
 
@@ -61,5 +67,22 @@ public class DBHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(ContactsStore.ContactTable.FAVORITE, newValue);
         context.getContentResolver().update(ContactsContentProvider.contentUri(ContactsStore.ContactTable.CONTENT_URI, itemId), contentValues, null, null);
+    }
+
+    public static void updateModel(Context context, ContactModel contactModel) {
+        ContentValues cv = new ContentValues();
+        cv.put(ContactsStore.ContactTable.NAME, contactModel.getName());
+        cv.put(ContactsStore.ContactTable.AVATAR, contactModel.getAvatarResId());
+        if (contactModel.getBirthday() != null) {
+            cv.put(ContactsStore.ContactTable.BIRTHDAY, contactModel.getBirthday().getTime());
+        }
+        cv.put(ContactsStore.ContactTable.EMAIL, contactModel.getEmail());
+        cv.put(ContactsStore.ContactTable.FAVORITE, contactModel.isFavorite() ? 1 : 0);
+        cv.put(ContactsStore.ContactTable.PHONE, contactModel.getPhone());
+        context.getContentResolver().update(
+                ContactsContentProvider.contentUri(ContactsStore.ContactTable.CONTENT_URI),
+                cv,
+                ContactsStore.ContactTable.ID + " = ?",
+                new String[]{String.valueOf(contactModel.getContactId())});
     }
 }

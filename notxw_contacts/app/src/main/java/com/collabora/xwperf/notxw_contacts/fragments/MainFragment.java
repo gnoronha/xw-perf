@@ -5,6 +5,7 @@ package com.collabora.xwperf.notxw_contacts.fragments;
  * License: BSD-3-clause-Intel, see LICENSE.txt
  */
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,8 +22,12 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.collabora.xwperf.notxw_contacts.DetailsActivity;
+import com.collabora.xwperf.notxw_contacts.DetailsActivity_;
 import com.collabora.xwperf.notxw_contacts.R;
+import com.collabora.xwperf.notxw_contacts.adapters.ContactsAdapter;
 import com.collabora.xwperf.notxw_contacts.fragments.helpers.AnimatedTabsListener;
 
 import org.androidannotations.annotations.AfterViews;
@@ -33,8 +38,6 @@ import static android.support.v7.widget.RecyclerView.OnScrollListener;
 
 @EFragment(R.layout.fragment_main)
 public class MainFragment extends Fragment implements SearchView.OnQueryTextListener {
-    private static final String TAG = MainFragment.class.getSimpleName();
-
     //Holder for our tabs
     public static Fragment newInstance() {
         return MainFragment_.builder().build();
@@ -101,12 +104,32 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
         super.onSaveInstanceState(outState);
     }
 
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        //for search button
+        onQueryTextChange(s);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        FragmentManager fm = getChildFragmentManager();
+        ITabScrollHider fragment = (ITabScrollHider) fm.findFragmentByTag(currentTabTag);
+        fragment.setSearchTerm(s);
+        //reset tabView transition
+        tabView.setTranslationY(0);
+        tabView.setTag(KEY_ANIMATION, 0);
+        return true;
+    }
+
     private void switchTab(String tabId) {
         FragmentManager fm = getChildFragmentManager();
         if (fm.findFragmentByTag(tabId) == null) {
+            Fragment fragment = getFragmentForTab(tabId);
             fm.beginTransaction()
-                    .replace(getContainerViewId(tabId), getFragmentForTab(tabId), tabId)
+                    .replace(getContainerViewId(tabId), fragment, tabId)
                     .commit();
+            setContactClickListener((ITabScrollHider) fragment);
         }
         currentTabTag = tabId;
     }
@@ -125,23 +148,40 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
                 break;
         }
         if (fragment != null) {
-            ((ITabScrollHider) fragment).setScrollListener(new OnScrollListener() {
-                @Override
-                public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                }
-
-                @Override
-                public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                    super.onScrolled(recyclerView, dx, dy);
-                    Object o = tabView.getTag(KEY_ANIMATION);
-                    int oldDy = o == null ? 0 : (int) o;
-                    oldDy += dy;
-                    tabView.setTranslationY(-1 * oldDy);
-                    tabView.setTag(KEY_ANIMATION, oldDy);
-                }
-            });
+            setScrollListener((ITabScrollHider) fragment);
         }
         return fragment;
+    }
+
+    private void setScrollListener(ITabScrollHider fragment) {
+        fragment.setScrollListener(new OnScrollListener() {
+            private Object o;
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                o = tabView.getTag(KEY_ANIMATION);
+                int oldDy = o == null ? 0 : (int) o;
+                if ((oldDy += dy) < 0)
+                    oldDy = 0;
+                tabView.setTranslationY(-1 * oldDy);
+                tabView.setTag(KEY_ANIMATION, oldDy);
+            }
+        });
+    }
+
+    private void setContactClickListener(ITabScrollHider fragment) {
+        fragment.setContactClickListener(new ContactsAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClicked(int itemId) {
+                Intent intent = new Intent(getActivity(), DetailsActivity_.class);
+                intent.putExtra(DetailsActivity.EXTRA_ITEM_ID, itemId);
+                startActivity(intent);
+            }
+        });
     }
 
     private int getContainerViewId(String tabId) {
@@ -167,18 +207,4 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
         return tabSpec;
     }
 
-    @Override
-    public boolean onQueryTextSubmit(String s) {
-        //for search button
-        onQueryTextChange(s);
-        return true;
-    }
-
-    @Override
-    public boolean onQueryTextChange(String s) {
-        FragmentManager fm = getChildFragmentManager();
-        ITabScrollHider fragment = (ITabScrollHider) fm.findFragmentByTag(currentTabTag);
-        fragment.setSearchTerm(s);
-        return true;
-    }
 }

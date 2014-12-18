@@ -8,6 +8,7 @@ package com.collabora.xwperf.notxw_contacts.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.support.v7.internal.widget.AdapterViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,12 +41,26 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
     private int nameId, favoriteId, avatarId;
 
     private Context context;
+    private OnItemClickListener listener;
+    private final OnClickListener clickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (listener == null)
+                return;
+            int itemId = (int) v.getTag(KEY_ITEM_ID);
+            listener.onItemClicked(itemId);
+        }
+    };
 
     public ContactsAdapter(Context context, Cursor cursor, boolean favAvailable) {
         super(cursor);
         this.favAvailable = favAvailable;
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
     }
 
     @Override
@@ -96,6 +111,9 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
         int itemId = cursor.getInt(0);
         int avatarResId = cursor.getInt(avatarId);
         ContactsViewHolder local = ((ContactsViewHolder) viewHolder);
+        local.itemView.setOnClickListener(clickListener);
+        local.itemView.setTag(KEY_ITEM_ID, itemId);
+
         local.usernameTextView.setText(name);
         if (avatarResId > 0) {
             Picasso.with(context).load(avatarResId).transform(new CircleTransform()).noFade()
@@ -140,6 +158,10 @@ public class ContactsAdapter extends ContactsCursorAdapter<RecyclerView.ViewHold
         public OffsetViewHolder(View rootView) {
             super(rootView);
         }
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClicked(int itemId);
     }
 
     private class FavoriteChangeTask extends AsyncTask<Integer, Void, Integer> {

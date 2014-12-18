@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar_widget"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <com.collabora.xwperf.fps_measure_module.FpsMeterView
+        android:id="@+id/fps_meter"
+        android:layout_width="@dimen/fps_meter_dot_size"
+        android:layout_height="@dimen/fps_meter_dot_size"
+        android:layout_alignParentTop="true"
+        android:layout_below="@id/toolbar_widget" />
+
+    <com.collabora.xwperf.fps_measure_module.FpsGraphView
+        android:id="@+id/fps_graph_view"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true" />
+
+    <LinearLayout
+        android:id="@+id/container"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fps_graph_view"
+        android:layout_below="@id/toolbar_widget" />
+
+</RelativeLayout>

@@ -83,12 +83,12 @@ public class ContactGenerator {
             // phone number
             // https://en.wikipedia.org/wiki/Fictitious_telephone_number
             if (random.nextFloat() < 0.75) {
-                contact.setPhone("+44 7700 900" + Math.floor(random.nextFloat() * 999));
+                contact.setPhone("+44 7700 900" + (int)Math.floor(random.nextFloat() * 999));
             }
             //birthday
             if (random.nextFloat() < 0.2) {
                 // uniformly random between 1970-01-01 and 2000-01-01
-                contact.setBirthday(new Date((long) (random.nextFloat() * new Date(2000, 1, 1).getTime())));
+                contact.setBirthday(new Date((long) (random.nextFloat() * new Date(100, 1, 1).getTime())));
             }
             contact.setFavorite(i < 10);
             contacts.add(contact);
