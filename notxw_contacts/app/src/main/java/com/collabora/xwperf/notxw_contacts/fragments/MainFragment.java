@@ -22,7 +22,6 @@ import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.collabora.xwperf.notxw_contacts.DetailsActivity;
 import com.collabora.xwperf.notxw_contacts.DetailsActivity_;

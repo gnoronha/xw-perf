@@ -25,7 +25,7 @@ import org.androidannotations.annotations.EFragment;
 import org.androidannotations.annotations.ViewById;
 
 @EFragment(R.layout.fragment_contacts)
-public class AllContactsFragment extends BaseFragment {
+public class AllContactsFragment extends BaseTabFragment {
     public static Fragment newInstance() {
         return AllContactsFragment_.builder().build();
     }

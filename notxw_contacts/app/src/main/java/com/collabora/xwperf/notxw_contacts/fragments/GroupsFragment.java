@@ -12,7 +12,7 @@ import com.collabora.xwperf.notxw_contacts.R;
 import org.androidannotations.annotations.EFragment;
 
 @EFragment(R.layout.fragment_groups)
-public class GroupsFragment extends BaseFragment {
+public class GroupsFragment extends BaseTabFragment {
 
     //nothing to do here
     public static Fragment newInstance() {

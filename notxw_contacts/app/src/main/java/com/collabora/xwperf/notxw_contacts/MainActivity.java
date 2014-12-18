@@ -18,7 +18,6 @@ import com.collabora.xwperf.fps_measure_module.FpsGraphView;
 import com.collabora.xwperf.fps_measure_module.FpsMeterView;
 import com.collabora.xwperf.fps_measure_module.IFpsListener;
 import com.collabora.xwperf.notxw_contacts.fragments.MainFragment;
-import com.collabora.xwperf.notxw_contacts.fragments.NavigationFragment;
 
 import org.androidannotations.annotations.EActivity;
 
@@ -27,20 +26,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private FpsMeterView fpsMeter;
     private FpsGraphView fpsGraph;
-    private boolean showDrawer;
-    private NavigationFragment navigationDrawerFragment;
     private ActionBarDrawerToggle toggle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showDrawer = getResources().getBoolean(R.bool.show_drawer);
+        boolean showDrawer = getResources().getBoolean(R.bool.show_drawer);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_widget);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(showDrawer);
 
-        navigationDrawerFragment = (NavigationFragment) getSupportFragmentManager().findFragmentById(R.id.navigation_fragment);
         if (showDrawer) {
             DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
             drawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.material_green_700));
