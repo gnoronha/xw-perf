@@ -33,7 +33,7 @@ public class MeasurementLogger {
         logs.add(String.valueOf(timestamp) + "\t\t\t\t\t" + "Mark: " + eventDescription);
     }
 
-    public void addMeasure(long timestamp, long duration, String eventDescription) {
+    public void addMeasure(long timestamp, long duration, String eventDescription){
         logs.add(String.valueOf(timestamp) + "\t\t" + duration + "\t\t" + "Measure: " + eventDescription);
     }
 

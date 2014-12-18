@@ -5,6 +5,7 @@ package com.collabora.xwperf.notxw_contacts.fragments;
  * License: BSD-3-clause-Intel, see LICENSE.txt
  */
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
