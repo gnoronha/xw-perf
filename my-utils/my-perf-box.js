@@ -232,7 +232,11 @@ function setup() {
   g.canvas.classList.add('perfBoxCanvas');
 
   g.canvas.addEventListener('click', function () {
-    window.MyPerfCollector.drawStatsNextFrame = drawStats;
+    if (window.MyPerfCollector) {
+      window.MyPerfCollector.drawStatsNextFrame = drawStats;
+    } else {
+      alert('not loaded yet!');
+    }
   });
 
   div.appendChild(g.canvas);
@@ -245,6 +249,11 @@ function setup() {
 }
 
 g.fiveSecondTest = function () {
+  if (!window.MyPerfCollector) {
+    alert('not loaded yet!');
+    return;
+  }
+
   var ctx = g.canvas.getContext('2d');
 
   ctx.fillStyle = "#800";
