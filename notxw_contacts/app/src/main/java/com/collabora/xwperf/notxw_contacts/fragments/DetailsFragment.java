@@ -108,9 +108,11 @@ public class DetailsFragment extends Fragment {
         if (item.getItemId() == android.R.id.home) {
             //hide keyboard
             hideKeyBoard(getActivity(),nameTitle);
-            if (!validateData())
-                return true;
-            updateItem(contactModel);
+            if (validateData()) {
+                updateItem(contactModel);
+                getActivity().onBackPressed();
+            }
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -211,4 +213,5 @@ public class DetailsFragment extends Fragment {
         InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
 }

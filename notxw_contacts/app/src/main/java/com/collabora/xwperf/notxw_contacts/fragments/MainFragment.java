@@ -5,6 +5,7 @@ package com.collabora.xwperf.notxw_contacts.fragments;
  * License: BSD-3-clause-Intel, see LICENSE.txt
  */
 
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 
 import com.collabora.xwperf.notxw_contacts.DetailsActivity;
 import com.collabora.xwperf.notxw_contacts.DetailsActivity_;
+import com.collabora.xwperf.notxw_contacts.MainActivity;
 import com.collabora.xwperf.notxw_contacts.R;
 import com.collabora.xwperf.notxw_contacts.adapters.ContactsAdapter;
 import com.collabora.xwperf.notxw_contacts.fragments.helpers.AnimatedTabsListener;
@@ -155,6 +157,7 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
     private void setScrollListener(ITabScrollHider fragment) {
         fragment.setScrollListener(new OnScrollListener() {
             private Object o;
+
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             }
@@ -176,9 +179,10 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
         fragment.setContactClickListener(new ContactsAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemId) {
+                ActivityOptions opts = ActivityOptions.makeCustomAnimation(getActivity(), android.R.anim.fade_in, android.R.anim.fade_out);
                 Intent intent = new Intent(getActivity(), DetailsActivity_.class);
                 intent.putExtra(DetailsActivity.EXTRA_ITEM_ID, itemId);
-                startActivity(intent);
+                getActivity().startActivity(intent, opts.toBundle());
             }
         });
     }
