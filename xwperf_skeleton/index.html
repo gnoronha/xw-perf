@@ -1,0 +1,99 @@
+<!doctype html>
+<!--
+Copyright 2013 The Polymer Authors. All rights reserved.
+Copyright 2014 Intel Corporation. All rights reserved.
+
+License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
+-->
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Skeleton</title>
+
+    <meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json" />
+
+    <style>
+      #topPlaceholder {
+        position: absolute;
+        top: 0;
+        height: 64px;
+        color: white;
+        line-height: 32px;
+        font-size: 24px;
+        text-align: center;
+        background-color: #f0f;
+        width: 100%;
+      }
+
+      body {
+        background: white;
+        font-family: "RobotoDraft",Helvetica,Arial,sans-serif;
+        font-weight: 300;
+        line-height: 24px;
+        height: 100%;
+        width: 100%;
+        padding: 0px;
+        margin: 0px;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-touch-callout: none;
+      }
+
+      #perfActivator {
+        position: absolute;
+        top: 128px;
+        height: 64px;
+        left: 16px;
+        right: 16px;
+        color: white;
+        text-align: center;
+        background-color: #808;
+      }
+
+      #perfBox {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+      }
+    </style>
+
+    <script async src="bower_components/my-utils/my-perf-collector.js">
+    </script>
+  </head>
+
+  <body
+      onLoad="performance.mark('mark_load'); performance.measure('measure_load', 'navigationStart', 'mark_load')">
+
+    <div id="topPlaceholder">
+      skeleton HTML5 app
+    </div>
+
+    <script>
+      performance.mark('mark_cutover_from_launch');
+      if (window.screen && window.screen.show)
+        window.screen.show();
+    </script>
+
+    <div id="perfActivator">
+      Open performance event log
+    </div>
+
+    <script>
+      (function () {
+        'use strict';
+
+        var perfActivator = document.getElementById('perfActivator');
+        perfActivator.addEventListener('click', function () {
+          window.MyPerfBox.openPopup();
+        });
+      })();
+    </script>
+
+    <script async src="bower_components/my-utils/my-perf-box.js">
+    </script>
+  </body>
+</html>
+<!-- vim:set sw=2 sts=2 et: -->
