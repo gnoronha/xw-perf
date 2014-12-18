@@ -14,7 +14,6 @@
   <meta charset="utf-8" />
 
   <link href="bower_components/core-animated-pages/core-animated-pages.html" rel="import">
-  <link href="bower_components/my-utils/my-perf-box.html" rel="import">
 
 
   <meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
@@ -48,8 +47,6 @@
   </style>
 </head>
 <body>
-  <my-perf-box id="perfBox"></my-perf-box>
-
   <polymer-element name="music-demo">
   <template>
 
@@ -194,6 +191,11 @@
   <div class="green"></div>
 
   <music-demo></music-demo>
+
+  <script src="bower_components/my-utils/my-perf-collector.js">
+  </script>
+  <script src="bower_components/my-utils/my-perf-box.js">
+  </script>
 </body>
 </html>
 <!-- vim:set sw=2 sts=2 et: -->

@@ -17,7 +17,6 @@
   <link href="bower_components/core-icons/core-icons.html" rel="import">
   <link href="bower_components/core-icon-button/core-icon-button.html" rel="import">
   <link href="bower_components/core-toolbar/core-toolbar.html" rel="import">
-  <link href="bower_components/my-utils/my-perf-box.html" rel="import">
 
   <meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
@@ -81,9 +80,6 @@
       </template>
 
     </core-animated-pages>
-
-    <my-perf-box id="perfBox">
-    </my-perf-box>
   </template>
 
   <script>
@@ -115,6 +111,11 @@
       }
     })
 
+  </script>
+
+  <script src="bower_components/my-utils/my-perf-collector.js">
+  </script>
+  <script src="bower_components/my-utils/my-perf-box.js">
   </script>
 </body>
 </html>

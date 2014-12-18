@@ -19,8 +19,6 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <link rel="import" href="bower_components/paper-item/paper-item.html" />
     <link rel="import" href="bower_components/paper-menu-button/paper-menu-button.html" />
 
-    <link rel="import" href="bower_components/my-utils/my-perf-box.html" />
-
     <link rel="import" href="item.html" />
     <link rel="import" href="feed.html" />
     <link rel="import" href="my-item-list.html" />
@@ -144,11 +142,11 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
             this.$.activityPages.selected = Page.SETTINGS;
           },
           goToPerf: function() {
-            window.document.getElementById('perfBox').openPopup();
+            window.MyPerfBox.openPopup();
           },
 
           fiveSecondTest: function () {
-            window.document.getElementById('perfBox').fiveSecondTest();
+            window.MyPerfBox.fiveSecondTest();
           },
         });
 

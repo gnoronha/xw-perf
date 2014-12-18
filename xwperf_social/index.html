@@ -34,17 +34,15 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         height: calc(100% - 64px);
         width: 100%;
       }
-      my-perf-box {
+      #perfBox {
         position: absolute;
-        width: 100%;
         bottom: 0;
-        height: 64px;
       }
-      my-app, my-perf-box {
+      my-app {
         transition: opacity 300ms;
         opacity: 1;
       }
-      my-app:unresolved, my-perf-box:unresolved {
+      my-app:unresolved {
         opacity: 0;
       }
     </style>
@@ -70,9 +68,8 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
     <my-app>
     </my-app>
 
-    <my-perf-box id="perfBox">
-    </my-perf-box>
-
+    <script async src="bower_components/my-utils/my-perf-box.js">
+    </script>
   </body>
 </html>
 <!-- vim:set sw=2 sts=2 et: -->
