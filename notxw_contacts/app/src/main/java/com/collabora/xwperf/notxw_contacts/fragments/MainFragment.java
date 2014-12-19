@@ -179,10 +179,14 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
         fragment.setContactClickListener(new ContactsAdapter.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemId) {
-                ActivityOptions opts = ActivityOptions.makeCustomAnimation(getActivity(), android.R.anim.fade_in, android.R.anim.fade_out);
                 Intent intent = new Intent(getActivity(), DetailsActivity_.class);
                 intent.putExtra(DetailsActivity.EXTRA_ITEM_ID, itemId);
-                getActivity().startActivity(intent, opts.toBundle());
+                if (getResources().getBoolean(R.bool.custom_animations)) {
+                    ActivityOptions opts = ActivityOptions.makeCustomAnimation(getActivity(), android.R.anim.fade_in, android.R.anim.fade_out);
+                    getActivity().startActivity(intent, opts.toBundle());
+                } else {
+                    getActivity().startActivity(intent);
+                }
             }
         });
     }
@@ -209,5 +213,4 @@ public class MainFragment extends Fragment implements SearchView.OnQueryTextList
         tabSpec.setContent(getContainerViewId(tabId));
         return tabSpec;
     }
-
 }

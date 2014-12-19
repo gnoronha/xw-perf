@@ -46,7 +46,9 @@ public class DetailsActivity extends ActionBarActivity implements View.OnClickLi
     @Override
     public void supportFinishAfterTransition() {
         super.supportFinishAfterTransition();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        if (getResources().getBoolean(R.bool.custom_animations)) {
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        }
     }
 
     @Override
