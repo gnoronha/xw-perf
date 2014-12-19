@@ -26,6 +26,7 @@ ANT_APPS = \
 GRADLE_APPS = \
 	notxw_contacts \
 	notxw_social \
+	notxw_skeleton \
 	$(NULL)
 
 # We produce standalone .apks for the apps, but only shim .apks for the
