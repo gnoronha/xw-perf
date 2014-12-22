@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Skeleton</string>
+    <string name="activity_title">Skeleton native application</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="perf_log_btn">Open performance event log</string>
+    <string name="kill_app">Kill app</string>
+
+</resources>

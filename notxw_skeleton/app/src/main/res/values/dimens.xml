@@ -1,0 +1,3 @@
+<resources>
+    <dimen name="fps_meter_dot_size">2dp</dimen>
+</resources>

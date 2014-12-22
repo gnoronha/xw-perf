@@ -1,0 +1,28 @@
+<!--
+Copyright 2014 Intel Corporation. All rights reserved.
+License: BSD-3-clause-Intel, see LICENSE.txt
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.collabora.xwperf.fps_measure_module.FpsMeterView
+        android:id="@+id/fps_meter"
+        android:layout_width="@dimen/fps_meter_dot_size"
+        android:layout_height="@dimen/fps_meter_dot_size"
+        android:layout_alignParentTop="true" />
+
+    <com.collabora.xwperf.fps_measure_module.FpsGraphView
+        android:id="@+id/fps_graph_view"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_alignParentBottom="true" />
+
+    <Button
+        android:id="@+id/perf_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="@string/perf_log_btn" />
+
+</RelativeLayout>

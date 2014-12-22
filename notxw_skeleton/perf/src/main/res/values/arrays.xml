@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+Copyright 2014 Intel Corporation. All rights reserved.
+License: BSD-3-clause-Intel, see LICENSE.txt
+-->
+<resources>
+    <array name="graphColors">
+        <item>@color/graph_red</item>
+        <item>@color/graph_orange</item>
+        <item>@color/graph_yellow</item>
+        <item>@color/graph_lime</item>
+        <item>@color/graph_green</item>
+        <item>@color/graph_greener</item>
+        <item>@color/graph_blue</item>
+    </array>
+</resources>
