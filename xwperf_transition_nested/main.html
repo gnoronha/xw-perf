@@ -14,7 +14,6 @@
   <meta charset="utf-8" />
 
   <link href="bower_components/core-animated-pages/demos/nested-animated-pages.html" rel="import">
-  <link href="bower_components/my-utils/my-perf-box.html" rel="import">
 
   <meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
   <meta name="mobile-web-app-capable" content="yes">
@@ -117,8 +116,11 @@
   </polymer-element>
 
   <nested-demo></nested-demo>
-  <my-perf-box id="perfBox"></my-perf-box>
 
+  <script src="bower_components/my-utils/my-perf-collector.js">
+  </script>
+  <script src="bower_components/my-utils/my-perf-box.js">
+  </script>
 </body>
 </html>
 <!-- vim:set sw=2 sts=2 et: -->

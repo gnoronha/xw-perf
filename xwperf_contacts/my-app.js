@@ -137,7 +137,7 @@ Polymer({
   },
 
   goToPerf: function() {
-    window.document.getElementById('perfBox').openPopup();
+    window.MyPerfBox.openPopup();
   },
 
   favoriteChanged: function (e) {
@@ -177,7 +177,7 @@ Polymer({
   },
 
   fiveSecondTest: function () {
-    window.document.getElementById('perfBox').fiveSecondTest();
+    window.MyPerfBox.fiveSecondTest();
   },
 });
 

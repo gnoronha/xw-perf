@@ -4,6 +4,7 @@ all:
 
 XW_APPS = \
 	xwperf_contacts \
+	xwperf_skeleton \
 	xwperf_social \
 	$(NULL)
 
@@ -110,10 +111,13 @@ $(GRADLE_APKS): dist/%.apk: always
 	mv $*/app/build/outputs/apk/app-debug.apk dist/$*.apk
 
 xwperf_social/placeholder.png: placeholders.xcf Makefile
-	xcf2png -o $@ $< Social --percent 100 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 0
+	xcf2png -o $@ $< Social --percent 100 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 0 Skeleton --percent 0
 
 xwperf_contacts/placeholder.png: placeholders.xcf Makefile
-	xcf2png -o $@ $< Social --percent 0 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 100
+	xcf2png -o $@ $< Social --percent 0 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 100 Skeleton --percent 0
+
+xwperf_skeleton/placeholder.png: placeholders.xcf Makefile
+	xcf2png -o $@ $< Social --percent 0 Social.Markers --percent 0 Contacts.Markers --percent 0 Contacts --percent 0 Skeleton --percent 100
 
 .PHONY: always
 

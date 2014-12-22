@@ -2,7 +2,7 @@
 //
 // License: BSD-3-clause-Intel, see LICENSE.txt
 
-window.MyPerfBoxGlobal || (function(exports){
+window.MyPerfCollector || (function(exports){
 'use strict';
 
 performance.mark('mark_perf_collector_setup_begin');
@@ -26,8 +26,8 @@ var ringBuffer = new Float64Array(300);
 var frameIndex = 0;
 var firstTimeRound = true;
 
-var g = exports.MyPerfBoxGlobal || {};
-exports.MyPerfBoxGlobal = g;
+var g = exports.MyPerfCollector || {};
+exports.MyPerfCollector = g;
 
 g.alwaysAnimate = false;
 g.animateCallback = function (isEvenFrame) {

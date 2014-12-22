@@ -23,18 +23,18 @@ public class StarterActivity extends Activity
     static String[] appLabels = {
         "Social (Polymer)",
         "Contacts (Polymer)",
-        "Gallery (Polymer)",
+        "Skeleton (Polymer)",
         "Social (Java)",
         "Contacts (Java)",
-        "Gallery (Java)",
+        "Skeleton (Java)",
     };
     static String[] appNames = {
         "com.collabora.xwperf.xwperf_social",
         "com.collabora.xwperf.xwperf_contacts",
-        "com.collabora.xwperf.xwperf_gallery",
+        "com.collabora.xwperf.xwperf_skeleton",
         "com.collabora.xwperf.notxw_social",
         "com.collabora.xwperf.notxw_contacts",
-        "com.collabora.xwperf.notxw_gallery",
+        "com.collabora.xwperf.notxw_skeleton",
     };
     int selectedApp = -1;
 

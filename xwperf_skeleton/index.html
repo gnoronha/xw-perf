@@ -8,55 +8,67 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Social</title>
+    <title>Skeleton</title>
 
     <meta name="viewport" content="width=device-width, user-scalable=yes, minimum-scale=1.0, maximum-scale=1.0, initial-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="manifest.json" />
 
     <style>
-      body {
-        background: white;
-      }
       #topPlaceholder {
         position: absolute;
         top: 0;
         height: 64px;
         color: white;
+        line-height: 32px;
+        font-size: 24px;
         text-align: center;
-        background-color: #607d8b;
+        background-color: #f0f;
         width: 100%;
       }
-      my-app {
+
+      body {
         background: white;
-        position: absolute;
-        top: 0;
-        height: calc(100% - 64px);
+        font-family: "RobotoDraft",Helvetica,Arial,sans-serif;
+        font-weight: 300;
+        line-height: 24px;
+        height: 100%;
         width: 100%;
+        padding: 0px;
+        margin: 0px;
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-tap-highlight-color: rgba(0,0,0,0);
+        -webkit-touch-callout: none;
       }
+
+      #perfActivator {
+        position: absolute;
+        top: 128px;
+        height: 64px;
+        left: 16px;
+        right: 16px;
+        color: white;
+        text-align: center;
+        background-color: #808;
+      }
+
       #perfBox {
         position: absolute;
         bottom: 0;
-      }
-      my-app {
-        transition: opacity 300ms;
-        opacity: 1;
-      }
-      my-app:unresolved {
-        opacity: 0;
+        left: 0;
       }
     </style>
 
     <script async src="bower_components/my-utils/my-perf-collector.js">
     </script>
-
-    <link rel="import" href="main.html" />
   </head>
-  <body class="polymer-ui-body-text"
+
+  <body
       onLoad="performance.mark('mark_load'); performance.measure('measure_load', 'navigationStart', 'mark_load')">
 
     <div id="topPlaceholder">
-      • • •
+      skeleton HTML5 app
     </div>
 
     <script>
@@ -65,8 +77,20 @@ License: BSD-3-clause-Google and BSD-3-clause-Intel, see LICENSE.txt
         window.screen.show();
     </script>
 
-    <my-app>
-    </my-app>
+    <div id="perfActivator">
+      Open performance event log
+    </div>
+
+    <script>
+      (function () {
+        'use strict';
+
+        var perfActivator = document.getElementById('perfActivator');
+        perfActivator.addEventListener('click', function () {
+          window.MyPerfBox.openPopup();
+        });
+      })();
+    </script>
 
     <script async src="bower_components/my-utils/my-perf-box.js">
     </script>
