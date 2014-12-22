@@ -83,8 +83,7 @@ public class NavAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         public void onClick(View v) {
             String txt = textView.getText().toString();
             if (drawerItems[6].first.equals(txt)) {
-                Intent intent = new Intent(context, PerformanceActivity.class);
-                context.startActivity(intent);
+                PerformanceActivity.startActivity(context);
             } else {
                 Toast.makeText(context, R.string.not_implemented, Toast.LENGTH_SHORT).show();
             }

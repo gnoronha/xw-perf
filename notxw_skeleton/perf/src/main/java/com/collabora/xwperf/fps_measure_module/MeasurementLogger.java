@@ -11,11 +11,20 @@ import java.util.ArrayList;
 public class MeasurementLogger {
 
     private ArrayList<String> logs;
-    private static MeasurementLogger ourInstance = new MeasurementLogger();
     private static long startTime;
+    private static volatile MeasurementLogger instance;
 
     public static MeasurementLogger getInstance() {
-        return ourInstance;
+        MeasurementLogger localInstance = instance;
+        if (localInstance == null) {
+            synchronized (MeasurementLogger.class) {
+                localInstance = instance;
+                if (localInstance == null) {
+                    instance = localInstance = new MeasurementLogger();
+                }
+            }
+        }
+        return localInstance;
     }
 
     private MeasurementLogger() {

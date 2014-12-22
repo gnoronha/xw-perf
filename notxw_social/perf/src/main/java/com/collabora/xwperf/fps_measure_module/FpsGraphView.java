@@ -15,7 +15,7 @@ import android.view.View;
 
 public class FpsGraphView extends View {
     private MeasurementLogger logger = MeasurementLogger.getInstance();
-    private static final int NUMBER_OF_SAMPLES = 300;
+    private static final int NUMBER_OF_SAMPLES = 301;
     private final int graphWidth;
     private final int legendWidth;
     private final int desiredHeight;
@@ -28,6 +28,8 @@ public class FpsGraphView extends View {
     private int[] colors;
     private final float textSize;
     private final int strokeWidth;
+
+    int yOffset, xOffset, lt28, lt30, lt32, lt58, lt60, lt62, ge62;
 
 
     public FpsGraphView(Context context) {
@@ -52,7 +54,9 @@ public class FpsGraphView extends View {
         colors = context.getResources().getIntArray(R.array.graphColors);
 
         startTime = SystemClock.elapsedRealtime();
+        yOffset = 4 * strokeWidth;
         logger.addMark(MeasurementLogger.PerformanceMarks.MARK_PERF_COLLECTOR_SETUP_END);
+
     }
 
     @Override
@@ -64,30 +68,21 @@ public class FpsGraphView extends View {
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
-        int width;
-        int height;
+        int width, height;
 
-        //Measure Width
         if (widthMode == MeasureSpec.EXACTLY) {
-            //Must be this size
             width = widthSize;
         } else if (widthMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
             width = Math.min(desiredWidth, widthSize);
         } else {
-            //Be whatever you want
             width = desiredWidth;
         }
 
-        //Measure Height
         if (heightMode == MeasureSpec.EXACTLY) {
-            //Must be this size
             height = heightSize;
         } else if (heightMode == MeasureSpec.AT_MOST) {
-            //Can't be bigger than...
             height = Math.min(desiredHeight, heightSize);
         } else {
-            //Be whatever you want
             height = desiredHeight;
         }
 
@@ -100,15 +95,7 @@ public class FpsGraphView extends View {
         canvas.drawColor(Color.BLACK); //clear
         paint.reset();
         paint.setTextSize(textSize);
-        int xOffset = 0;
-        int yOffset = 4 * strokeWidth;
-        int lt28 = 0;
-        int lt30 = 0;
-        int lt32 = 0;
-        int lt58 = 0;
-        int lt60 = 0;
-        int lt62 = 0;
-        int ge62 = 0;
+        xOffset = lt28 = lt30 = lt32 = lt58 = lt60 = lt62 = ge62 = 0;
 
         float mean = buffer.getTotal() / buffer.size();
         float squareDiffs = 0;
@@ -128,7 +115,7 @@ public class FpsGraphView extends View {
             } else if (fpsValue < 58) {
                 lt58++;
                 paint.setColor(colors[3]);
-            } else if (fpsValue < 59) {
+            } else if (fpsValue < 60) {
                 lt60++;
                 paint.setColor(colors[4]);
             } else if (fpsValue < 62) {
@@ -185,8 +172,10 @@ public class FpsGraphView extends View {
         if (fpsHistory.size() < NUMBER_OF_SAMPLES) {
             logger.addMeasure(lastTime, frameTimestamp - lastTime, MeasurementLogger.PerformanceMarks.MEASURE_TO_NEXT_FRAME);
             logger.addMark(frameTimestamp, MeasurementLogger.PerformanceMarks.MARK_PERF_FRAME);
+            if (fpsHistory.size() == (NUMBER_OF_SAMPLES - 1)) {
+                logger.addMark(frameTimestamp, MeasurementLogger.PerformanceMarks.MARK_FRAME_COLLECT_FINISH);
+            }
         }
         lastTime = frameTimestamp;
-
     }
 }

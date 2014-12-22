@@ -14,6 +14,7 @@ public class SocialApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        MeasurementLogger.getInstance().addMark(MeasurementLogger.PerformanceMarks.MEASURE_LOAD);
+        //init singleton
+        MeasurementLogger.getInstance();
     }
 }

@@ -136,8 +136,7 @@ public class MainFragment extends Fragment implements SwipeRefreshLayout.OnRefre
             startActivity(intent);
             return true;
         } else if (id == R.id.action_performance) {
-            Intent intent = new Intent(getActivity(), PerformanceActivity.class);
-            startActivity(intent);
+            PerformanceActivity.startActivity(getActivity());
             return true;
         } else if (id == R.id.action_refresh) {
             onRefresh();
