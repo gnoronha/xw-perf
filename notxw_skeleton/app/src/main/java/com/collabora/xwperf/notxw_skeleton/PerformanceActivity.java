@@ -1,4 +1,4 @@
-package com.collabora.xwperf;
+package com.collabora.xwperf.notxw_skeleton;
 /*
  * Copyright 2014 Intel Corporation. All rights reserved.
  * License: BSD-3-clause-Intel, see LICENSE.txt

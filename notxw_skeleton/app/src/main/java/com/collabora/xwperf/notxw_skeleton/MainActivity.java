@@ -1,4 +1,4 @@
-package com.collabora.xwperf;
+package com.collabora.xwperf.notxw_skeleton;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
